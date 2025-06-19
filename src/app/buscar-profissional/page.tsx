@@ -43,7 +43,7 @@ export default function BuscarProfissional() {
   const [profissionais, setProfissionais] = useState<Profissional[]>([]);
   const [profissionalSelecionado, setProfissionalSelecionado] = useState<Profissional | null>(null);
   const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
-  const [carregando, setCarregando] = useState(false);
+
   const [mostrarModalAvaliacao, setMostrarModalAvaliacao] = useState(false);
   const [mediaAvaliacao, setMediaAvaliacao] = useState({ media: 0, total: 0 });
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { FaStar, FaCheck, FaTimes, FaEye } from 'react-icons/fa';
 
@@ -94,7 +94,7 @@ export default function AdminPage() {
     }
   };
 
-  const calcularEstatisticas = () => {
+  const calcularEstatisticas = useCallback(() => {
     setEstatisticas({
       total: cadastros.length,
       pendentes: cadastros.filter(c => c.status === 'pendente').length,
@@ -103,11 +103,11 @@ export default function AdminPage() {
       avaliacoesPendentes: avaliacoes.filter(a => a.status === 'pendente').length,
       avaliacoesAprovadas: avaliacoes.filter(a => a.status === 'aprovada').length,
     });
-  };
+  }, [cadastros, avaliacoes]);
 
   useEffect(() => {
     calcularEstatisticas();
-  }, [cadastros, avaliacoes]);
+  }, [calcularEstatisticas]);
 
   const aprovarProfissional = async (id: string) => {
     try {
