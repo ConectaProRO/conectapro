@@ -114,21 +114,7 @@ export default function CadastroProfissional() {
     };
   }, []);
 
-  // Limpar URLs de preview quando o componente for desmontado
-  useEffect(() => {
-    return () => {
-      // Limpar previews da galeria
-      previewsGaleria.forEach(url => {
-        if (url) {
-          URL.revokeObjectURL(url);
-        }
-      });
-      // Limpar preview da foto de perfil
-      if (previewFotoPerfil) {
-        URL.revokeObjectURL(previewFotoPerfil);
-      }
-    };
-  }, []);
+
 
   const handleServicoChange = (servico: string) => {
     setServicosSelecionados((prev) =>
@@ -227,6 +213,7 @@ export default function CadastroProfissional() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('🚀 Iniciando envio do cadastro...');
     setCarregando(true);
     
     try {
@@ -246,7 +233,7 @@ export default function CadastroProfissional() {
         timestamp: new Date().toISOString()
       };
 
-
+      console.log('📤 Dados do cadastro:', dadosCadastro);
 
       // Enviar para API
       const response = await fetch('/api/cadastro', {
@@ -257,17 +244,23 @@ export default function CadastroProfissional() {
         body: JSON.stringify(dadosCadastro),
       });
 
+      console.log('📡 Response status:', response.status);
+
       if (response.ok) {
+        const result = await response.json();
+        console.log('✅ Cadastro enviado com sucesso:', result);
         setCadastroRealizado(true);
       } else {
         const errorData = await response.json();
+        console.error('❌ Erro do servidor:', errorData);
         alert('❌ Erro ao enviar cadastro: ' + (errorData.message || 'Tente novamente em alguns minutos.'));
       }
     } catch (error) {
-      console.error('Erro:', error);
+      console.error('❌ Erro de conexão:', error);
       alert('❌ Erro de conexão. Verifique sua internet e tente novamente.');
     } finally {
       setCarregando(false);
+      console.log('🏁 Processo finalizado');
     }
   };
 
