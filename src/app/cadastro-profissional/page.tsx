@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { FaUpload, FaPaintRoller, FaTools, FaCogs, FaBrush, FaHardHat, FaWrench, FaCubes, FaThLarge, FaHome } from "react-icons/fa";
+import { FaUpload, FaPaintRoller, FaTools, FaCogs, FaBrush, FaHardHat, FaWrench, FaCubes, FaThLarge, FaArrowUp } from "react-icons/fa";
 
 const servicos = [
   { nome: "Forma e Concretagem", icon: <FaCubes /> },
@@ -37,7 +37,6 @@ function BotaoVoltarTopo() {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Mostra o botão após 300px de scroll
       setMostrar(window.scrollY > 300);
     };
 
@@ -55,10 +54,10 @@ function BotaoVoltarTopo() {
     <div className="fixed bottom-6 right-6 z-50">
       <button
         onClick={voltarAoTopo}
-        className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110"
+        className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 fade-in-element"
         title="Voltar ao topo"
       >
-        <FaHome size={20} />
+        <FaArrowUp size={20} />
       </button>
     </div>
   );
@@ -71,6 +70,7 @@ export default function CadastroProfissional() {
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [cadastroRealizado, setCadastroRealizado] = useState(false);
   const [carregando, setCarregando] = useState(false);
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
   // Progresso simples: 1/3 dados, 2/3 serviços, 3/3 fotos
   const progresso = Math.round(
@@ -78,6 +78,32 @@ export default function CadastroProfissional() {
     (fotos.length > 0 ? 25 : 0) +
     (meiosTransporte.length > 0 ? 25 : 0)
   );
+
+  useEffect(() => {
+    // Configuração do observer para animações
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    observerRef.current = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-fadeInUp');
+        }
+      });
+    }, observerOptions);
+
+    // Observar todos os elementos com a classe de animação
+    const elements = document.querySelectorAll('.fade-in-element');
+    elements.forEach(el => {
+      observerRef.current?.observe(el);
+    });
+
+    return () => {
+      observerRef.current?.disconnect();
+    };
+  }, []);
 
   const handleNivelClick = (servico: string, nivel: string) => {
     setNivelServicos((prev) => ({ ...prev, [servico]: nivel }));
@@ -142,162 +168,255 @@ export default function CadastroProfissional() {
   // Tela de sucesso
   if (cadastroRealizado) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
-        <div className="bg-white rounded-3xl shadow-xl p-8 w-full max-w-2xl text-center">
-          <div className="text-6xl mb-6">📋</div>
-          <h1 className="text-3xl font-bold mb-4 text-blue-600">Cadastro Enviado para Análise!</h1>
-          <p className="text-lg text-gray-700 mb-6">
-            Obrigado! Recebemos suas informações e entraremos em contato em breve.
-          </p>
+      <>
+        {/* CSS personalizado para animações */}
+        <style jsx global>{`
+          @keyframes fadeInUp {
+            from {
+              opacity: 0;
+              transform: translateY(30px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
           
-          <div className="bg-blue-50 rounded-2xl p-6 mb-6 text-left">
-            <h2 className="text-xl font-bold text-blue-800 mb-3">📋 Processo de Análise</h2>
-            <ul className="space-y-3 text-gray-700">
-              <li className="flex items-start gap-3">
-                <span className="text-blue-500 font-bold">1️⃣</span>
-                <span><strong>Recebemos seu cadastro</strong> - Suas informações estão seguras conosco</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-yellow-500 font-bold">2️⃣</span>
-                <span><strong>Análise em andamento</strong> - Verificamos os dados e serviços informados</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-purple-500 font-bold">3️⃣</span>
-                <span><strong>Contato em breve</strong> - Entraremos em contato para ativar seu perfil</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-green-500 font-bold">4️⃣</span>
-                <span><strong>Perfil ativo</strong> - Após aprovação, você aparecerá nas buscas e no mapa</span>
-              </li>
-            </ul>
-          </div>
+          .animate-fadeInUp {
+            animation: fadeInUp 0.8s ease forwards;
+          }
+          
+          .fade-in-element {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+        `}</style>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/buscar-profissional" className="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors font-medium">
-              Ver Como Apareço nas Buscas
-            </Link>
-            <Link href="/" className="bg-gray-200 text-gray-700 px-6 py-3 rounded-xl hover:bg-gray-300 transition-colors font-medium">
-              Voltar ao Início
-            </Link>
-          </div>
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+          {/* Header Hero */}
+          <header className="bg-gradient-to-br from-blue-600 to-blue-700 py-16 px-5 text-center text-white relative overflow-hidden">
+            <div className="absolute inset-0 bg-blue-600 opacity-10 animate-pulse"></div>
+            <div className="max-w-4xl mx-auto relative z-10">
+              <h1 className="text-4xl md:text-5xl font-bold mb-6 fade-in-element">
+                🎉 Cadastro Enviado com Sucesso!
+              </h1>
+              <p className="text-xl md:text-2xl mb-10 font-light fade-in-element">
+                Recebemos suas informações e entraremos em contato em breve para ativar seu perfil profissional.
+              </p>
+            </div>
+          </header>
+
+          {/* Conteúdo Principal */}
+          <section className="py-20 px-5 max-w-4xl mx-auto">
+            <div className="bg-white rounded-3xl shadow-xl p-8 fade-in-element">
+              <div className="text-center mb-8">
+                <div className="text-6xl mb-6">📋</div>
+                <h2 className="text-3xl font-bold mb-4 text-blue-600">Obrigado por se cadastrar!</h2>
+                <p className="text-lg text-gray-600">
+                  Seu cadastro está sendo analisado por nossa equipe. Em breve você estará conectado com clientes em Porto Velho.
+                </p>
+              </div>
+              
+              <div className="bg-gradient-to-br from-blue-50 to-white rounded-2xl p-6 mb-8 fade-in-element">
+                <h3 className="text-xl font-bold text-blue-800 mb-4 flex items-center gap-2">
+                  📋 Processo de Análise
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">✅</span>
+                    <div>
+                      <h4 className="font-semibold text-blue-700">Recebemos seu cadastro</h4>
+                      <p className="text-gray-600 text-sm">Suas informações estão seguras conosco</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">⏳</span>
+                    <div>
+                      <h4 className="font-semibold text-yellow-700">Análise em andamento</h4>
+                      <p className="text-gray-600 text-sm">Verificamos os dados e serviços informados</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">📞</span>
+                    <div>
+                      <h4 className="font-semibold text-purple-700">Contato em breve</h4>
+                      <p className="text-gray-600 text-sm">Entraremos em contato para ativar seu perfil</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">🚀</span>
+                    <div>
+                      <h4 className="font-semibold text-green-700">Perfil ativo</h4>
+                      <p className="text-gray-600 text-sm">Após aprovação, você aparecerá nas buscas</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center fade-in-element">
+                <Link 
+                  href="/buscar-profissional" 
+                  className="bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-blue-700 transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300 inline-flex items-center justify-center gap-2"
+                >
+                  🔍 Ver Como Apareço nas Buscas
+                </Link>
+                <Link 
+                  href="/" 
+                  className="bg-white text-blue-600 border-2 border-blue-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-blue-50 transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300 inline-flex items-center justify-center gap-2"
+                >
+                  🏠 Voltar ao Início
+                </Link>
+              </div>
+            </div>
+          </section>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
     <>
+      {/* CSS personalizado para animações */}
+      <style jsx global>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        .animate-fadeInUp {
+          animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        .fade-in-element {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        
+        html {
+          scroll-behavior: smooth;
+        }
+      `}</style>
+
       {/* Botão flutuante para voltar ao topo */}
       <BotaoVoltarTopo />
       
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-        {/* Barra de progresso */}
-        <div className="w-full max-w-2xl mb-8 mt-8">
-          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-            <div className="h-2 bg-black transition-all duration-500 rounded-full" style={{ width: `${progresso}%` }} />
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+        {/* Header Hero */}
+        <header className="bg-gradient-to-br from-blue-600 to-blue-700 py-16 px-5 text-center text-white relative overflow-hidden">
+          <div className="absolute inset-0 bg-blue-600 opacity-10 animate-pulse"></div>
+          <div className="max-w-4xl mx-auto relative z-10">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 fade-in-element">
+              👷 Cadastro de Profissional
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 font-light fade-in-element">
+              Conecte-se com clientes em <strong>Porto Velho - RO</strong> e receba mais serviços
+            </p>
+            
+            {/* Barra de progresso */}
+            <div className="max-w-md mx-auto bg-white bg-opacity-20 rounded-full p-1 fade-in-element">
+              <div className="h-3 bg-white rounded-full transition-all duration-500" style={{ width: `${progresso}%` }} />
+            </div>
+            <div className="text-sm mt-2 opacity-90 fade-in-element">
+              Progresso: {progresso}% completo
+            </div>
           </div>
-          <div className="text-right text-xs text-gray-400 mt-1">Progresso: {progresso}%</div>
-        </div>
-        <div className="rounded-3xl shadow-lg p-8 w-full max-w-2xl border border-gray-100 mb-10 bg-white">
-          <h1 className="text-4xl font-extrabold mb-10 text-left text-black leading-tight">Cadastre-se como Profissional</h1>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-            {/* Dados pessoais */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <input
-                type="text"
-                name="nome"
-                placeholder="Nome completo"
-                className="border-none rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100 text-lg shadow-sm"
-                required
-              />
-              <input
-                type="tel"
-                name="telefone"
-                placeholder="Telefone/WhatsApp"
-                className="border-none rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100 text-lg shadow-sm"
-                required
-              />
-              <input
-                type="text"
-                name="profissao"
-                placeholder="Profissão"
-                className="border-none rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100 text-lg shadow-sm"
-                required
-              />
-              <input
-                type="text"
-                name="bairro"
-                placeholder="Bairro onde mora"
-                className="border-none rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100 text-lg shadow-sm"
-                required
-              />
-            </div>
+        </header>
 
-            {/* Upload de fotos */}
-            <div>
-              <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2 text-lg"><FaUpload /> Fotos dos seus serviços</label>
-              <label className="flex items-center gap-3 cursor-pointer w-fit px-5 py-3 bg-gray-100 hover:bg-gray-200 rounded-2xl border border-gray-200 text-gray-700 font-medium shadow-sm">
-                <FaUpload /> Anexar fotos
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleFotosChange}
-                  className="hidden"
-                />
-              </label>
-              {previewUrls.length > 0 && (
-                <div className="flex flex-wrap gap-3 mt-3">
-                  {previewUrls.map((url, idx) => (
-                    <img
-                      key={idx}
-                      src={url}
-                      alt={`Foto ${idx + 1}`}
-                      className="w-24 h-24 object-cover rounded-xl border border-gray-200 shadow"
-                    />
-                  ))}
+        {/* Formulário Principal */}
+        <section className="py-16 px-5">
+          <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
+            {/* Dados Pessoais */}
+            <div className="bg-white rounded-3xl shadow-xl p-8 mb-8 fade-in-element">
+              <h2 className="text-2xl font-bold mb-6 text-blue-600 flex items-center gap-3">
+                📝 Seus Dados
+              </h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block font-semibold mb-2 text-gray-700">Nome Completo *</label>
+                  <input
+                    type="text"
+                    name="nome"
+                    required
+                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
+                    placeholder="Seu nome completo"
+                  />
                 </div>
-              )}
-            </div>
-
-            {/* Meio de transporte */}
-            <div>
-              <h2 className="text-lg font-semibold mb-3 text-black flex items-center gap-2"><FaTools /> Meio de transporte</h2>
-              <div className="flex flex-wrap gap-3">
-                {transportes.map((transporte) => (
-                  <label key={transporte} className="flex items-center gap-2 cursor-pointer bg-gray-100 px-4 py-2 rounded-xl border border-gray-200 text-gray-700 shadow-sm">
-                    <input
-                      type="checkbox"
-                      checked={meiosTransporte.includes(transporte)}
-                      onChange={() => handleTransporteChange(transporte)}
-                      className="accent-black w-5 h-5"
-                    />
-                    <span className="text-base">{transporte}</span>
-                  </label>
-                ))}
+                
+                <div>
+                  <label className="block font-semibold mb-2 text-gray-700">WhatsApp *</label>
+                  <input
+                    type="tel"
+                    name="telefone"
+                    required
+                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
+                    placeholder="(69) 99999-9999"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block font-semibold mb-2 text-gray-700">Profissão Principal *</label>
+                  <input
+                    type="text"
+                    name="profissao"
+                    required
+                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
+                    placeholder="Ex: Pedreiro, Pintor, Eletricista..."
+                  />
+                </div>
+                
+                <div>
+                  <label className="block font-semibold mb-2 text-gray-700">Bairro *</label>
+                  <input
+                    type="text"
+                    name="bairro"
+                    required
+                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
+                    placeholder="Seu bairro em Porto Velho"
+                  />
+                </div>
               </div>
             </div>
 
             {/* Serviços */}
-            <div>
-              <h2 className="text-lg font-semibold mb-3 text-black flex items-center gap-2"><FaHardHat /> Seu nível em cada serviço</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="bg-white rounded-3xl shadow-xl p-8 mb-8 fade-in-element">
+              <h2 className="text-2xl font-bold mb-6 text-blue-600 flex items-center gap-3">
+                🔧 Seus Serviços
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Selecione seu nível de habilidade em cada serviço:
+              </p>
+              
+              <div className="space-y-6">
                 {servicos.map((servico) => (
-                  <div key={servico.nome} className="flex items-center rounded-2xl bg-white shadow-[0_8px_32px_rgba(0,0,0,0.35)] border border-gray-200 py-6 px-5 gap-3 transition-all duration-200 hover:shadow-[0_16px_48px_rgba(0,0,0,0.45)] hover:-translate-y-2">
-                    <span className="font-bold text-gray-700 text-2xl w-10 flex-shrink-0 flex items-center justify-center">{servico.icon}</span>
-                    <span className="font-semibold text-gray-800 flex-1 text-lg">{servico.nome}</span>
-                    <div className="flex flex-1 gap-1 justify-end flex-wrap">
+                  <div key={servico.nome} className="border-2 border-gray-100 rounded-2xl p-6 hover:border-blue-200 transition-colors">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="text-2xl text-blue-600">{servico.icon}</span>
+                      <h3 className="text-lg font-semibold text-gray-800">{servico.nome}</h3>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-3">
                       {niveis.map((nivel) => (
                         <button
-                          type="button"
                           key={nivel.label}
+                          type="button"
                           onClick={() => handleNivelClick(servico.nome, nivel.label)}
-                          className={`px-2 py-1 rounded-lg border text-base flex flex-col items-center transition-all duration-200 shadow-sm
-                            ${nivelServicos[servico.nome] === nivel.label ? `${nivel.cor} border-2 border-black scale-110` : "bg-white text-gray-700 border-gray-200 hover:bg-gray-200"}`}
-                          style={{ minWidth: 48 }}
+                          className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
+                            nivelServicos[servico.nome] === nivel.label
+                              ? 'bg-blue-600 text-white shadow-lg transform scale-105'
+                              : nivel.cor + ' hover:shadow-md hover:scale-105'
+                          }`}
                         >
-                          <span className="text-lg">{nivel.emoji}</span>
-                          <span className="text-[10px] font-semibold mt-0.5 leading-tight">{nivel.label}</span>
+                          {nivel.emoji} {nivel.label}
                         </button>
                       ))}
                     </div>
@@ -306,22 +425,92 @@ export default function CadastroProfissional() {
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={carregando}
-              className="bg-black text-white rounded-full px-8 py-4 font-bold text-xl hover:bg-gray-900 transition-all mt-8 shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
-            >
-              {carregando ? (
-                <span className="flex items-center justify-center gap-2">
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Processando...
-                </span>
-              ) : (
-                "Cadastrar"
+            {/* Transporte */}
+            <div className="bg-white rounded-3xl shadow-xl p-8 mb-8 fade-in-element">
+              <h2 className="text-2xl font-bold mb-6 text-blue-600 flex items-center gap-3">
+                🚗 Como você se desloca?
+              </h2>
+              
+              <div className="flex flex-wrap gap-4">
+                {transportes.map((transporte) => (
+                  <label key={transporte} className="cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={meiosTransporte.includes(transporte)}
+                      onChange={() => handleTransporteChange(transporte)}
+                    />
+                    <div className={`px-6 py-3 rounded-xl font-medium border-2 transition-all duration-200 ${
+                      meiosTransporte.includes(transporte)
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-lg transform scale-105'
+                        : 'bg-gray-50 text-gray-700 border-gray-200 hover:border-blue-300 hover:shadow-md hover:scale-105'
+                    }`}>
+                      {transporte}
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Fotos */}
+            <div className="bg-white rounded-3xl shadow-xl p-8 mb-8 fade-in-element">
+              <h2 className="text-2xl font-bold mb-6 text-blue-600 flex items-center gap-3">
+                📸 Fotos dos seus trabalhos
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Adicione fotos dos seus melhores trabalhos para atrair mais clientes:
+              </p>
+              
+              <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:border-blue-400 transition-colors">
+                <input
+                  type="file"
+                  id="fotos"
+                  multiple
+                  accept="image/*"
+                  onChange={handleFotosChange}
+                  className="hidden"
+                />
+                <label htmlFor="fotos" className="cursor-pointer block">
+                  <FaUpload className="mx-auto text-4xl text-gray-400 mb-4" />
+                  <p className="text-lg font-medium text-gray-600 mb-2">
+                    Clique para adicionar fotos
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {fotos.length} foto(s) selecionada(s)
+                  </p>
+                </label>
+              </div>
+              
+              {previewUrls.length > 0 && (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                  {previewUrls.map((url, index) => (
+                    <img
+                      key={index}
+                      src={url}
+                      alt={`Preview ${index + 1}`}
+                      className="w-full h-24 object-cover rounded-xl border-2 border-gray-200"
+                    />
+                  ))}
+                </div>
               )}
-            </button>
+            </div>
+
+            {/* Botão de Envio */}
+            <div className="text-center fade-in-element">
+              <button
+                type="submit"
+                disabled={carregando}
+                className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-12 py-4 rounded-full text-xl font-bold shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {carregando ? "Enviando..." : "🚀 Finalizar Cadastro"}
+              </button>
+              
+              <p className="text-gray-500 mt-4 text-sm">
+                Após o envio, analisaremos suas informações e entraremos em contato
+              </p>
+            </div>
           </form>
-        </div>
+        </section>
       </div>
     </>
   );
