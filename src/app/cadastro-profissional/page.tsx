@@ -597,7 +597,7 @@ export default function CadastroProfissional() {
                     type="text"
                     name="nome"
                     required
-                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
+                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-600"
                     placeholder="Seu nome completo"
                   />
                 </div>
@@ -608,7 +608,7 @@ export default function CadastroProfissional() {
                     type="tel"
                     name="telefone"
                     required
-                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
+                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-600"
                     placeholder="(69) 99999-9999"
                   />
                 </div>
@@ -619,7 +619,7 @@ export default function CadastroProfissional() {
                     type="text"
                     name="profissao"
                     required
-                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
+                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-600"
                     placeholder="Ex: Pedreiro, Pintor, Eletricista..."
                   />
                 </div>
@@ -630,7 +630,7 @@ export default function CadastroProfissional() {
                     type="text"
                     name="bairro"
                     required
-                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
+                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-600"
                     placeholder="Seu bairro em Porto Velho"
                   />
                 </div>
@@ -643,7 +643,7 @@ export default function CadastroProfissional() {
                     max="50"
                     value={experiencia}
                     onChange={(e) => setExperiencia(e.target.value)}
-                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
+                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-600"
                     placeholder="Quantos anos de experiência você tem?"
                   />
                   <p className="text-sm text-gray-500 mt-1">

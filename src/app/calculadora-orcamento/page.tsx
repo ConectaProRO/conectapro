@@ -257,7 +257,7 @@ export default function CalculadoraOrcamento() {
                       value={area}
                       onChange={(e) => setArea(e.target.value)}
                       placeholder="Ex: 50"
-                      className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-lg focus:outline-none focus:border-blue-500 transition-colors"
+                      className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-lg focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-600"
                     />
                   </div>
                   <div className="text-2xl font-bold text-blue-600 mt-8">
