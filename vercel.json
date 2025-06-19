@@ -1,6 +1,0 @@
-{
-  "buildCommand": "cd conectapro && npm run build",
-  "outputDirectory": "conectapro/.next",
-  "devCommand": "cd conectapro && npm run dev",
-  "installCommand": "cd conectapro && npm install"
-} 
