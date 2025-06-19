@@ -428,30 +428,39 @@ export default function AdminPage() {
                   Nenhum cadastro recebido ainda.
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
+                <>
+                  <div className="bg-yellow-50 border border-yellow-200 p-4 m-4 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <span className="text-yellow-600">⚠️</span>
+                      <p className="text-sm text-yellow-800">
+                        <strong>Dica:</strong> Role horizontalmente para ver a coluna &quot;🗑️ AÇÕES&quot; onde estão os botões de exclusão.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="overflow-x-auto">
+                  <table className="w-full min-w-[1200px]">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nome</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Contato</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Profissão/Bairro</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Serviços</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Detalhes</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ações</th>
+                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data</th>
+                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nome</th>
+                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Contato</th>
+                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Profissão/Bairro</th>
+                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Serviços</th>
+                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Detalhes</th>
+                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase w-32">🗑️ AÇÕES</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
                       {cadastros.map((cadastro) => (
                         <tr key={cadastro.id} className="hover:bg-gray-50">
-                          <td className="px-6 py-4 text-sm text-gray-500">
+                          <td className="px-3 py-4 text-sm text-gray-500">
                             {formatarData(cadastro.timestamp)}
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-3 py-4">
                             <div className="font-medium text-gray-900">{cadastro.nome}</div>
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-3 py-4">
                             <a 
                               href={`https://wa.me/55${cadastro.telefone.replace(/\D/g, '')}`}
                               target="_blank"
@@ -461,14 +470,14 @@ export default function AdminPage() {
                               {cadastro.telefone}
                             </a>
                           </td>
-                          <td className="px-6 py-4 text-sm text-gray-500">
+                          <td className="px-3 py-4 text-sm text-gray-500">
                             <div>{cadastro.profissao}</div>
                             <div className="text-xs text-gray-400">{cadastro.bairro}</div>
                           </td>
-                          <td className="px-6 py-4 text-sm text-gray-500 max-w-xs">
+                          <td className="px-3 py-4 text-sm text-gray-500 max-w-xs">
                             <div className="truncate">{getServicosAtivos(cadastro)}</div>
                           </td>
-                          <td className="px-6 py-4 text-xs text-gray-500">
+                          <td className="px-3 py-4 text-xs text-gray-500">
                             <div className="space-y-1">
                               {cadastro.experiencia && (
                                 <div>📈 {cadastro.experiencia} anos</div>
@@ -479,7 +488,7 @@ export default function AdminPage() {
                               <div>📸 {cadastro.temFotoPerfil ? '✅' : '❌'} Perfil | {cadastro.numeroFotosGaleria || 0} fotos</div>
                             </div>
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-3 py-4">
                             <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                               cadastro.status === 'pendente' 
                                 ? 'bg-yellow-100 text-yellow-800'
@@ -491,7 +500,7 @@ export default function AdminPage() {
                                cadastro.status === 'aprovado' ? 'Aprovado' : 'Rejeitado'}
                             </span>
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-3 py-4 w-32">
                             <div className="flex flex-col gap-2">
                               {cadastro.status === 'pendente' && (
                                 <button
@@ -527,7 +536,8 @@ export default function AdminPage() {
                       ))}
                     </tbody>
                   </table>
-                </div>
+                  </div>
+                </>
               )}
             </div>
           ) : (
