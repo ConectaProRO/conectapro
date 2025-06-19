@@ -14,39 +14,13 @@ const servicos = [
   "Alvenaria",
 ];
 
-// Dados fictícios de profissionais
-const profissionais = [
-  {
-    nome: "João Silva",
-    bairro: "Centro",
-    fotos: ["https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80"],
-    servicos: {
-      "Pintura": "Profissional",
-      "Alvenaria": "Meia colher",
-    },
-  },
-  {
-    nome: "Maria Souza",
-    bairro: "Cohab",
-    fotos: [
-      "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=400&q=80",
-      "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80",
-    ],
-    servicos: {
-      "Pintura": "Especialista",
-      "Reboco": "Colher cheia",
-    },
-  },
-  {
-    nome: "Carlos Lima",
-    bairro: "Nova Porto Velho",
-    fotos: [],
-    servicos: {
-      "Metalúrgica e Solda": "Profissional",
-      "Forro de Gesso": "Meia colher",
-    },
-  },
-];
+// Array vazio - profissionais serão adicionados conforme novos cadastros
+const profissionais: Array<{
+  nome: string;
+  bairro: string;
+  fotos: string[];
+  servicos: Record<string, string>;
+}> = [];
 
 export default function BuscarProfissional() {
   const [servicoSelecionado, setServicoSelecionado] = useState<string>("");
@@ -81,7 +55,13 @@ export default function BuscarProfissional() {
           <div>
             <h2 className="text-lg font-semibold mb-4">Profissionais encontrados:</h2>
             {profissionaisFiltrados.length === 0 && (
-              <p className="text-gray-500">Nenhum profissional cadastrado para este serviço.</p>
+              <div className="text-center py-8">
+                <p className="text-gray-500 mb-4">Ainda não há profissionais cadastrados para este serviço.</p>
+                <p className="text-sm text-blue-600">Seja o primeiro a se cadastrar e ganhe mais visibilidade!</p>
+                <Link href="/cadastro-profissional" className="inline-block mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                  Cadastrar como Profissional
+                </Link>
+              </div>
             )}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {profissionaisFiltrados.map((prof, idx) => (
