@@ -219,6 +219,26 @@ export default function AdminPage() {
     }
   };
 
+  const excluirAvaliacao = async (id: string) => {
+    if (!confirm('ATENÇÃO: Tem certeza que deseja EXCLUIR permanentemente esta avaliação? Esta ação não pode ser desfeita!')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/excluir-avaliacao?id=${id}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        setAvaliacoes(prev => prev.filter(a => a.id !== id));
+        alert('Avaliação excluída permanentemente!');
+      }
+    } catch (error) {
+      console.error('Erro ao excluir avaliação:', error);
+      alert('Erro ao excluir avaliação.');
+    }
+  };
+
   const formatarData = (timestamp: string) => {
     return new Date(timestamp).toLocaleString('pt-BR');
   };
@@ -528,32 +548,41 @@ export default function AdminPage() {
                             </span>
                           </td>
                           <td className="px-6 py-4">
-                            <div className="flex gap-2">
+                            <div className="flex flex-col gap-1">
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => setAvaliacaoSelecionada(avaliacao)}
+                                  className="bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700 transition-colors flex items-center gap-1"
+                                >
+                                  <FaEye size={10} />
+                                  Ver
+                                </button>
+                                {avaliacao.status === 'pendente' && (
+                                  <>
+                                    <button
+                                      onClick={() => aprovarAvaliacao(avaliacao.id)}
+                                      className="bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700 transition-colors flex items-center gap-1"
+                                    >
+                                      <FaCheck size={10} />
+                                      Aprovar
+                                    </button>
+                                    <button
+                                      onClick={() => rejeitarAvaliacao(avaliacao.id)}
+                                      className="bg-orange-600 text-white px-2 py-1 rounded text-xs hover:bg-orange-700 transition-colors flex items-center gap-1"
+                                    >
+                                      <FaTimes size={10} />
+                                      Rejeitar
+                                    </button>
+                                  </>
+                                )}
+                              </div>
                               <button
-                                onClick={() => setAvaliacaoSelecionada(avaliacao)}
-                                className="bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700 transition-colors flex items-center gap-1"
+                                onClick={() => excluirAvaliacao(avaliacao.id)}
+                                className="bg-red-600 text-white px-2 py-1 rounded text-xs hover:bg-red-700 transition-colors flex items-center gap-1"
                               >
-                                <FaEye size={10} />
-                                Ver
+                                <FaTrash size={10} />
+                                Excluir
                               </button>
-                              {avaliacao.status === 'pendente' && (
-                                <>
-                                  <button
-                                    onClick={() => aprovarAvaliacao(avaliacao.id)}
-                                    className="bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700 transition-colors flex items-center gap-1"
-                                  >
-                                    <FaCheck size={10} />
-                                    Aprovar
-                                  </button>
-                                  <button
-                                    onClick={() => rejeitarAvaliacao(avaliacao.id)}
-                                    className="bg-red-600 text-white px-2 py-1 rounded text-xs hover:bg-red-700 transition-colors flex items-center gap-1"
-                                  >
-                                    <FaTimes size={10} />
-                                    Rejeitar
-                                  </button>
-                                </>
-                              )}
                             </div>
                           </td>
                         </tr>
@@ -618,22 +647,35 @@ export default function AdminPage() {
                 <p className="font-semibold">{formatarData(avaliacaoSelecionada.timestamp)}</p>
               </div>
 
-              {avaliacaoSelecionada.status === 'pendente' && (
-                <div className="flex gap-3 pt-4">
-                  <button
-                    onClick={() => rejeitarAvaliacao(avaliacaoSelecionada.id)}
-                    className="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition-colors"
-                  >
-                    Rejeitar
-                  </button>
-                  <button
-                    onClick={() => aprovarAvaliacao(avaliacaoSelecionada.id)}
-                    className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors"
-                  >
-                    Aprovar
-                  </button>
-                </div>
-              )}
+              <div className="flex flex-col gap-3 pt-4">
+                {avaliacaoSelecionada.status === 'pendente' && (
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => rejeitarAvaliacao(avaliacaoSelecionada.id)}
+                      className="flex-1 bg-orange-600 text-white py-2 rounded-lg hover:bg-orange-700 transition-colors"
+                    >
+                      Rejeitar
+                    </button>
+                    <button
+                      onClick={() => aprovarAvaliacao(avaliacaoSelecionada.id)}
+                      className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors"
+                    >
+                      Aprovar
+                    </button>
+                  </div>
+                )}
+                
+                <button
+                  onClick={() => {
+                    excluirAvaliacao(avaliacaoSelecionada.id);
+                    setAvaliacaoSelecionada(null);
+                  }}
+                  className="bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2"
+                >
+                  <FaTrash size={14} />
+                  Excluir Permanentemente
+                </button>
+              </div>
             </div>
           </div>
         </div>
