@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { FaUpload, FaPaintRoller, FaTools, FaCogs, FaBrush, FaHardHat, FaWrench, FaCubes, FaThLarge, FaArrowUp, FaUser, FaCamera, FaTimes } from "react-icons/fa";
+import { FaUpload, FaPaintRoller, FaTools, FaCogs, FaBrush, FaHardHat, FaWrench, FaCubes, FaThLarge, FaArrowUp, FaUser, FaCamera, FaTimes, FaStar, FaWhatsapp, FaMapMarkerAlt } from "react-icons/fa";
 
 const servicos = [
   { nome: "Forma e Concretagem", icon: <FaCubes /> },
@@ -31,7 +31,30 @@ const transportes = [
   "Ônibus",
 ];
 
-
+// Avaliações exemplo para demonstrar como o perfil aparecerá
+const avaliacoesExemplo = [
+  { 
+    cliente: "João Silva", 
+    nota: 5, 
+    comentario: "Excelente profissional! Fez um trabalho impecável na minha casa. Muito pontual e caprichoso.", 
+    servico: "Pintura",
+    data: "15/01/2024"
+  },
+  { 
+    cliente: "Maria Santos", 
+    nota: 4, 
+    comentario: "Serviço de qualidade, entregou no prazo combinado. Recomendo!", 
+    servico: "Alvenaria",
+    data: "08/01/2024"
+  },
+  { 
+    cliente: "Carlos Oliveira", 
+    nota: 5, 
+    comentario: "Profissional muito competente. Resolveu um problema que outros não conseguiram.", 
+    servico: "Porcelanato e Cerâmica",
+    data: "03/01/2024"
+  },
+];
 
 // Componente do botão flutuante para voltar ao topo
 function BotaoVoltarTopo() {
@@ -68,6 +91,7 @@ function BotaoVoltarTopo() {
 export default function CadastroProfissional() {
   const [nivelServicos, setNivelServicos] = useState<{ [key: string]: string }>({});
   const [meiosTransporte, setMeiosTransporte] = useState<string[]>([]);
+  const [experiencia, setExperiencia] = useState("");
   
   // Estados para foto de perfil
   const [fotoPerfil, setFotoPerfil] = useState<File | null>(null);
@@ -77,15 +101,24 @@ export default function CadastroProfissional() {
   const [fotosGaleria, setFotosGaleria] = useState<File[]>([]);
   const [previewsGaleria, setPreviewsGaleria] = useState<string[]>([]);
   
+  // Estados para dados do formulário
+  const [dadosFormulario, setDadosFormulario] = useState({
+    nome: "",
+    telefone: "",
+    profissao: "",
+    bairro: ""
+  });
+  
   const [cadastroRealizado, setCadastroRealizado] = useState(false);
   const [carregando, setCarregando] = useState(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  // Progresso atualizado: dados pessoais, foto perfil, serviços, transporte, galeria
+  // Progresso atualizado: dados pessoais, foto perfil, serviços, experiência, transporte, galeria
   const progresso = Math.round(
-    25 + // dados básicos sempre conta
+    20 + // dados básicos sempre conta
     (fotoPerfil ? 15 : 0) + // foto de perfil
-    (Object.keys(nivelServicos).length / servicos.length) * 30 + // serviços
+    (Object.keys(nivelServicos).length / servicos.length) * 25 + // serviços
+    (experiencia ? 10 : 0) + // experiência
     (meiosTransporte.length > 0 ? 15 : 0) + // transporte
     (fotosGaleria.length > 0 ? 15 : 0) // galeria
   );
@@ -167,16 +200,25 @@ export default function CadastroProfissional() {
       // Coletar dados do formulário
       const formData = new FormData(e.target as HTMLFormElement);
       const dadosCadastro = {
-        nome: formData.get('nome'),
-        telefone: formData.get('telefone'),
-        profissao: formData.get('profissao'),
-        bairro: formData.get('bairro'),
+        nome: formData.get('nome') as string,
+        telefone: formData.get('telefone') as string,
+        profissao: formData.get('profissao') as string,
+        bairro: formData.get('bairro') as string,
+        experiencia,
         nivelServicos,
         meiosTransporte,
         temFotoPerfil: fotoPerfil !== null,
         numeroFotosGaleria: fotosGaleria.length,
         timestamp: new Date().toISOString()
       };
+
+      // Armazenar dados para mostrar na tela de sucesso
+      setDadosFormulario({
+        nome: dadosCadastro.nome,
+        telefone: dadosCadastro.telefone,
+        profissao: dadosCadastro.profissao,
+        bairro: dadosCadastro.bairro
+      });
 
       // Enviar para API
       const response = await fetch('/api/cadastro', {
@@ -199,6 +241,19 @@ export default function CadastroProfissional() {
       setCarregando(false);
     }
   };
+
+  // Função para renderizar estrelas
+  const renderEstrelas = (nota: number) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <FaStar
+        key={i}
+        className={`${i < nota ? 'text-yellow-400' : 'text-gray-300'}`}
+      />
+    ));
+  };
+
+  // Calcular média das avaliações exemplo
+  const mediaAvaliacoes = avaliacoesExemplo.reduce((acc, av) => acc + av.nota, 0) / avaliacoesExemplo.length;
 
   // Tela de sucesso
   if (cadastroRealizado) {
@@ -419,6 +474,22 @@ export default function CadastroProfissional() {
                     placeholder="Seu bairro em Porto Velho"
                   />
                 </div>
+                
+                <div className="md:col-span-2">
+                  <label className="block font-semibold mb-2 text-gray-700">Anos de Experiência</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="50"
+                    value={experiencia}
+                    onChange={(e) => setExperiencia(e.target.value)}
+                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
+                    placeholder="Quantos anos de experiência você tem?"
+                  />
+                  <p className="text-sm text-gray-500 mt-1">
+                    Esta informação ajuda os clientes a conhecer seu nível de experiência
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -624,6 +695,10 @@ export default function CadastroProfissional() {
                   <div className="flex justify-between">
                     <span>Foto de perfil:</span>
                     <span>{fotoPerfil ? '✅' : '❌'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Experiência informada:</span>
+                    <span>{experiencia ? '✅' : '❌'}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Serviços informados:</span>
