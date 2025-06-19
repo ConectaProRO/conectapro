@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ConectaPro - Encontre os melhores profissionais da construção civil em Porto Velho, RO. Sem taxa, sem intermediário.">
+  <title>ConectaPro - Porto Velho, RO</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
+    
+    body { 
+      font-family: 'Poppins', sans-serif; 
+      background: #ffffff; 
+      color: #333; 
+      line-height: 1.6;
+    }
+    
+    /* Header */
+    header { 
+      background: linear-gradient(135deg, #0077FF 0%, #0066DD 100%); 
+      padding: 60px 20px; 
+      text-align: center; 
+      color: white; 
+      position: relative;
+      overflow: hidden;
+    }
+    
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+      animation: float 20s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    
+    header .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    
+    header h1 { 
+      font-size: 3rem; 
+      margin-bottom: 20px; 
+      font-weight: 700;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    header p { 
+      font-size: 1.3rem; 
+      margin-bottom: 40px; 
+      font-weight: 300;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    header .buttons { 
+      display: flex; 
+      justify-content: center; 
+      gap: 20px; 
+      flex-wrap: wrap;
+    }
+    
+    header .buttons a { 
+      background: white; 
+      color: #0077FF; 
+      padding: 15px 30px; 
+      border-radius: 50px; 
+      text-decoration: none; 
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    header .buttons a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+    
+    /* Navigation */
+    nav {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      padding: 15px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(0,119,255,0.1);
+    }
+    
+    nav .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+    
+    nav .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #0077FF;
+      text-decoration: none;
+    }
+    
+    nav .nav-links {
+      display: flex;
+      gap: 30px;
+      list-style: none;
+    }
+    
+    nav .nav-links a {
+      color: #333;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    
+    nav .nav-links a:hover {
+      color: #0077FF;
+    }
+    
+    /* Sections */
+    section { 
+      padding: 80px 20px; 
+      max-width: 1200px; 
+      margin: 0 auto; 
+    }
+    
+    section h2 { 
+      font-size: 2.5rem; 
+      color: #0077FF; 
+      margin-bottom: 30px; 
+      text-align: center;
+      font-weight: 700;
+    }
+    
+    section p.subtitle {
+      text-align: center;
+      font-size: 1.2rem;
+      color: #666;
+      margin-bottom: 50px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    /* Cards Grid */
+    .cards { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+      gap: 30px; 
+      margin-top: 50px;
+    }
+    
+    .card { 
+      background: white; 
+      padding: 40px 30px; 
+      border-radius: 20px; 
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid rgba(0,119,255,0.1);
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    
+    .card .icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      display: block;
+    }
+    
+    .card h3 { 
+      color: #0077FF; 
+      margin-bottom: 15px; 
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+    
+    .card p {
+      color: #666;
+      line-height: 1.7;
+    }
+    
+    /* Steps */
+    .steps { 
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px; 
+      margin-top: 50px;
+    }
+    
+    .step { 
+      background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%); 
+      padding: 40px 30px; 
+      border-radius: 20px; 
+      text-align: center;
+      border-left: 5px solid #0077FF;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    .step .number {
+      display: inline-block;
+      background: #0077FF;
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      line-height: 50px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    
+    .step strong { 
+      color: #0077FF; 
+      font-size: 1.2rem;
+      display: block;
+      margin-bottom: 10px;
+    }
+    
+    /* Testimonials */
+    .testimonials { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+      gap: 30px; 
+      margin-top: 50px;
+    }
+    
+    .testimonial { 
+      background: linear-gradient(135deg, #0077FF 0%, #0066DD 100%); 
+      padding: 40px 30px; 
+      border-radius: 20px; 
+      color: white;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,119,255,0.3);
+    }
+    
+    .testimonial::before {
+      content: '"';
+      font-size: 4rem;
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      opacity: 0.3;
+    }
+    
+    .testimonial p {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .testimonial strong {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    
+    /* CTA Section */
+    .cta { 
+      text-align: center; 
+      background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+      border-radius: 30px;
+      padding: 60px 40px;
+      margin: 80px auto;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    }
+    
+    .cta h2 {
+      margin-bottom: 20px;
+    }
+    
+    .cta p {
+      font-size: 1.2rem;
+      color: #666;
+      margin-bottom: 40px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .cta a { 
+      display: inline-block; 
+      background: #0077FF; 
+      color: white; 
+      padding: 18px 35px; 
+      border-radius: 50px; 
+      text-decoration: none; 
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,119,255,0.3);
+    }
+    
+    .cta a:hover {
+      background: #0066DD;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,119,255,0.4);
+    }
+    
+    .cta a.secondary {
+      background: white;
+      color: #0077FF;
+      border: 2px solid #0077FF;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .cta a.secondary:hover {
+      background: #0077FF;
+      color: white;
+    }
+    
+    /* Footer */
+    footer { 
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); 
+      color: white; 
+      text-align: center; 
+      padding: 60px 20px 30px; 
+      margin-top: 80px; 
+    }
+    
+    footer .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    footer .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+    
+    footer a { 
+      color: #bdc3c7; 
+      text-decoration: none; 
+      transition: color 0.3s ease;
+    }
+    
+    footer a:hover {
+      color: white;
+    }
+    
+    footer .copyright {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 20px;
+      margin-top: 20px;
+      color: #bdc3c7;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      header h1 { font-size: 2.2rem; }
+      header p { font-size: 1.1rem; }
+      section h2 { font-size: 2rem; }
+      nav .nav-links { display: none; }
+      .cards { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; }
+      .testimonials { grid-template-columns: 1fr; }
+      .cta-buttons { flex-direction: column; align-items: center; }
+    }
+    
+    /* Scroll behavior */
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    /* Loading animation */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.8s ease forwards;
+    }
+    
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <a href="#" class="logo">ConectaPro</a>
+             <ul class="nav-links">
+         <li><a href="./">Home</a></li>
+         <li><a href="./sobre">Sobre</a></li>
+         <li><a href="./blog">Blog</a></li>
+       </ul>
+    </div>
+  </nav>
+
+  <!-- Header Principal -->
+  <header id="home">
+    <div class="container">
+      <h1 class="fade-in">Encontre Mão de Obra Rápido e Sem Complicação</h1>
+      <p class="fade-in">Conectamos você aos melhores profissionais da construção civil em <strong>Porto Velho - RO</strong> de forma simples, direta e sem burocracia.</p>
+             <div class="buttons fade-in">
+         <a href="./cadastro-profissional">👷 Sou Profissional</a>
+         <a href="./buscar-profissional">🔍 Preciso de um Profissional</a>
+       </div>
+    </div>
+  </header>
+
+  <!-- Por que usar o ConectaPro -->
+  <section>
+    <h2 class="fade-in">Por que usar o ConectaPro?</h2>
+    <p class="subtitle fade-in">A plataforma que conecta quem faz com quem precisa, de forma direta e sem intermediários em Porto Velho.</p>
+    <div class="cards">
+      <div class="card fade-in">
+        <span class="icon">⚡</span>
+        <h3>Fácil de Usar</h3>
+        <p>Encontre ou ofereça serviços em poucos cliques. Interface simples e intuitiva para todos.</p>
+      </div>
+      <div class="card fade-in">
+        <span class="icon">💬</span>
+        <h3>Contato Direto</h3>
+        <p>Fale diretamente com o profissional ou cliente via WhatsApp. Sem intermediários, sem complicação.</p>
+      </div>
+      <div class="card fade-in">
+        <span class="icon">✅</span>
+        <h3>Profissionais Verificados</h3>
+        <p>Trabalhamos para oferecer qualidade e confiança. Profissionais avaliados pela comunidade.</p>
+      </div>
+      <div class="card fade-in">
+        <span class="icon">💰</span>
+        <h3>Sem Taxas Ocultas</h3>
+        <p>100% gratuito para usar. Sem comissão, sem taxas, sem pegadinhas. Economia real para você.</p>
+      </div>
+      <div class="card fade-in">
+        <span class="icon">📍</span>
+        <h3>Atendimento Local</h3>
+        <p>Conectamos você com profissionais da sua região em Porto Velho. Rapidez e proximidade.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Como Funciona -->
+  <section>
+    <h2 class="fade-in">Como Funciona</h2>
+    <p class="subtitle fade-in">Em apenas 3 passos simples, você encontra o profissional ideal ou oferece seus serviços.</p>
+    <div class="steps">
+      <div class="step fade-in">
+        <span class="number">1</span>
+        <strong>Escolha sua Opção</strong>
+        <p>Cadastre-se como profissional para oferecer seus serviços ou como cliente para encontrar quem precisa.</p>
+      </div>
+      <div class="step fade-in">
+        <span class="number">2</span>
+        <strong>Conecte-se</strong>
+        <p>Faça seu pedido ou ofereça seu serviço. Nossa plataforma conecta você automaticamente com a pessoa certa.</p>
+      </div>
+      <div class="step fade-in">
+        <span class="number">3</span>
+        <strong>Feche Negócio</strong>
+        <p>Converse diretamente pelo WhatsApp, acerte os detalhes e feche o negócio. Simples assim!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section>
+    <h2 class="fade-in">Quem Usa, Recomenda</h2>
+    <p class="subtitle fade-in">Veja o que nossos usuários estão falando sobre o ConectaPro em Porto Velho.</p>
+    <div class="testimonials">
+      <div class="testimonial fade-in">
+        <p>Encontrei um pedreiro excelente em menos de uma hora. O trabalho ficou perfeito e o preço justo. Muito fácil de usar!</p>
+        <strong>— Marcos Silva, Vila Tupi</strong>
+      </div>
+      <div class="testimonial fade-in">
+        <p>Graças ao ConectaPro, fechei três reformas esse mês. A plataforma é sensacional para quem é profissional sério.</p>
+        <strong>— Juliana Rodrigues, Pedreiro</strong>
+      </div>
+      <div class="testimonial fade-in">
+        <p>Precisava de um eletricista urgente e encontrei na mesma hora. Profissional pontual e competente. Recomendo!</p>
+        <strong>— Roberto Santos, Centro</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="cta" id="cta">
+    <h2 class="fade-in">Pronto para Começar?</h2>
+    <p class="fade-in">Cadastre-se agora como profissional e receba mais serviços, ou encontre um profissional qualificado para sua obra ou reforma em Porto Velho.</p>
+         <div class="cta-buttons fade-in">
+       <a href="./cadastro-profissional" class="primary">👷 Cadastrar como Profissional</a>
+       <a href="./buscar-profissional" class="secondary">🔍 Buscar Profissional</a>
+     </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+             <div class="footer-links">
+         <a href="./termos">Termos de Uso</a>
+         <a href="./privacidade">Política de Privacidade</a>
+         <a href="./contato">Contato</a>
+         <a href="./blog">Blog</a>
+         <a href="./sobre">Sobre Nós</a>
+       </div>
+      <div class="copyright">
+        <p>© 2024 ConectaPro - Porto Velho, RO. Todos os direitos reservados.</p>
+        <p>Conectando profissionais da construção civil em Rondônia</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Animação de entrada dos elementos
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationDelay = '0.1s';
+          entry.target.classList.add('fade-in');
+        }
+      });
+    }, observerOptions);
+
+    // Observar todos os elementos com a classe fade-in
+    document.querySelectorAll('.fade-in').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Scroll suave para âncoras
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html> 
