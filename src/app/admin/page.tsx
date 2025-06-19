@@ -222,7 +222,7 @@ export default function AdminPage() {
               placeholder="Senha de administrador"
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
-              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-600"
               onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
             />
             <button
