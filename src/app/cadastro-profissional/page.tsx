@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { FaUpload, FaArrowLeft, FaPaintRoller, FaTools, FaCogs, FaBrush, FaHardHat, FaWrench, FaCubes, FaThLarge, FaHome } from "react-icons/fa";
+import { FaUpload, FaPaintRoller, FaTools, FaCogs, FaBrush, FaHardHat, FaWrench, FaCubes, FaThLarge, FaHome } from "react-icons/fa";
 
 const servicos = [
   { nome: "Forma e Concretagem", icon: <FaCubes /> },

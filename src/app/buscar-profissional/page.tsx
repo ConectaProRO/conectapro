@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { FaArrowLeft, FaStar, FaWhatsapp, FaTimes, FaHome } from "react-icons/fa";
+import { FaStar, FaWhatsapp, FaTimes, FaHome } from "react-icons/fa";
 
 const servicos = [
   "Forma e Concretagem",
