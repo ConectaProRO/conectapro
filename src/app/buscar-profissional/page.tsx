@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { FaStar, FaWhatsapp, FaTimes, FaArrowUp, FaSearch, FaMapMarkerAlt, FaPhone, FaUserCheck } from "react-icons/fa";
 
@@ -82,8 +82,7 @@ export default function BuscarProfissional() {
   const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
   const [mostrarModalAvaliacao, setMostrarModalAvaliacao] = useState(false);
   const [mediaAvaliacao, setMediaAvaliacao] = useState({ media: 0, total: 0 });
-  const [carregando, setCarregando] = useState(true);
-  const observerRef = useRef<IntersectionObserver | null>(null);
+
 
   useEffect(() => {
     carregarProfissionais();
