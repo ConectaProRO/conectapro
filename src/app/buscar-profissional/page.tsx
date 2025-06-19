@@ -82,34 +82,11 @@ export default function BuscarProfissional() {
   const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
   const [mostrarModalAvaliacao, setMostrarModalAvaliacao] = useState(false);
   const [mediaAvaliacao, setMediaAvaliacao] = useState({ media: 0, total: 0 });
+  const [carregando, setCarregando] = useState(true);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
     carregarProfissionais();
-    
-    // Configuração do observer para animações
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-
-    observerRef.current = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-fadeInUp');
-        }
-      });
-    }, observerOptions);
-
-    // Observar todos os elementos com a classe de animação
-    const elements = document.querySelectorAll('.fade-in-element');
-    elements.forEach(el => {
-      observerRef.current?.observe(el);
-    });
-
-    return () => {
-      observerRef.current?.disconnect();
-    };
   }, []);
 
   const carregarProfissionais = async () => {
@@ -211,8 +188,8 @@ export default function BuscarProfissional() {
         }
         
         .fade-in-element {
-          opacity: 0;
-          transform: translateY(30px);
+          opacity: 1;
+          transform: translateY(0);
         }
         
         html {
@@ -253,6 +230,7 @@ export default function BuscarProfissional() {
               <div className="text-center mb-8">
                 <h2 className="text-2xl font-bold text-blue-600 mb-4">Qual serviço você precisa?</h2>
                 <p className="text-gray-600">Selecione o tipo de serviço e encontre profissionais qualificados</p>
+
               </div>
               
               <div className="max-w-2xl mx-auto">
@@ -269,6 +247,8 @@ export default function BuscarProfissional() {
               </div>
             </div>
             
+
+
             {/* Resultados da Busca */}
             {servicoSelecionado && (
               <div className="fade-in-element">

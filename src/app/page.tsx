@@ -126,6 +126,12 @@ export default function Home() {
             title="Resultados Rápidos"
             description="Encontre ou seja encontrado em minutos. Nossa plataforma conecta você na hora certa."
           />
+          <BenefitCard 
+            icon="🧮"
+            title="Calculadora de Orçamento"
+            description="Estime custos de materiais e mão de obra antes de contratar. Planeje seu projeto com precisão."
+            link="/calculadora-orcamento"
+          />
         </div>
       </section>
 
@@ -212,14 +218,27 @@ export default function Home() {
 }
 
 // Componente para os cards de benefícios
-function BenefitCard({ icon, title, description }: { icon: string; title: string; description: string }) {
-  return (
+function BenefitCard({ icon, title, description, link }: { icon: string; title: string; description: string; link?: string }) {
+  const content = (
     <div className="bg-white p-8 rounded-2xl text-center shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-blue-100 fade-in-element">
       <div className="text-4xl mb-5">{icon}</div>
       <h3 className="text-xl font-semibold text-blue-600 mb-4">{title}</h3>
       <p className="text-gray-600 leading-relaxed">{description}</p>
+      {link && (
+        <div className="mt-4">
+          <span className="text-blue-600 font-semibold hover:text-blue-700">
+            Experimentar →
+          </span>
+        </div>
+      )}
     </div>
   );
+
+  return link ? (
+    <Link href={link} className="block">
+      {content}
+    </Link>
+  ) : content;
 }
 
 // Componente para os steps
