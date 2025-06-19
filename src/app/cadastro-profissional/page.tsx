@@ -70,6 +70,7 @@ export default function CadastroProfissional() {
   
   const [cadastroRealizado, setCadastroRealizado] = useState(false);
   const [carregando, setCarregando] = useState(false);
+  const [mostrarAviso, setMostrarAviso] = useState(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   // Progresso atualizado: dados pessoais, foto perfil, serviços, experiência, transporte, galeria
@@ -235,7 +236,15 @@ export default function CadastroProfissional() {
       if (response.ok) {
         const result = await response.json();
         console.log('✅ Cadastro enviado com sucesso:', result);
-        setCadastroRealizado(true);
+        
+        // Mostrar aviso imediato
+        setMostrarAviso(true);
+        
+        // Após 3 segundos, mostrar página de sucesso
+        setTimeout(() => {
+          setMostrarAviso(false);
+          setCadastroRealizado(true);
+        }, 3000);
       } else {
         const errorData = await response.json();
         alert('❌ Erro ao enviar cadastro: ' + (errorData.message || 'Tente novamente em alguns minutos.'));
@@ -491,13 +500,90 @@ export default function CadastroProfissional() {
           transform: translateY(30px);
         }
         
-        html {
-          scroll-behavior: smooth;
-        }
+                 html {
+           scroll-behavior: smooth;
+         }
+         
+         @keyframes slideInUp {
+           from {
+             opacity: 0;
+             transform: translateY(100px) scale(0.9);
+           }
+           to {
+             opacity: 1;
+             transform: translateY(0) scale(1);
+           }
+         }
+         
+         @keyframes progressLoad {
+           from {
+             width: 0%;
+           }
+           to {
+             width: 100%;
+           }
+         }
+         
+         .animate-slideInUp {
+           animation: slideInUp 0.5s ease-out forwards;
+         }
+         
+         .animate-progressLoad {
+           animation: progressLoad 3s ease-out forwards;
+         }
       `}</style>
 
       {/* Botão flutuante para voltar ao topo */}
       <BotaoVoltarTopo />
+      
+             {/* Modal de Aviso Imediato */}
+       {mostrarAviso && (
+         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fadeInUp">
+           <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full mx-4 transform animate-slideInUp">
+             <div className="text-center p-8">
+               <div className="text-6xl mb-4 animate-bounce">🎉</div>
+               <h2 className="text-2xl font-bold text-green-600 mb-4">
+                 Cadastro Enviado!
+               </h2>
+               <p className="text-gray-700 mb-4">
+                 Seu cadastro foi <strong>enviado com sucesso</strong> para nossa equipe!
+               </p>
+               <div className="bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg mb-4">
+                 <p className="text-green-700 font-semibold text-sm">
+                   📞 <strong>Entraremos em contato via WhatsApp em até 24 horas</strong>
+                 </p>
+               </div>
+               
+               {/* Resumo rápido */}
+               <div className="bg-blue-50 rounded-lg p-3 mb-4 text-left">
+                 <h4 className="font-semibold text-blue-800 text-sm mb-2">📋 Resumo enviado:</h4>
+                 <div className="text-xs text-blue-700 space-y-1">
+                   <div className="flex justify-between">
+                     <span>Foto de perfil:</span>
+                     <span>{fotoPerfil ? '✅' : '❌'}</span>
+                   </div>
+                   <div className="flex justify-between">
+                     <span>Serviços:</span>
+                     <span>{servicosSelecionados.length}/{servicos.length}</span>
+                   </div>
+                   <div className="flex justify-between">
+                     <span>Fotos de trabalhos:</span>
+                     <span>{fotosGaleria.length} fotos</span>
+                   </div>
+                 </div>
+               </div>
+               
+               {/* Barra de progresso */}
+               <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+                 <div className="bg-green-500 h-2 rounded-full animate-progressLoad" style={{width: '0%'}}></div>
+               </div>
+               <p className="text-xs text-gray-500">
+                 Redirecionando para página de confirmação...
+               </p>
+             </div>
+           </div>
+         </div>
+       )}
       
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
         {/* Header Hero */}
