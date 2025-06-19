@@ -36,8 +36,8 @@ export default function Sobre() {
 
         <h2 className="text-xl font-bold text-blue-900 mt-8 mb-2">Como se cadastrar?</h2>
         <div className="bg-gray-100 rounded-lg px-4 py-4 text-gray-800 text-center mb-6">
-          Entre em contato pelo WhatsApp: <strong>(xx) xxxxx-xxxx</strong><br/>
-          Ou acesse: <strong>www.conectapro.com.br</strong><br/>
+          Entre em contato pelo WhatsApp: <strong>(69) xxxxx-xxxx</strong><br/>
+          Ou acesse: <strong>www.conectapro.app</strong><br/>
           Se preferir, ligue para nossa equipe e ajudamos você a se cadastrar!
         </div>
 
