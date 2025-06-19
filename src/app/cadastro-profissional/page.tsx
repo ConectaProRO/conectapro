@@ -208,7 +208,8 @@ export default function CadastroProfissional() {
         bairro: formData.get('bairro') as string,
         experiencia,
         servicosSelecionados,
-        meiosTransporte,
+        transportes: meiosTransporte, // Compatibilidade
+        meiosTransporte, // Manter compatibilidade
         temFotoPerfil: fotoPerfil !== null,
         numeroFotosGaleria: fotosGaleria.length,
         timestamp: new Date().toISOString()
@@ -228,11 +229,12 @@ export default function CadastroProfissional() {
       if (response.ok) {
         setCadastroRealizado(true);
       } else {
-        alert('Erro ao enviar cadastro. Tente novamente.');
+        const errorData = await response.json();
+        alert('❌ Erro ao enviar cadastro: ' + (errorData.message || 'Tente novamente em alguns minutos.'));
       }
     } catch (error) {
       console.error('Erro:', error);
-      alert('Erro ao enviar cadastro. Verifique sua conexão.');
+      alert('❌ Erro de conexão. Verifique sua internet e tente novamente.');
     } finally {
       setCarregando(false);
     }
@@ -276,7 +278,7 @@ export default function CadastroProfissional() {
                 🎉 Cadastro Enviado com Sucesso!
               </h1>
               <p className="text-xl md:text-2xl mb-10 font-light fade-in-element">
-                Recebemos suas informações e entraremos em contato em breve para ativar seu perfil profissional.
+                Seu cadastro foi enviado para <strong>análise</strong>. Nossa equipe entrará em contato via WhatsApp em até <strong>24 horas</strong> para ativar seu perfil.
               </p>
             </div>
           </header>
@@ -287,9 +289,17 @@ export default function CadastroProfissional() {
               <div className="text-center mb-8">
                 <div className="text-6xl mb-6">📋</div>
                 <h2 className="text-3xl font-bold mb-4 text-blue-600">Obrigado por se cadastrar!</h2>
-                <p className="text-lg text-gray-600">
-                  Seu cadastro está sendo analisado por nossa equipe. Em breve você estará conectado com clientes em Porto Velho.
+                <p className="text-lg text-gray-600 mb-4">
+                  Seu cadastro foi enviado para <strong>análise</strong> por nossa equipe especializada.
                 </p>
+                <div className="bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg">
+                  <p className="text-green-700 font-semibold flex items-center gap-2">
+                    📞 <strong>Entraremos em contato via WhatsApp em até 24 horas</strong>
+                  </p>
+                  <p className="text-green-600 text-sm mt-1">
+                    Após aprovação, você aparecerá nas buscas e começará a receber clientes
+                  </p>
+                </div>
               </div>
               
               <div className="bg-gradient-to-br from-blue-50 to-white rounded-2xl p-6 mb-8 fade-in-element">
