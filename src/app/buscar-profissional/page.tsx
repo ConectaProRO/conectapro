@@ -212,10 +212,10 @@ export default function BuscarProfissional() {
             </p>
             
             <div className="max-w-2xl mx-auto fade-in-element">
-              <div className="bg-white bg-opacity-95 rounded-2xl p-6 backdrop-blur-sm">
-                <div className="flex items-center gap-3 text-lg text-blue-700">
+              <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
+                <div className="flex items-center gap-3 text-lg text-gray-800">
                   <FaSearch className="text-2xl text-blue-600" />
-                  <span className="font-semibold">Profissionais verificados • Contato direto • Avaliações reais</span>
+                  <span className="font-bold">Profissionais verificados • Contato direto • Avaliações reais</span>
                 </div>
               </div>
             </div>
