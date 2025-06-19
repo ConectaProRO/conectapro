@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ConectaPro",
+  title: "ConectaPro - Porto Velho, RO",
   description: "Encontre e conecte profissionais facilmente.",
   manifest: "/manifest.json",
   icons: {
@@ -81,3 +81,4 @@ export default function RootLayout({
 }
 
 // Deploy test - versão atualizada com novo header e blog
+// Última atualização: 2024-12-28 14:30
