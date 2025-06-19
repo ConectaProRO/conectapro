@@ -5,6 +5,7 @@ import "leaflet/dist/leaflet.css";
 import Image from "next/image";
 import Link from "next/link";
 import { Analytics } from '@vercel/analytics/react';
+import MobileMenu from './components/MobileMenu';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -103,55 +104,7 @@ export default function RootLayout({
               </nav>
 
               {/* Menu Mobile */}
-              <div className="md:hidden">
-                <button 
-                  className="text-white p-2 rounded-lg hover:bg-white hover:bg-opacity-20 transition-colors"
-                  onClick={() => {
-                    const menu = document.getElementById('mobile-menu');
-                    menu?.classList.toggle('hidden');
-                  }}
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            {/* Menu Mobile Dropdown */}
-            <div id="mobile-menu" className="hidden md:hidden pb-4">
-              <div className="flex flex-col gap-2">
-                <Link 
-                  href="/" 
-                  className="text-white hover:text-blue-100 font-medium px-4 py-3 rounded-xl transition-all duration-300 hover:bg-white hover:bg-opacity-20"
-                >
-                  🏠 Início
-                </Link>
-                <Link 
-                  href="/buscar-profissional" 
-                  className="text-white hover:text-blue-100 font-medium px-4 py-3 rounded-xl transition-all duration-300 hover:bg-white hover:bg-opacity-20"
-                >
-                  🔍 Buscar Profissionais
-                </Link>
-                <Link 
-                  href="/cadastro-profissional" 
-                  className="text-white hover:text-blue-100 font-medium px-4 py-3 rounded-xl transition-all duration-300 hover:bg-white hover:bg-opacity-20"
-                >
-                  👷 Cadastrar-se
-                </Link>
-                <Link 
-                  href="/sobre" 
-                  className="text-white hover:text-blue-100 font-medium px-4 py-3 rounded-xl transition-all duration-300 hover:bg-white hover:bg-opacity-20"
-                >
-                  ℹ️ Sobre Nós
-                </Link>
-                <Link 
-                  href="/blog" 
-                  className="bg-white text-blue-600 font-semibold px-4 py-3 rounded-xl transition-all duration-300 hover:bg-blue-50"
-                >
-                  📝 Blog
-                </Link>
-              </div>
+              <MobileMenu />
             </div>
           </div>
         </header>
