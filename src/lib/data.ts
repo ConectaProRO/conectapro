@@ -47,6 +47,13 @@ export interface Avaliacao {
   resposta?: string; // Resposta da empresa
 }
 
+// Arrays globais para armazenar dados em memória
+let cadastrosData: Cadastro[] = [];
+let avaliacoesData: Avaliacao[] = [];
+
+// Flag para controlar se já foi inicializado
+let inicializado = false;
+
 // Funções de backup
 function salvarCadastros() {
   try {
@@ -71,8 +78,10 @@ function carregarCadastros() {
     if (fs.existsSync(CADASTROS_FILE)) {
       const data = fs.readFileSync(CADASTROS_FILE, 'utf-8');
       const cadastros = JSON.parse(data);
-      cadastrosData.push(...cadastros);
+      cadastrosData = [...cadastros]; // Substituir ao invés de adicionar
       console.log(`✅ ${cadastros.length} cadastros carregados do backup`);
+    } else {
+      console.log('📁 Arquivo de cadastros não existe, iniciando vazio');
     }
   } catch (error) {
     console.error('❌ Erro ao carregar backup de cadastros:', error);
@@ -84,16 +93,30 @@ function carregarAvaliacoes() {
     if (fs.existsSync(AVALIACOES_FILE)) {
       const data = fs.readFileSync(AVALIACOES_FILE, 'utf-8');
       const avaliacoes = JSON.parse(data);
-      avaliacoesData.push(...avaliacoes);
+      avaliacoesData = [...avaliacoes]; // Substituir ao invés de adicionar
       console.log(`✅ ${avaliacoes.length} avaliações carregadas do backup`);
+    } else {
+      console.log('📁 Arquivo de avaliações não existe, iniciando vazio');
     }
   } catch (error) {
     console.error('❌ Erro ao carregar backup de avaliações:', error);
   }
 }
 
+// Função para garantir inicialização
+function garantirInicializacao() {
+  if (!inicializado) {
+    carregarCadastros();
+    carregarAvaliacoes();
+    inicializado = true;
+    console.log('🔧 Sistema de dados inicializado');
+  }
+}
+
 // Função para exportar todos os dados
 export function exportarDados() {
+  garantirInicializacao();
+  
   const dadosCompletos = {
     exportDate: new Date().toISOString(),
     cadastros: cadastrosData,
@@ -102,7 +125,13 @@ export function exportarDados() {
   };
   
   const exportFile = path.join(DATA_DIR, `backup_completo_${Date.now()}.json`);
-  fs.writeFileSync(exportFile, JSON.stringify(dadosCompletos, null, 2));
+  
+  try {
+    fs.writeFileSync(exportFile, JSON.stringify(dadosCompletos, null, 2));
+    console.log('✅ Backup completo criado:', exportFile);
+  } catch (error) {
+    console.error('❌ Erro ao criar backup completo:', error);
+  }
   
   return {
     arquivo: exportFile,
@@ -110,19 +139,14 @@ export function exportarDados() {
   };
 }
 
-const cadastrosData: Cadastro[] = [];
-const avaliacoesData: Avaliacao[] = [];
-
-// Carregar dados na inicialização
-carregarCadastros();
-carregarAvaliacoes();
-
 export function adicionarCadastro(cadastro: Partial<Cadastro> & { 
   nome: string; 
   telefone: string; 
   profissao: string; 
   bairro: string; 
 }): Cadastro {
+  garantirInicializacao();
+  
   // Compatibilidade com formato antigo e novo
   const novoCadastro: Cadastro = {
     id: Date.now().toString(),
@@ -145,34 +169,45 @@ export function adicionarCadastro(cadastro: Partial<Cadastro> & {
   
   cadastrosData.push(novoCadastro);
   salvarCadastros(); // Backup automático
+  
+  console.log(`✅ Novo cadastro adicionado: ${novoCadastro.nome} (ID: ${novoCadastro.id})`);
   return novoCadastro;
 }
 
 export function obterCadastros(): Cadastro[] {
+  garantirInicializacao();
   return cadastrosData.sort((a, b) => 
     new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   );
 }
 
 export function obterProfissionaisAprovados(): Cadastro[] {
+  garantirInicializacao();
   return cadastrosData.filter(c => c.status === 'aprovado');
 }
 
 export function obterProfissionalPorId(id: string): Cadastro | undefined {
+  garantirInicializacao();
   return cadastrosData.find(c => c.id === id);
 }
 
 export function aprovarProfissional(id: string): boolean {
+  garantirInicializacao();
+  
   const profissional = cadastrosData.find(c => c.id === id);
   if (profissional) {
     profissional.status = 'aprovado';
     salvarCadastros(); // Backup automático
+    console.log(`✅ Profissional aprovado: ${profissional.nome} (ID: ${id})`);
     return true;
   }
+  console.log(`❌ Profissional não encontrado para aprovação: ID ${id}`);
   return false;
 }
 
 export function adicionarAvaliacao(avaliacao: Omit<Avaliacao, 'id' | 'timestamp' | 'status'>): Avaliacao {
+  garantirInicializacao();
+  
   const novaAvaliacao: Avaliacao = {
     ...avaliacao,
     id: Date.now().toString(),
@@ -182,16 +217,21 @@ export function adicionarAvaliacao(avaliacao: Omit<Avaliacao, 'id' | 'timestamp'
   
   avaliacoesData.push(novaAvaliacao);
   salvarAvaliacoes(); // Backup automático
+  
+  console.log(`✅ Nova avaliação adicionada para profissional ID: ${novaAvaliacao.profissionalId}`);
   return novaAvaliacao;
 }
 
 export function obterAvaliacoes(): Avaliacao[] {
+  garantirInicializacao();
   return avaliacoesData.sort((a, b) => 
     new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   );
 }
 
 export function obterAvaliacoesAprovadas(profissionalId?: string): Avaliacao[] {
+  garantirInicializacao();
+  
   let avaliacoes = avaliacoesData.filter(a => a.status === 'aprovada');
   if (profissionalId) {
     avaliacoes = avaliacoes.filter(a => a.profissionalId === profissionalId);
@@ -200,16 +240,22 @@ export function obterAvaliacoesAprovadas(profissionalId?: string): Avaliacao[] {
 }
 
 export function aprovarAvaliacao(id: string): boolean {
+  garantirInicializacao();
+  
   const avaliacao = avaliacoesData.find(a => a.id === id);
   if (avaliacao) {
     avaliacao.status = 'aprovada';
     salvarAvaliacoes(); // Backup automático
+    console.log(`✅ Avaliação aprovada: ID ${id}`);
     return true;
   }
+  console.log(`❌ Avaliação não encontrada para aprovação: ID ${id}`);
   return false;
 }
 
 export function rejeitarAvaliacao(id: string, resposta?: string): boolean {
+  garantirInicializacao();
+  
   const avaliacao = avaliacoesData.find(a => a.id === id);
   if (avaliacao) {
     avaliacao.status = 'rejeitada';
@@ -217,12 +263,16 @@ export function rejeitarAvaliacao(id: string, resposta?: string): boolean {
       avaliacao.resposta = resposta;
     }
     salvarAvaliacoes(); // Backup automático
+    console.log(`✅ Avaliação rejeitada: ID ${id}`);
     return true;
   }
+  console.log(`❌ Avaliação não encontrada para rejeição: ID ${id}`);
   return false;
 }
 
 export function calcularMediaAvaliacoes(profissionalId: string): { media: number, total: number } {
+  garantirInicializacao();
+  
   const avaliacoes = obterAvaliacoesAprovadas(profissionalId);
   if (avaliacoes.length === 0) {
     return { media: 0, total: 0 };
@@ -236,6 +286,8 @@ export function calcularMediaAvaliacoes(profissionalId: string): { media: number
 }
 
 export function obterEstatisticas() {
+  garantirInicializacao();
+  
   const total = cadastrosData.length;
   const pendentes = cadastrosData.filter(c => c.status === 'pendente').length;
   const aprovados = cadastrosData.filter(c => c.status === 'aprovado').length;
