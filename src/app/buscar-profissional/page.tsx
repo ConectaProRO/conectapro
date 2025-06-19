@@ -1,7 +1,7 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { FaStar, FaWhatsapp, FaTimes, FaHome } from "react-icons/fa";
+import { FaStar, FaWhatsapp, FaTimes, FaArrowUp, FaSearch, FaMapMarkerAlt, FaPhone, FaUserCheck } from "react-icons/fa";
 
 const servicos = [
   "Forma e Concretagem",
@@ -44,7 +44,6 @@ function BotaoVoltarTopo() {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Mostra o botão após 300px de scroll
       setMostrar(window.scrollY > 300);
     };
 
@@ -62,10 +61,10 @@ function BotaoVoltarTopo() {
     <div className="fixed bottom-6 right-6 z-50">
       <button
         onClick={voltarAoTopo}
-        className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110"
+        className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 fade-in-element"
         title="Voltar ao topo"
       >
-        <FaHome size={20} />
+        <FaArrowUp size={20} />
       </button>
     </div>
   );
@@ -76,12 +75,36 @@ export default function BuscarProfissional() {
   const [profissionais, setProfissionais] = useState<Profissional[]>([]);
   const [profissionalSelecionado, setProfissionalSelecionado] = useState<Profissional | null>(null);
   const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
-
   const [mostrarModalAvaliacao, setMostrarModalAvaliacao] = useState(false);
   const [mediaAvaliacao, setMediaAvaliacao] = useState({ media: 0, total: 0 });
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
     carregarProfissionais();
+    
+    // Configuração do observer para animações
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    observerRef.current = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-fadeInUp');
+        }
+      });
+    }, observerOptions);
+
+    // Observar todos os elementos com a classe de animação
+    const elements = document.querySelectorAll('.fade-in-element');
+    elements.forEach(el => {
+      observerRef.current?.observe(el);
+    });
+
+    return () => {
+      observerRef.current?.disconnect();
+    };
   }, []);
 
   const carregarProfissionais = async () => {
@@ -153,196 +176,354 @@ export default function BuscarProfissional() {
 
   return (
     <>
+      {/* CSS personalizado para animações */}
+      <style jsx global>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        .animate-fadeInUp {
+          animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        .fade-in-element {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        
+        html {
+          scroll-behavior: smooth;
+        }
+      `}</style>
+
       {/* Botão flutuante para voltar ao topo */}
       <BotaoVoltarTopo />
       
-      <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-white to-gray-100 p-4">
-        
-        <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-2xl mt-10">
-          <h1 className="text-2xl font-bold mb-6 text-center">Buscar Profissional</h1>
-          
-          <div className="mb-6">
-            <label className="block font-semibold mb-2">Qual serviço você precisa?</label>
-            <select
-              className="border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-              value={servicoSelecionado}
-              onChange={e => setServicoSelecionado(e.target.value)}
-            >
-              <option value="">Selecione um serviço</option>
-              {servicos.map((servico) => (
-                <option key={servico} value={servico}>{servico}</option>
-              ))}
-            </select>
-          </div>
-          
-          {servicoSelecionado && (
-            <div>
-              <h2 className="text-lg font-semibold mb-4">Profissionais encontrados:</h2>
-              {profissionaisFiltrados.length === 0 && (
-                <div className="text-center py-8">
-                  <p className="text-gray-500 mb-4">Ainda não há profissionais aprovados para este serviço.</p>
-                  <p className="text-sm text-blue-600">Seja o primeiro a se cadastrar e ganhe mais visibilidade!</p>
-                  <Link href="/cadastro-profissional" className="inline-block mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                    Cadastrar como Profissional
-                  </Link>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+        {/* Header Hero */}
+        <header className="bg-gradient-to-br from-blue-600 to-blue-700 py-16 px-5 text-center text-white relative overflow-hidden">
+          <div className="absolute inset-0 bg-blue-600 opacity-10 animate-pulse"></div>
+          <div className="max-w-4xl mx-auto relative z-10">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 fade-in-element">
+              🔍 Buscar Profissional
+            </h1>
+            <p className="text-xl md:text-2xl mb-10 font-light fade-in-element">
+              Encontre os melhores profissionais da construção em <strong>Porto Velho - RO</strong>
+            </p>
+            
+            <div className="max-w-2xl mx-auto fade-in-element">
+              <div className="bg-white bg-opacity-20 rounded-2xl p-6 backdrop-blur-sm">
+                <div className="flex items-center gap-3 text-lg">
+                  <FaSearch className="text-2xl" />
+                  <span>Profissionais verificados • Contato direto • Avaliações reais</span>
                 </div>
-              )}
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {profissionaisFiltrados.map((prof) => (
-                  <div
-                    key={prof.id}
-                    onClick={() => abrirDetalhes(prof)}
-                    className="bg-gray-50 rounded-xl p-3 border border-gray-200 shadow-sm flex items-center gap-3 min-h-[90px] hover:shadow-lg transition-all cursor-pointer"
-                  >
-                    <div className="flex-shrink-0">
-                      {prof.fotos && prof.fotos.length > 0 ? (
-                        <img src={prof.fotos[0]} alt="Foto serviço" className="w-16 h-16 object-cover rounded-lg border" />
-                      ) : (
-                        <div className="w-16 h-16 flex items-center justify-center bg-gray-200 rounded-lg text-gray-400 text-xs">Sem foto</div>
-                      )}
-                    </div>
-                    
-                    <div className="flex-1 flex flex-col gap-1 min-w-0">
-                      <span className="font-bold text-base text-gray-800 truncate">{prof.nome}</span>
-                      <span className="text-xs text-gray-600 truncate">Bairro: {prof.bairro}</span>
-                      <span className="text-xs text-gray-600 truncate">
-                        Nível: <b>{prof.nivelServicos[servicoSelecionado]}</b>
-                      </span>
-                    </div>
-                    
-                    {prof.fotos && prof.fotos.length > 1 && (
-                      <div className="flex flex-col gap-1 ml-2">
-                        {prof.fotos.slice(1, 3).map((foto, i) => (
-                          <img key={i} src={foto} alt="Foto extra" className="w-7 h-7 object-cover rounded border" />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        </header>
 
-        {/* Modal de Detalhes do Profissional */}
-        {profissionalSelecionado && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              {/* Header */}
-              <div className="sticky top-0 bg-white border-b p-6 flex justify-between items-center rounded-t-2xl">
-                <h2 className="text-2xl font-bold">{profissionalSelecionado.nome}</h2>
-                <button 
-                  onClick={fecharDetalhes}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  <FaTimes size={24} />
-                </button>
+        {/* Formulário de Busca */}
+        <section className="py-12 px-5">
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-white rounded-3xl shadow-xl p-8 mb-8 fade-in-element">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold text-blue-600 mb-4">Qual serviço você precisa?</h2>
+                <p className="text-gray-600">Selecione o tipo de serviço e encontre profissionais qualificados</p>
               </div>
-
-              {/* Conteúdo */}
-              <div className="p-6">
-                {/* Informações básicas */}
-                <div className="mb-6">
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <span className="text-sm text-gray-600">Profissão:</span>
-                      <p className="font-semibold">{profissionalSelecionado.profissao}</p>
-                    </div>
-                    <div>
-                      <span className="text-sm text-gray-600">Bairro:</span>
-                      <p className="font-semibold">{profissionalSelecionado.bairro}</p>
-                    </div>
-                  </div>
+              
+              <div className="max-w-2xl mx-auto">
+                <select
+                  className="w-full border-2 border-gray-200 rounded-xl px-6 py-4 text-lg focus:outline-none focus:border-blue-500 transition-colors bg-white"
+                  value={servicoSelecionado}
+                  onChange={e => setServicoSelecionado(e.target.value)}
+                >
+                  <option value="">📋 Selecione um serviço...</option>
+                  {servicos.map((servico) => (
+                    <option key={servico} value={servico}>{servico}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            
+            {/* Resultados da Busca */}
+            {servicoSelecionado && (
+              <div className="fade-in-element">
+                <div className="bg-white rounded-3xl shadow-xl p-8">
+                  <h2 className="text-2xl font-bold mb-6 text-blue-600 flex items-center gap-3">
+                    🏗️ Profissionais de {servicoSelecionado}
+                  </h2>
                   
-                  {profissionalSelecionado.experiencia && (
-                    <div className="mb-4">
-                      <span className="text-sm text-gray-600">Experiência:</span>
-                      <p className="font-semibold">{profissionalSelecionado.experiencia}</p>
+                  {profissionaisFiltrados.length === 0 ? (
+                    <div className="text-center py-12 bg-gradient-to-br from-gray-50 to-white rounded-2xl">
+                      <div className="text-6xl mb-6">🔍</div>
+                      <h3 className="text-xl font-bold text-gray-600 mb-4">
+                        Ainda não há profissionais aprovados para este serviço
+                      </h3>
+                      <p className="text-gray-500 mb-6">
+                        Seja o primeiro a se cadastrar e ganhe mais visibilidade!
+                      </p>
+                      <Link 
+                        href="/cadastro-profissional" 
+                        className="bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-blue-700 transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300 inline-flex items-center gap-2"
+                      >
+                        👷 Cadastrar como Profissional
+                      </Link>
                     </div>
-                  )}
-                  
-                  {profissionalSelecionado.preco && (
-                    <div className="mb-4">
-                      <span className="text-sm text-gray-600">Faixa de Preço:</span>
-                      <p className="font-semibold">{profissionalSelecionado.preco}</p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Avaliações */}
-                <div className="mb-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <h3 className="text-lg font-semibold">Avaliações</h3>
-                    {mediaAvaliacao.total > 0 && (
-                      <div className="flex items-center gap-1">
-                        <div className="flex">{renderEstrelas(Math.round(mediaAvaliacao.media))}</div>
-                        <span className="text-sm text-gray-600">
-                          {mediaAvaliacao.media.toFixed(1)} ({mediaAvaliacao.total} avaliações)
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  
-                  {avaliacoes.length === 0 ? (
-                    <p className="text-gray-500 text-center py-4">Ainda não há avaliações para este profissional.</p>
                   ) : (
-                    <div className="space-y-4 max-h-60 overflow-y-auto">
-                      {avaliacoes.map((avaliacao) => (
-                        <div key={avaliacao.id} className="border rounded-lg p-4 bg-gray-50">
-                          <div className="flex justify-between items-start mb-2">
-                            <div className="flex items-center gap-2">
-                              <span className="font-semibold">{avaliacao.clienteNome}</span>
-                              <div className="flex">{renderEstrelas(avaliacao.nota)}</div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {profissionaisFiltrados.map((prof) => (
+                        <div
+                          key={prof.id}
+                          onClick={() => abrirDetalhes(prof)}
+                          className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 border-2 border-gray-100 shadow-lg hover:shadow-xl hover:border-blue-200 transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
+                        >
+                          <div className="flex items-start gap-4">
+                            <div className="flex-shrink-0">
+                              {prof.fotos && prof.fotos.length > 0 ? (
+                                <img 
+                                  src={prof.fotos[0]} 
+                                  alt="Foto serviço" 
+                                  className="w-20 h-20 object-cover rounded-xl border-2 border-blue-200" 
+                                />
+                              ) : (
+                                <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center">
+                                  <FaUserCheck className="text-3xl text-blue-600" />
+                                </div>
+                              )}
                             </div>
-                            <span className="text-xs text-gray-500">{formatarData(avaliacao.timestamp)}</span>
+                            
+                            <div className="flex-1">
+                              <h3 className="text-xl font-bold text-gray-800 mb-2">{prof.nome}</h3>
+                              <p className="text-blue-600 font-semibold mb-1">{prof.profissao}</p>
+                              
+                              <div className="flex items-center gap-2 text-gray-600 mb-2">
+                                <FaMapMarkerAlt className="text-blue-500" />
+                                <span>{prof.bairro}</span>
+                              </div>
+                              
+                              <div className="flex items-center gap-2 text-gray-600 mb-3">
+                                <FaPhone className="text-green-500" />
+                                <span>{prof.telefone}</span>
+                              </div>
+                              
+                              {prof.nivelServicos[servicoSelecionado] && (
+                                <div className="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
+                                  📊 {prof.nivelServicos[servicoSelecionado]}
+                                </div>
+                              )}
+                            </div>
                           </div>
-                          <p className="text-sm text-gray-700 mb-1">{avaliacao.comentario}</p>
-                          <p className="text-xs text-gray-500">Serviço: {avaliacao.servico}</p>
+                          
+                          <div className="mt-4 pt-4 border-t border-gray-200">
+                            <button className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+                              👁️ Ver Detalhes Completos
+                            </button>
+                          </div>
                         </div>
                       ))}
                     </div>
                   )}
-                  
-                  <div className="mt-4 text-center">
-                    <button
-                      onClick={() => setMostrarModalAvaliacao(true)}
-                      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
-                    >
-                      Deixar Avaliação
-                    </button>
+                </div>
+              </div>
+            )}
+            
+            {/* Call to Action para Profissionais */}
+            {!servicoSelecionado && (
+              <div className="bg-white rounded-3xl shadow-xl p-8 text-center fade-in-element">
+                <div className="text-6xl mb-6">👷</div>
+                <h2 className="text-2xl font-bold text-blue-600 mb-4">
+                  Você é um profissional da construção?
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  Cadastre-se gratuitamente e conecte-se com clientes em Porto Velho
+                </p>
+                <Link 
+                  href="/cadastro-profissional" 
+                  className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 inline-flex items-center gap-2"
+                >
+                  🚀 Cadastrar Agora
+                </Link>
+              </div>
+            )}
+          </div>
+        </section>
+      </div>
+
+      {/* Modal de Detalhes do Profissional */}
+      {profissionalSelecionado && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-t-3xl">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h2 className="text-2xl font-bold mb-2">{profissionalSelecionado.nome}</h2>
+                  <p className="text-blue-100 text-lg">{profissionalSelecionado.profissao}</p>
+                </div>
+                <button
+                  onClick={fecharDetalhes}
+                  className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-colors"
+                >
+                  <FaTimes size={20} />
+                </button>
+              </div>
+            </div>
+            
+            <div className="p-6">
+              {/* Informações do Profissional */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div className="bg-gray-50 rounded-2xl p-6">
+                  <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    📍 Informações de Contato
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <FaMapMarkerAlt className="text-blue-500" />
+                      <span><strong>Bairro:</strong> {profissionalSelecionado.bairro}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <FaWhatsapp className="text-green-500" />
+                      <span><strong>WhatsApp:</strong> {profissionalSelecionado.telefone}</span>
+                    </div>
                   </div>
                 </div>
-
-                {/* Contato */}
-                <div className="border-t pt-6">
-                  <a
-                    href={`https://wa.me/55${profissionalSelecionado.telefone.replace(/\D/g, '')}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full bg-green-500 text-white py-3 px-6 rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2 font-semibold"
-                  >
-                    <FaWhatsapp size={20} />
-                    Entrar em Contato via WhatsApp
-                  </a>
+                
+                <div className="bg-gray-50 rounded-2xl p-6">
+                  <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    🚗 Transporte
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {profissionalSelecionado.transportes.map((transporte) => (
+                      <span key={transporte} className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
+                        {transporte}
+                      </span>
+                    ))}
+                  </div>
                 </div>
+              </div>
+              
+              {/* Nível de Serviços */}
+              <div className="bg-gray-50 rounded-2xl p-6 mb-8">
+                <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                  🔧 Especialidades
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {Object.entries(profissionalSelecionado.nivelServicos).map(([servico, nivel]) => (
+                    nivel !== "Não faço" && (
+                      <div key={servico} className="flex justify-between items-center bg-white p-3 rounded-xl">
+                        <span className="font-medium">{servico}</span>
+                        <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
+                          {nivel}
+                        </span>
+                      </div>
+                    )
+                  ))}
+                </div>
+              </div>
+              
+              {/* Fotos */}
+              {profissionalSelecionado.fotos && profissionalSelecionado.fotos.length > 0 && (
+                <div className="mb-8">
+                  <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    📸 Portfólio
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {profissionalSelecionado.fotos.map((foto, index) => (
+                      <img
+                        key={index}
+                        src={foto}
+                        alt={`Trabalho ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-xl border-2 border-gray-200"
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {/* Avaliações */}
+              <div className="mb-8">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                    ⭐ Avaliações
+                  </h3>
+                  <button
+                    onClick={() => setMostrarModalAvaliacao(true)}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors"
+                  >
+                    + Avaliar
+                  </button>
+                </div>
+                
+                {mediaAvaliacao.total > 0 && (
+                  <div className="bg-yellow-50 rounded-xl p-4 mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex">{renderEstrelas(Math.round(mediaAvaliacao.media))}</div>
+                      <span className="font-bold text-lg">{mediaAvaliacao.media.toFixed(1)}</span>
+                      <span className="text-gray-600">({mediaAvaliacao.total} avaliações)</span>
+                    </div>
+                  </div>
+                )}
+                
+                <div className="space-y-4 max-h-60 overflow-y-auto">
+                  {avaliacoes.length > 0 ? (
+                    avaliacoes.map((avaliacao) => (
+                      <div key={avaliacao.id} className="bg-white border border-gray-200 rounded-xl p-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <div className="flex items-center gap-2">
+                            <div className="flex">{renderEstrelas(avaliacao.nota)}</div>
+                            <span className="font-medium">{avaliacao.clienteNome}</span>
+                          </div>
+                          <span className="text-sm text-gray-500">{formatarData(avaliacao.timestamp)}</span>
+                        </div>
+                        <p className="text-gray-700 mb-1">{avaliacao.comentario}</p>
+                        <p className="text-sm text-blue-600">Serviço: {avaliacao.servico}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-500 text-center py-8">Ainda não há avaliações para este profissional.</p>
+                  )}
+                </div>
+              </div>
+              
+              {/* Botões de Ação */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <a
+                  href={`https://wa.me/55${profissionalSelecionado.telefone.replace(/\D/g, '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 bg-green-600 text-white py-4 rounded-xl font-semibold hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+                >
+                  <FaWhatsapp /> Conversar no WhatsApp
+                </a>
+                <button
+                  onClick={fecharDetalhes}
+                  className="flex-1 bg-gray-200 text-gray-700 py-4 rounded-xl font-semibold hover:bg-gray-300 transition-colors"
+                >
+                  Fechar
+                </button>
               </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Modal de Avaliação */}
-        {mostrarModalAvaliacao && profissionalSelecionado && (
-          <ModalAvaliacao 
-            profissional={profissionalSelecionado}
-            onClose={() => setMostrarModalAvaliacao(false)}
-            onSuccess={() => {
-              setMostrarModalAvaliacao(false);
-              carregarAvaliacoes(profissionalSelecionado.id);
-            }}
-          />
-        )}
-      </div>
+      {/* Modal de Avaliação */}
+      {mostrarModalAvaliacao && profissionalSelecionado && (
+        <ModalAvaliacao
+          profissional={profissionalSelecionado}
+          onClose={() => setMostrarModalAvaliacao(false)}
+          onSuccess={() => {
+            setMostrarModalAvaliacao(false);
+            carregarAvaliacoes(profissionalSelecionado.id);
+          }}
+        />
+      )}
     </>
   );
 }
@@ -357,13 +538,10 @@ function ModalAvaliacao({
   onClose: () => void;
   onSuccess: () => void;
 }) {
-  const [formData, setFormData] = useState({
-    clienteNome: '',
-    clienteTelefone: '',
-    nota: 5,
-    comentario: '',
-    servico: ''
-  });
+  const [nota, setNota] = useState(5);
+  const [comentario, setComentario] = useState('');
+  const [clienteNome, setClienteNome] = useState('');
+  const [servicoAvaliado, setServicoAvaliado] = useState('');
   const [enviando, setEnviando] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -375,18 +553,22 @@ function ModalAvaliacao({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
-          profissionalId: profissional.id
-        })
+          profissionalId: profissional.id,
+          clienteNome,
+          nota,
+          comentario,
+          servico: servicoAvaliado,
+        }),
       });
 
       if (response.ok) {
+        alert('Avaliação enviada com sucesso!');
         onSuccess();
-        alert('Avaliação enviada! Será analisada antes da publicação.');
+      } else {
+        alert('Erro ao enviar avaliação. Tente novamente.');
       }
     } catch (error) {
-      console.error('Erro ao enviar avaliação:', error);
-      alert('Erro ao enviar avaliação. Tente novamente.');
+      alert('Erro ao enviar avaliação. Verifique sua conexão.');
     } finally {
       setEnviando(false);
     }
@@ -394,97 +576,87 @@ function ModalAvaliacao({
 
   const renderEstrelas = (nota: number) => {
     return Array.from({ length: 5 }, (_, i) => (
-      <FaStar 
+      <FaStar
         key={i}
-        onClick={() => setFormData(prev => ({ ...prev, nota: i + 1 }))}
-        className={`cursor-pointer ${i < nota ? "text-yellow-400" : "text-gray-300"}`}
-        size={24}
+        className={`cursor-pointer text-2xl transition-colors ${
+          i < nota ? "text-yellow-400" : "text-gray-300"
+        }`}
+        onClick={() => setNota(i + 1)}
       />
     ));
   };
 
+  const servicosDisponiveis = Object.entries(profissional.nivelServicos)
+    .filter(([, nivel]) => nivel !== "Não faço")
+    .map(([servico]) => servico);
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
-        <div className="p-6 border-b">
-          <div className="flex justify-between items-center">
-            <h3 className="text-xl font-bold">Avaliar {profissional.nome}</h3>
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-              <FaTimes size={20} />
-            </button>
-          </div>
+      <div className="bg-white rounded-3xl max-w-2xl w-full p-8">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-blue-600">Avaliar {profissional.nome}</h2>
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+            <FaTimes size={24} />
+          </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-semibold mb-2">Seu nome:</label>
+            <label className="block font-semibold mb-2">Seu nome</label>
             <input
               type="text"
+              value={clienteNome}
+              onChange={(e) => setClienteNome(e.target.value)}
+              className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
               required
-              value={formData.clienteNome}
-              onChange={(e) => setFormData(prev => ({ ...prev, clienteNome: e.target.value }))}
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2">Seu telefone:</label>
-            <input
-              type="tel"
-              required
-              value={formData.clienteTelefone}
-              onChange={(e) => setFormData(prev => ({ ...prev, clienteTelefone: e.target.value }))}
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold mb-2">Qual serviço foi realizado?</label>
+            <label className="block font-semibold mb-2">Serviço avaliado</label>
             <select
+              value={servicoAvaliado}
+              onChange={(e) => setServicoAvaliado(e.target.value)}
+              className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
               required
-              value={formData.servico}
-              onChange={(e) => setFormData(prev => ({ ...prev, servico: e.target.value }))}
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
               <option value="">Selecione o serviço</option>
-              {servicos.map(servico => (
+              {servicosDisponiveis.map((servico) => (
                 <option key={servico} value={servico}>{servico}</option>
               ))}
             </select>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2">Sua avaliação:</label>
-            <div className="flex gap-1 mb-2">
-              {renderEstrelas(formData.nota)}
-            </div>
+            <label className="block font-semibold mb-2">Nota</label>
+            <div className="flex gap-1">{renderEstrelas(nota)}</div>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2">Comentário:</label>
+            <label className="block font-semibold mb-2">Comentário</label>
             <textarea
-              required
-              value={formData.comentario}
-              onChange={(e) => setFormData(prev => ({ ...prev, comentario: e.target.value }))}
-              className="w-full border rounded-lg px-3 py-2 h-20 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              value={comentario}
+              onChange={(e) => setComentario(e.target.value)}
+              className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors h-32 resize-none"
               placeholder="Conte como foi sua experiência..."
+              required
             />
           </div>
 
-          <div className="flex gap-3 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              Cancelar
-            </button>
+          <div className="flex gap-4">
             <button
               type="submit"
               disabled={enviando}
-              className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+              className="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50"
             >
               {enviando ? 'Enviando...' : 'Enviar Avaliação'}
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300 transition-colors"
+            >
+              Cancelar
             </button>
           </div>
         </form>
