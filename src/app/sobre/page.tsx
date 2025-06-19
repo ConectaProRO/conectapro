@@ -1,16 +1,11 @@
 "use client";
 import Image from "next/image";
-import Link from "next/link";
-import { FaHome } from "react-icons/fa";
 
 export default function Sobre() {
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-50 py-10 px-2">
-      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8 border border-gray-100 relative">
-        <Link href="/" className="absolute left-4 top-4 flex items-center gap-2 text-blue-700 hover:text-blue-900 font-semibold text-lg px-3 py-2 rounded-full bg-blue-50 shadow transition-all">
-          <FaHome size={20} /> Início
-        </Link>
-        <div className="flex flex-col items-center mb-6 mt-2">
+      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+        <div className="flex flex-col items-center mb-6">
           <Image src="/conectapro.png" alt="Logo ConectaPro" width={120} height={120} className="mb-2" />
           <div className="text-blue-700 font-semibold text-lg text-center">Conectando profissionais a novas oportunidades</div>
         </div>

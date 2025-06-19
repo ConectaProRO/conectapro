@@ -31,8 +31,8 @@ const transportes = [
   "Ônibus",
 ];
 
-// Componente do botão flutuante
-function BotaoInicio() {
+// Componente do botão flutuante para voltar ao topo
+function BotaoVoltarTopo() {
   const [mostrar, setMostrar] = useState(false);
 
   useEffect(() => {
@@ -52,24 +52,14 @@ function BotaoInicio() {
   if (!mostrar) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2">
-      {/* Botão Voltar ao Topo */}
+    <div className="fixed bottom-6 right-6 z-50">
       <button
         onClick={voltarAoTopo}
         className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110"
         title="Voltar ao topo"
       >
-        <FaArrowLeft className="rotate-90" size={20} />
-      </button>
-      
-      {/* Botão Início */}
-      <Link
-        href="/"
-        className="bg-gray-800 hover:bg-gray-900 text-white p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110"
-        title="Ir para página inicial"
-      >
         <FaHome size={20} />
-      </Link>
+      </button>
     </div>
   );
 }
@@ -197,17 +187,12 @@ export default function CadastroProfissional() {
 
   return (
     <>
-      {/* Botão flutuante */}
-      <BotaoInicio />
+      {/* Botão flutuante para voltar ao topo */}
+      <BotaoVoltarTopo />
       
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-        <div className="w-full max-w-2xl flex items-center mb-4 mt-8">
-          <Link href="/" className="flex items-center gap-2 text-gray-700 hover:text-black font-semibold text-lg px-4 py-2 rounded-full bg-white shadow border border-gray-200 transition-all">
-            <FaArrowLeft /> Voltar
-          </Link>
-        </div>
         {/* Barra de progresso */}
-        <div className="w-full max-w-2xl mb-8">
+        <div className="w-full max-w-2xl mb-8 mt-8">
           <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
             <div className="h-2 bg-black transition-all duration-500 rounded-full" style={{ width: `${progresso}%` }} />
           </div>
