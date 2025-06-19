@@ -24,6 +24,7 @@ export interface Cadastro {
   transportes: string[];
   totalFotos: number;
   fotos?: string[];
+  fotoPerfil?: string; // Foto de perfil em base64
   descricao?: string;
   experiencia?: string;
   preco?: string;
@@ -162,6 +163,9 @@ export function adicionarCadastro(cadastro: Partial<Cadastro> & {
     experiencia: cadastro.experiencia,
     temFotoPerfil: cadastro.temFotoPerfil,
     numeroFotosGaleria: cadastro.numeroFotosGaleria,
+    // Salvar as imagens
+    fotoPerfil: cadastro.fotoPerfil,
+    fotos: cadastro.fotos || [],
     // Manter compatibilidade
     nivelServicos: cadastro.nivelServicos,
     meiosTransporte: cadastro.meiosTransporte

@@ -24,6 +24,7 @@ interface Profissional {
   transportes: string[];
   totalFotos: number;
   fotos?: string[];
+  fotoPerfil?: string; // Foto de perfil em base64
   descricao?: string;
   experiencia?: string;
   preco?: string;
@@ -282,7 +283,13 @@ export default function BuscarProfissional() {
                         >
                           <div className="flex items-start gap-4">
                             <div className="flex-shrink-0">
-                              {prof.fotos && prof.fotos.length > 0 ? (
+                              {prof.fotoPerfil ? (
+                                <img 
+                                  src={prof.fotoPerfil} 
+                                  alt="Foto de perfil" 
+                                  className="w-20 h-20 object-cover rounded-xl border-2 border-blue-200" 
+                                />
+                              ) : prof.fotos && prof.fotos.length > 0 ? (
                                 <img 
                                   src={prof.fotos[0]} 
                                   alt="Foto serviço" 
@@ -372,6 +379,22 @@ export default function BuscarProfissional() {
             </div>
             
             <div className="p-6">
+              {/* Foto de Perfil */}
+              {profissionalSelecionado.fotoPerfil && (
+                <div className="mb-8 text-center">
+                  <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center justify-center gap-2">
+                    👤 Foto de Perfil
+                  </h3>
+                  <div className="flex justify-center">
+                    <img
+                      src={profissionalSelecionado.fotoPerfil}
+                      alt="Foto de perfil"
+                      className="w-32 h-32 object-cover rounded-full border-4 border-blue-200 shadow-lg"
+                    />
+                  </div>
+                </div>
+              )}
+              
               {/* Informações do Profissional */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div className="bg-gray-50 rounded-2xl p-6">
