@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { FaUpload, FaPaintRoller, FaTools, FaCogs, FaBrush, FaHardHat, FaWrench, FaCubes, FaThLarge, FaArrowUp } from "react-icons/fa";
+import { FaUpload, FaPaintRoller, FaTools, FaCogs, FaBrush, FaHardHat, FaWrench, FaCubes, FaThLarge, FaArrowUp, FaUser, FaCamera, FaTimes } from "react-icons/fa";
 
 const servicos = [
   { nome: "Forma e Concretagem", icon: <FaCubes /> },
@@ -66,17 +66,26 @@ function BotaoVoltarTopo() {
 export default function CadastroProfissional() {
   const [nivelServicos, setNivelServicos] = useState<{ [key: string]: string }>({});
   const [meiosTransporte, setMeiosTransporte] = useState<string[]>([]);
-  const [fotos, setFotos] = useState<File[]>([]);
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  
+  // Estados para foto de perfil
+  const [fotoPerfil, setFotoPerfil] = useState<File | null>(null);
+  const [previewFotoPerfil, setPreviewFotoPerfil] = useState<string>("");
+  
+  // Estados para galeria de serviços
+  const [fotosGaleria, setFotosGaleria] = useState<File[]>([]);
+  const [previewsGaleria, setPreviewsGaleria] = useState<string[]>([]);
+  
   const [cadastroRealizado, setCadastroRealizado] = useState(false);
   const [carregando, setCarregando] = useState(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  // Progresso simples: 1/3 dados, 2/3 serviços, 3/3 fotos
+  // Progresso atualizado: dados pessoais, foto perfil, serviços, transporte, galeria
   const progresso = Math.round(
-    (Object.keys(nivelServicos).length / servicos.length) * 50 +
-    (fotos.length > 0 ? 25 : 0) +
-    (meiosTransporte.length > 0 ? 25 : 0)
+    25 + // dados básicos sempre conta
+    (fotoPerfil ? 15 : 0) + // foto de perfil
+    (Object.keys(nivelServicos).length / servicos.length) * 30 + // serviços
+    (meiosTransporte.length > 0 ? 15 : 0) + // transporte
+    (fotosGaleria.length > 0 ? 15 : 0) // galeria
   );
 
   useEffect(() => {
@@ -117,12 +126,35 @@ export default function CadastroProfissional() {
     );
   };
 
-  const handleFotosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handler para foto de perfil
+  const handleFotoPerfilChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setFotoPerfil(file);
+      setPreviewFotoPerfil(URL.createObjectURL(file));
+    }
+  };
+
+  // Handler para galeria de serviços
+  const handleGaleriaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
-      setFotos(filesArray);
-      setPreviewUrls(filesArray.map(file => URL.createObjectURL(file)));
+      setFotosGaleria(prev => [...prev, ...filesArray]);
+      const newPreviews = filesArray.map(file => URL.createObjectURL(file));
+      setPreviewsGaleria(prev => [...prev, ...newPreviews]);
     }
+  };
+
+  // Remover foto da galeria
+  const removerFotoGaleria = (index: number) => {
+    setFotosGaleria(prev => prev.filter((_, i) => i !== index));
+    setPreviewsGaleria(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // Remover foto de perfil
+  const removerFotoPerfil = () => {
+    setFotoPerfil(null);
+    setPreviewFotoPerfil("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -139,7 +171,8 @@ export default function CadastroProfissional() {
         bairro: formData.get('bairro'),
         nivelServicos,
         meiosTransporte,
-        numeroFotos: fotos.length,
+        temFotoPerfil: fotoPerfil !== null,
+        numeroFotosGaleria: fotosGaleria.length,
         timestamp: new Date().toISOString()
       };
 
@@ -387,6 +420,64 @@ export default function CadastroProfissional() {
               </div>
             </div>
 
+            {/* Foto de Perfil */}
+            <div className="bg-white rounded-3xl shadow-xl p-8 mb-8 fade-in-element">
+              <h2 className="text-2xl font-bold mb-6 text-blue-600 flex items-center gap-3">
+                📷 Foto de Perfil
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Adicione uma foto sua para que os clientes conheçam o profissional por trás do serviço:
+              </p>
+              
+              <div className="flex flex-col md:flex-row gap-6 items-center">
+                {/* Preview da foto */}
+                <div className="flex-shrink-0">
+                  {previewFotoPerfil ? (
+                    <div className="relative">
+                      <img
+                        src={previewFotoPerfil}
+                        alt="Preview foto de perfil"
+                        className="w-32 h-32 object-cover rounded-full border-4 border-blue-200 shadow-lg"
+                      />
+                      <button
+                        type="button"
+                        onClick={removerFotoPerfil}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-colors shadow-lg"
+                      >
+                        <FaTimes size={12} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="w-32 h-32 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full border-4 border-blue-200 flex items-center justify-center shadow-lg">
+                      <FaUser className="text-4xl text-blue-500" />
+                    </div>
+                  )}
+                </div>
+                
+                {/* Upload */}
+                <div className="flex-1">
+                  <div className="border-2 border-dashed border-gray-300 rounded-2xl p-6 text-center hover:border-blue-400 transition-colors">
+                    <input
+                      type="file"
+                      id="fotoPerfil"
+                      accept="image/*"
+                      onChange={handleFotoPerfilChange}
+                      className="hidden"
+                    />
+                    <label htmlFor="fotoPerfil" className="cursor-pointer block">
+                      <FaCamera className="mx-auto text-3xl text-gray-400 mb-3" />
+                      <p className="text-lg font-medium text-gray-600 mb-2">
+                        {fotoPerfil ? 'Alterar foto de perfil' : 'Clique para adicionar sua foto'}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        Formatos aceitos: JPG, PNG (máx. 5MB)
+                      </p>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Serviços */}
             <div className="bg-white rounded-3xl shadow-xl p-8 mb-8 fade-in-element">
               <h2 className="text-2xl font-bold mb-6 text-blue-600 flex items-center gap-3">
@@ -452,44 +543,59 @@ export default function CadastroProfissional() {
               </div>
             </div>
 
-            {/* Fotos */}
+            {/* Galeria de Serviços */}
             <div className="bg-white rounded-3xl shadow-xl p-8 mb-8 fade-in-element">
               <h2 className="text-2xl font-bold mb-6 text-blue-600 flex items-center gap-3">
-                📸 Fotos dos seus trabalhos
+                🖼️ Galeria de Trabalhos
               </h2>
               <p className="text-gray-600 mb-6">
-                Adicione fotos dos seus melhores trabalhos para atrair mais clientes:
+                Mostre seus melhores trabalhos! Quanto mais fotos, maior a confiança dos clientes:
               </p>
               
-              <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:border-blue-400 transition-colors">
+              {/* Upload de fotos */}
+              <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:border-blue-400 transition-colors mb-6">
                 <input
                   type="file"
-                  id="fotos"
+                  id="fotosGaleria"
                   multiple
                   accept="image/*"
-                  onChange={handleFotosChange}
+                  onChange={handleGaleriaChange}
                   className="hidden"
                 />
-                <label htmlFor="fotos" className="cursor-pointer block">
+                <label htmlFor="fotosGaleria" className="cursor-pointer block">
                   <FaUpload className="mx-auto text-4xl text-gray-400 mb-4" />
                   <p className="text-lg font-medium text-gray-600 mb-2">
-                    Clique para adicionar fotos
+                    Clique para adicionar fotos dos seus trabalhos
                   </p>
                   <p className="text-sm text-gray-500">
-                    {fotos.length} foto(s) selecionada(s)
+                    {fotosGaleria.length} foto(s) adicionada(s) • Formatos: JPG, PNG
                   </p>
                 </label>
               </div>
               
-              {previewUrls.length > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-                  {previewUrls.map((url, index) => (
-                    <img
-                      key={index}
-                      src={url}
-                      alt={`Preview ${index + 1}`}
-                      className="w-full h-24 object-cover rounded-xl border-2 border-gray-200"
-                    />
+              {/* Preview das fotos */}
+              {previewsGaleria.length > 0 && (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {previewsGaleria.map((preview, index) => (
+                    <div key={index} className="relative group">
+                      <img
+                        src={preview}
+                        alt={`Trabalho ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-xl border-2 border-gray-200 shadow-md"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removerFotoGaleria(index)}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors shadow-lg opacity-0 group-hover:opacity-100"
+                      >
+                        <FaTimes size={10} />
+                      </button>
+                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded-xl flex items-center justify-center">
+                        <span className="text-white font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                          Remover
+                        </span>
+                      </div>
+                    </div>
                   ))}
                 </div>
               )}
@@ -508,6 +614,29 @@ export default function CadastroProfissional() {
               <p className="text-gray-500 mt-4 text-sm">
                 Após o envio, analisaremos suas informações e entraremos em contato
               </p>
+              
+              {/* Resumo do cadastro */}
+              <div className="mt-6 p-4 bg-blue-50 rounded-2xl text-left max-w-md mx-auto">
+                <h3 className="font-bold text-blue-800 mb-2 text-center">📋 Resumo do seu cadastro:</h3>
+                <div className="space-y-1 text-sm text-blue-700">
+                  <div className="flex justify-between">
+                    <span>Foto de perfil:</span>
+                    <span>{fotoPerfil ? '✅' : '❌'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Serviços informados:</span>
+                    <span>{Object.keys(nivelServicos).length}/8</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Transporte:</span>
+                    <span>{meiosTransporte.length > 0 ? '✅' : '❌'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Fotos de trabalhos:</span>
+                    <span>{fotosGaleria.length} foto(s)</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </form>
         </section>

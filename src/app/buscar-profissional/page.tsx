@@ -567,7 +567,7 @@ function ModalAvaliacao({
       } else {
         alert('Erro ao enviar avaliação. Tente novamente.');
       }
-    } catch (error) {
+    } catch {
       alert('Erro ao enviar avaliação. Verifique sua conexão.');
     } finally {
       setEnviando(false);
