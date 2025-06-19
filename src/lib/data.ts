@@ -31,8 +31,8 @@ export interface Avaliacao {
   resposta?: string; // Resposta da empresa
 }
 
-let cadastrosData: Cadastro[] = [];
-let avaliacoesData: Avaliacao[] = [];
+const cadastrosData: Cadastro[] = [];
+const avaliacoesData: Avaliacao[] = [];
 
 export function adicionarCadastro(cadastro: Omit<Cadastro, 'id' | 'timestamp' | 'status'>): Cadastro {
   const novoCadastro: Cadastro = {
