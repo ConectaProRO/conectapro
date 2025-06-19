@@ -79,3 +79,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+// Deploy test - versão atualizada com novo header e blog
