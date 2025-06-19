@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ConectaPro",
+  title: "ConectaPro - TESTE DEPLOY",
   description: "Encontre e conecte profissionais facilmente.",
   manifest: "/manifest.json",
   icons: {
@@ -55,7 +55,7 @@ export default function RootLayout({
             </nav>
             <Image src="/conectapro.png" alt="Logo ConectaPro" width={72} height={72} className="drop-shadow" />
             <nav>
-              <Link href="/sobre" className="text-blue-700 hover:text-blue-900 font-semibold text-lg px-4 py-2 rounded transition-colors">Sobre</Link>
+              <Link href="/sobre" className="text-blue-700 hover:text-blue-900 font-semibold text-lg px-4 py-2 rounded transition-colors">📞 Sobre</Link>
             </nav>
           </div>
         </header>
