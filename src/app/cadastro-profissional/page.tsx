@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { FaUpload, FaPaintRoller, FaTools, FaCogs, FaBrush, FaHardHat, FaWrench, FaCubes, FaThLarge, FaArrowUp, FaUser, FaCamera, FaTimes } from "react-icons/fa";
 
@@ -71,8 +71,6 @@ export default function CadastroProfissional() {
   const [cadastroRealizado, setCadastroRealizado] = useState(false);
   const [carregando, setCarregando] = useState(false);
   const [mostrarAviso, setMostrarAviso] = useState(false);
-  const observerRef = useRef<IntersectionObserver | null>(null);
-
   // Progresso atualizado: dados pessoais, foto perfil, serviços, experiência, transporte, galeria
   const progresso = Math.round(
     20 + // dados básicos sempre conta
@@ -82,32 +80,6 @@ export default function CadastroProfissional() {
     (meiosTransporte.length > 0 ? 15 : 0) + // transporte
     (fotosGaleria.length > 0 ? 15 : 0) // galeria
   );
-
-  useEffect(() => {
-    // Configuração do observer para animações
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-
-    observerRef.current = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-fadeInUp');
-        }
-      });
-    }, observerOptions);
-
-    // Observar todos os elementos com a classe de animação
-    const elements = document.querySelectorAll('.fade-in-element');
-    elements.forEach(el => {
-      observerRef.current?.observe(el);
-    });
-
-    return () => {
-      observerRef.current?.disconnect();
-    };
-  }, []);
 
   const handleServicoChange = (servico: string) => {
     setServicosSelecionados((prev) =>
@@ -279,8 +251,9 @@ export default function CadastroProfissional() {
           }
           
           .fade-in-element {
-            opacity: 0;
-            transform: translateY(30px);
+            opacity: 1;
+            transform: translateY(0);
+            animation: fadeInUp 0.8s ease forwards;
           }
         `}</style>
 
@@ -495,10 +468,11 @@ export default function CadastroProfissional() {
           animation: fadeInUp 0.8s ease forwards;
         }
         
-        .fade-in-element {
-          opacity: 0;
-          transform: translateY(30px);
-        }
+                 .fade-in-element {
+           opacity: 1;
+           transform: translateY(0);
+           animation: fadeInUp 0.8s ease forwards;
+         }
         
                  html {
            scroll-behavior: smooth;
