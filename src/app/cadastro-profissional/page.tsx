@@ -176,6 +176,16 @@ export default function CadastroProfissional() {
     setPreviewFotoPerfil("");
   };
 
+  // Função para converter arquivo para base64
+  const converterParaBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log('🚀 Iniciando envio do cadastro completo...');
@@ -183,6 +193,32 @@ export default function CadastroProfissional() {
     
     try {
       const formData = new FormData(e.target as HTMLFormElement);
+      
+      // Converter foto de perfil para base64
+      let fotoPerfilBase64 = '';
+      if (fotoPerfil) {
+        try {
+          fotoPerfilBase64 = await converterParaBase64(fotoPerfil);
+          console.log('✅ Foto de perfil convertida para base64');
+        } catch (error) {
+          console.error('❌ Erro ao converter foto de perfil:', error);
+        }
+      }
+      
+      // Converter fotos da galeria para base64
+      const fotosGaleriaBase64: string[] = [];
+      if (fotosGaleria.length > 0) {
+        try {
+          for (const foto of fotosGaleria) {
+            const fotoBase64 = await converterParaBase64(foto);
+            fotosGaleriaBase64.push(fotoBase64);
+          }
+          console.log(`✅ ${fotosGaleriaBase64.length} fotos da galeria convertidas para base64`);
+        } catch (error) {
+          console.error('❌ Erro ao converter fotos da galeria:', error);
+        }
+      }
+      
       const dados = {
         nome: formData.get('nome') as string,
         telefone: formData.get('telefone') as string,
@@ -194,10 +230,16 @@ export default function CadastroProfissional() {
         meiosTransporte, // Manter compatibilidade
         temFotoPerfil: fotoPerfil !== null,
         numeroFotosGaleria: fotosGaleria.length,
+        fotoPerfil: fotoPerfilBase64,
+        fotos: fotosGaleriaBase64,
         timestamp: new Date().toISOString()
       };
 
-      console.log('📤 Dados completos:', dados);
+      console.log('📤 Dados completos (com fotos):', {
+        ...dados,
+        fotoPerfil: dados.fotoPerfil ? '✅ Foto de perfil incluída' : '❌ Sem foto de perfil',
+        fotos: `✅ ${dados.fotos.length} fotos da galeria incluídas`
+      });
 
       const response = await fetch('/api/cadastro', {
         method: 'POST',
