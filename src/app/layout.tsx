@@ -48,19 +48,31 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-white to-gray-100 min-h-screen`}
       >
         {/* Header fixo global */}
-        <header className="w-full fixed top-0 left-0 z-10 bg-white/80 backdrop-blur shadow-sm flex justify-center items-center h-20">
-          <div className="flex w-full max-w-5xl items-center justify-between px-6">
-            <nav>
-              <Link href="/" className="text-blue-700 hover:text-blue-900 font-semibold text-lg px-4 py-2 rounded transition-colors">🏠 Início</Link>
-            </nav>
-            <Image src="/conectapro.png" alt="Logo ConectaPro" width={72} height={72} className="drop-shadow" />
-            <nav>
-              <Link href="/sobre" className="text-blue-700 hover:text-blue-900 font-semibold text-lg px-4 py-2 rounded transition-colors">📞 Sobre</Link>
+        <header className="w-full fixed top-0 left-0 z-10 bg-white/90 backdrop-blur shadow-sm flex justify-center items-center h-20">
+          <div className="flex w-full max-w-6xl items-center justify-center px-6">
+            {/* Logo centralizada */}
+            <div className="flex items-center justify-center flex-1">
+              <Image src="/conectapro.png" alt="Logo ConectaPro" width={80} height={80} className="drop-shadow" />
+            </div>
+            
+            {/* Navegação abaixo da logo */}
+            <nav className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full bg-white/95 backdrop-blur rounded-b-xl shadow-lg px-6 py-2">
+              <div className="flex items-center gap-8">
+                <Link href="/" className="text-blue-700 hover:text-blue-900 font-semibold text-sm px-3 py-2 rounded transition-colors hover:bg-blue-50">
+                  🏠 Início
+                </Link>
+                <Link href="/sobre" className="text-blue-700 hover:text-blue-900 font-semibold text-sm px-3 py-2 rounded transition-colors hover:bg-blue-50">
+                  ℹ️ Sobre
+                </Link>
+                <Link href="/blog" className="text-blue-700 hover:text-blue-900 font-semibold text-sm px-3 py-2 rounded transition-colors hover:bg-blue-50">
+                  📝 Blog
+                </Link>
+              </div>
             </nav>
           </div>
         </header>
         {/* Espaço para header */}
-        <div className="h-20" />
+        <div className="h-28" />
         {children}
         <Analytics />
       </body>
