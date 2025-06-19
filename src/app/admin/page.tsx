@@ -36,13 +36,23 @@ export default function AdminPage() {
   const carregarCadastros = async () => {
     setCarregando(true);
     try {
-      const response = await fetch('/api/admin/cadastros');
+      const response = await fetch('/api/admin/cadastros', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       if (response.ok) {
         const data = await response.json();
         setCadastros(data);
+      } else {
+        console.error('Erro na response:', response.status);
+        // Para desenvolvimento, vamos simular alguns dados
+        setCadastros([]);
       }
     } catch (error) {
       console.error('Erro ao carregar cadastros:', error);
+      setCadastros([]);
     } finally {
       setCarregando(false);
     }
