@@ -81,4 +81,4 @@ export default function RootLayout({
 }
 
 // Deploy test - versão atualizada com novo header e blog
-// Última atualização: 2024-12-28 14:30
+// Última atualização: 2024-12-28 14:35 - FORÇAR PRODUÇÃO
