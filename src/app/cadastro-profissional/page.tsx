@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { FaUpload, FaArrowLeft, FaPaintRoller, FaTools, FaCogs, FaBrush, FaHardHat, FaWrench, FaCubes, FaThLarge } from "react-icons/fa";
+import { FaUpload, FaArrowLeft, FaPaintRoller, FaTools, FaCogs, FaBrush, FaHardHat, FaWrench, FaCubes, FaThLarge, FaHome } from "react-icons/fa";
 
 const servicos = [
   { nome: "Forma e Concretagem", icon: <FaCubes /> },
@@ -30,6 +30,49 @@ const transportes = [
   "Carro",
   "Ônibus",
 ];
+
+// Componente do botão flutuante
+function BotaoInicio() {
+  const [mostrar, setMostrar] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Mostra o botão após 300px de scroll
+      setMostrar(window.scrollY > 300);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const voltarAoTopo = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  if (!mostrar) return null;
+
+  return (
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2">
+      {/* Botão Voltar ao Topo */}
+      <button
+        onClick={voltarAoTopo}
+        className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110"
+        title="Voltar ao topo"
+      >
+        <FaArrowLeft className="rotate-90" size={20} />
+      </button>
+      
+      {/* Botão Início */}
+      <Link
+        href="/"
+        className="bg-gray-800 hover:bg-gray-900 text-white p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110"
+        title="Ir para página inicial"
+      >
+        <FaHome size={20} />
+      </Link>
+    </div>
+  );
+}
 
 export default function CadastroProfissional() {
   const [nivelServicos, setNivelServicos] = useState<{ [key: string]: string }>({});
@@ -153,143 +196,148 @@ export default function CadastroProfissional() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-      <div className="w-full max-w-2xl flex items-center mb-4 mt-8">
-        <Link href="/" className="flex items-center gap-2 text-gray-700 hover:text-black font-semibold text-lg px-4 py-2 rounded-full bg-white shadow border border-gray-200 transition-all">
-          <FaArrowLeft /> Voltar
-        </Link>
-      </div>
-      {/* Barra de progresso */}
-      <div className="w-full max-w-2xl mb-8">
-        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-          <div className="h-2 bg-black transition-all duration-500 rounded-full" style={{ width: `${progresso}%` }} />
+    <>
+      {/* Botão flutuante */}
+      <BotaoInicio />
+      
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+        <div className="w-full max-w-2xl flex items-center mb-4 mt-8">
+          <Link href="/" className="flex items-center gap-2 text-gray-700 hover:text-black font-semibold text-lg px-4 py-2 rounded-full bg-white shadow border border-gray-200 transition-all">
+            <FaArrowLeft /> Voltar
+          </Link>
         </div>
-        <div className="text-right text-xs text-gray-400 mt-1">Progresso: {progresso}%</div>
-      </div>
-      <div className="rounded-3xl shadow-lg p-8 w-full max-w-2xl border border-gray-100 mb-10 bg-white">
-        <h1 className="text-4xl font-extrabold mb-10 text-left text-black leading-tight">Cadastre-se como Profissional</h1>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-          {/* Dados pessoais */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <input
-              type="text"
-              name="nome"
-              placeholder="Nome completo"
-              className="border-none rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100 text-lg shadow-sm"
-              required
-            />
-            <input
-              type="tel"
-              name="telefone"
-              placeholder="Telefone/WhatsApp"
-              className="border-none rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100 text-lg shadow-sm"
-              required
-            />
-            <input
-              type="text"
-              name="profissao"
-              placeholder="Profissão"
-              className="border-none rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100 text-lg shadow-sm"
-              required
-            />
-            <input
-              type="text"
-              name="bairro"
-              placeholder="Bairro onde mora"
-              className="border-none rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100 text-lg shadow-sm"
-              required
-            />
+        {/* Barra de progresso */}
+        <div className="w-full max-w-2xl mb-8">
+          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div className="h-2 bg-black transition-all duration-500 rounded-full" style={{ width: `${progresso}%` }} />
           </div>
-
-          {/* Upload de fotos */}
-          <div>
-            <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2 text-lg"><FaUpload /> Fotos dos seus serviços</label>
-            <label className="flex items-center gap-3 cursor-pointer w-fit px-5 py-3 bg-gray-100 hover:bg-gray-200 rounded-2xl border border-gray-200 text-gray-700 font-medium shadow-sm">
-              <FaUpload /> Anexar fotos
+          <div className="text-right text-xs text-gray-400 mt-1">Progresso: {progresso}%</div>
+        </div>
+        <div className="rounded-3xl shadow-lg p-8 w-full max-w-2xl border border-gray-100 mb-10 bg-white">
+          <h1 className="text-4xl font-extrabold mb-10 text-left text-black leading-tight">Cadastre-se como Profissional</h1>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+            {/* Dados pessoais */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleFotosChange}
-                className="hidden"
+                type="text"
+                name="nome"
+                placeholder="Nome completo"
+                className="border-none rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100 text-lg shadow-sm"
+                required
               />
-            </label>
-            {previewUrls.length > 0 && (
-              <div className="flex flex-wrap gap-3 mt-3">
-                {previewUrls.map((url, idx) => (
-                  <img
-                    key={idx}
-                    src={url}
-                    alt={`Foto ${idx + 1}`}
-                    className="w-24 h-24 object-cover rounded-xl border border-gray-200 shadow"
-                  />
+              <input
+                type="tel"
+                name="telefone"
+                placeholder="Telefone/WhatsApp"
+                className="border-none rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100 text-lg shadow-sm"
+                required
+              />
+              <input
+                type="text"
+                name="profissao"
+                placeholder="Profissão"
+                className="border-none rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100 text-lg shadow-sm"
+                required
+              />
+              <input
+                type="text"
+                name="bairro"
+                placeholder="Bairro onde mora"
+                className="border-none rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100 text-lg shadow-sm"
+                required
+              />
+            </div>
+
+            {/* Upload de fotos */}
+            <div>
+              <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2 text-lg"><FaUpload /> Fotos dos seus serviços</label>
+              <label className="flex items-center gap-3 cursor-pointer w-fit px-5 py-3 bg-gray-100 hover:bg-gray-200 rounded-2xl border border-gray-200 text-gray-700 font-medium shadow-sm">
+                <FaUpload /> Anexar fotos
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleFotosChange}
+                  className="hidden"
+                />
+              </label>
+              {previewUrls.length > 0 && (
+                <div className="flex flex-wrap gap-3 mt-3">
+                  {previewUrls.map((url, idx) => (
+                    <img
+                      key={idx}
+                      src={url}
+                      alt={`Foto ${idx + 1}`}
+                      className="w-24 h-24 object-cover rounded-xl border border-gray-200 shadow"
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Meio de transporte */}
+            <div>
+              <h2 className="text-lg font-semibold mb-3 text-black flex items-center gap-2"><FaTools /> Meio de transporte</h2>
+              <div className="flex flex-wrap gap-3">
+                {transportes.map((transporte) => (
+                  <label key={transporte} className="flex items-center gap-2 cursor-pointer bg-gray-100 px-4 py-2 rounded-xl border border-gray-200 text-gray-700 shadow-sm">
+                    <input
+                      type="checkbox"
+                      checked={meiosTransporte.includes(transporte)}
+                      onChange={() => handleTransporteChange(transporte)}
+                      className="accent-black w-5 h-5"
+                    />
+                    <span className="text-base">{transporte}</span>
+                  </label>
                 ))}
               </div>
-            )}
-          </div>
-
-          {/* Meio de transporte */}
-          <div>
-            <h2 className="text-lg font-semibold mb-3 text-black flex items-center gap-2"><FaTools /> Meio de transporte</h2>
-            <div className="flex flex-wrap gap-3">
-              {transportes.map((transporte) => (
-                <label key={transporte} className="flex items-center gap-2 cursor-pointer bg-gray-100 px-4 py-2 rounded-xl border border-gray-200 text-gray-700 shadow-sm">
-                  <input
-                    type="checkbox"
-                    checked={meiosTransporte.includes(transporte)}
-                    onChange={() => handleTransporteChange(transporte)}
-                    className="accent-black w-5 h-5"
-                  />
-                  <span className="text-base">{transporte}</span>
-                </label>
-              ))}
             </div>
-          </div>
 
-          {/* Serviços */}
-          <div>
-            <h2 className="text-lg font-semibold mb-3 text-black flex items-center gap-2"><FaHardHat /> Seu nível em cada serviço</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {servicos.map((servico) => (
-                <div key={servico.nome} className="flex items-center rounded-2xl bg-white shadow-[0_8px_32px_rgba(0,0,0,0.35)] border border-gray-200 py-6 px-5 gap-3 transition-all duration-200 hover:shadow-[0_16px_48px_rgba(0,0,0,0.45)] hover:-translate-y-2">
-                  <span className="font-bold text-gray-700 text-2xl w-10 flex-shrink-0 flex items-center justify-center">{servico.icon}</span>
-                  <span className="font-semibold text-gray-800 flex-1 text-lg">{servico.nome}</span>
-                  <div className="flex flex-1 gap-1 justify-end flex-wrap">
-                    {niveis.map((nivel) => (
-                      <button
-                        type="button"
-                        key={nivel.label}
-                        onClick={() => handleNivelClick(servico.nome, nivel.label)}
-                        className={`px-2 py-1 rounded-lg border text-base flex flex-col items-center transition-all duration-200 shadow-sm
-                          ${nivelServicos[servico.nome] === nivel.label ? `${nivel.cor} border-2 border-black scale-110` : "bg-white text-gray-700 border-gray-200 hover:bg-gray-200"}`}
-                        style={{ minWidth: 48 }}
-                      >
-                        <span className="text-lg">{nivel.emoji}</span>
-                        <span className="text-[10px] font-semibold mt-0.5 leading-tight">{nivel.label}</span>
-                      </button>
-                    ))}
+            {/* Serviços */}
+            <div>
+              <h2 className="text-lg font-semibold mb-3 text-black flex items-center gap-2"><FaHardHat /> Seu nível em cada serviço</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {servicos.map((servico) => (
+                  <div key={servico.nome} className="flex items-center rounded-2xl bg-white shadow-[0_8px_32px_rgba(0,0,0,0.35)] border border-gray-200 py-6 px-5 gap-3 transition-all duration-200 hover:shadow-[0_16px_48px_rgba(0,0,0,0.45)] hover:-translate-y-2">
+                    <span className="font-bold text-gray-700 text-2xl w-10 flex-shrink-0 flex items-center justify-center">{servico.icon}</span>
+                    <span className="font-semibold text-gray-800 flex-1 text-lg">{servico.nome}</span>
+                    <div className="flex flex-1 gap-1 justify-end flex-wrap">
+                      {niveis.map((nivel) => (
+                        <button
+                          type="button"
+                          key={nivel.label}
+                          onClick={() => handleNivelClick(servico.nome, nivel.label)}
+                          className={`px-2 py-1 rounded-lg border text-base flex flex-col items-center transition-all duration-200 shadow-sm
+                            ${nivelServicos[servico.nome] === nivel.label ? `${nivel.cor} border-2 border-black scale-110` : "bg-white text-gray-700 border-gray-200 hover:bg-gray-200"}`}
+                          style={{ minWidth: 48 }}
+                        >
+                          <span className="text-lg">{nivel.emoji}</span>
+                          <span className="text-[10px] font-semibold mt-0.5 leading-tight">{nivel.label}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
 
-          <button
-            type="submit"
-            disabled={carregando}
-            className="bg-black text-white rounded-full px-8 py-4 font-bold text-xl hover:bg-gray-900 transition-all mt-8 shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
-          >
-            {carregando ? (
-              <span className="flex items-center justify-center gap-2">
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                Processando...
-              </span>
-            ) : (
-              "Cadastrar"
-            )}
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={carregando}
+              className="bg-black text-white rounded-full px-8 py-4 font-bold text-xl hover:bg-gray-900 transition-all mt-8 shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
+            >
+              {carregando ? (
+                <span className="flex items-center justify-center gap-2">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Processando...
+                </span>
+              ) : (
+                "Cadastrar"
+              )}
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 } 
