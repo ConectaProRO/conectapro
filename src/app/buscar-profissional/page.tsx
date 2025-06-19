@@ -38,8 +38,8 @@ interface Avaliacao {
   timestamp: string;
 }
 
-// Componente do botão flutuante
-function BotaoInicio() {
+// Componente do botão flutuante para voltar ao topo
+function BotaoVoltarTopo() {
   const [mostrar, setMostrar] = useState(false);
 
   useEffect(() => {
@@ -59,24 +59,14 @@ function BotaoInicio() {
   if (!mostrar) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2">
-      {/* Botão Voltar ao Topo */}
+    <div className="fixed bottom-6 right-6 z-50">
       <button
         onClick={voltarAoTopo}
         className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110"
         title="Voltar ao topo"
       >
-        <FaArrowLeft className="rotate-90" size={20} />
-      </button>
-      
-      {/* Botão Início */}
-      <Link
-        href="/"
-        className="bg-gray-800 hover:bg-gray-900 text-white p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110"
-        title="Ir para página inicial"
-      >
         <FaHome size={20} />
-      </Link>
+      </button>
     </div>
   );
 }
@@ -163,15 +153,10 @@ export default function BuscarProfissional() {
 
   return (
     <>
-      {/* Botão flutuante */}
-      <BotaoInicio />
+      {/* Botão flutuante para voltar ao topo */}
+      <BotaoVoltarTopo />
       
       <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-white to-gray-100 p-4">
-        <div className="w-full max-w-2xl flex items-center mb-4">
-          <Link href="/" className="flex items-center gap-2 text-blue-700 hover:text-blue-900 font-semibold text-lg px-4 py-2 rounded-xl bg-white shadow border border-gray-100 transition-all">
-            <FaArrowLeft /> Voltar
-          </Link>
-        </div>
         
         <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-2xl mt-10">
           <h1 className="text-2xl font-bold mb-6 text-center">Buscar Profissional</h1>
