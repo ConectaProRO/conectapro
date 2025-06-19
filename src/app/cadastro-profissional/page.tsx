@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { FaUpload, FaPaintRoller, FaTools, FaCogs, FaBrush, FaHardHat, FaWrench, FaCubes, FaThLarge, FaArrowUp, FaUser, FaCamera, FaTimes, FaStar, FaWhatsapp, FaMapMarkerAlt } from "react-icons/fa";
+import { FaUpload, FaPaintRoller, FaTools, FaCogs, FaBrush, FaHardHat, FaWrench, FaCubes, FaThLarge, FaArrowUp, FaUser, FaCamera, FaTimes } from "react-icons/fa";
 
 const servicos = [
   { nome: "Forma e Concretagem", icon: <FaCubes /> },
@@ -31,30 +31,7 @@ const transportes = [
   "Ônibus",
 ];
 
-// Avaliações exemplo para demonstrar como o perfil aparecerá
-const avaliacoesExemplo = [
-  { 
-    cliente: "João Silva", 
-    nota: 5, 
-    comentario: "Excelente profissional! Fez um trabalho impecável na minha casa. Muito pontual e caprichoso.", 
-    servico: "Pintura",
-    data: "15/01/2024"
-  },
-  { 
-    cliente: "Maria Santos", 
-    nota: 4, 
-    comentario: "Serviço de qualidade, entregou no prazo combinado. Recomendo!", 
-    servico: "Alvenaria",
-    data: "08/01/2024"
-  },
-  { 
-    cliente: "Carlos Oliveira", 
-    nota: 5, 
-    comentario: "Profissional muito competente. Resolveu um problema que outros não conseguiram.", 
-    servico: "Porcelanato e Cerâmica",
-    data: "03/01/2024"
-  },
-];
+
 
 // Componente do botão flutuante para voltar ao topo
 function BotaoVoltarTopo() {
@@ -101,13 +78,7 @@ export default function CadastroProfissional() {
   const [fotosGaleria, setFotosGaleria] = useState<File[]>([]);
   const [previewsGaleria, setPreviewsGaleria] = useState<string[]>([]);
   
-  // Estados para dados do formulário
-  const [dadosFormulario, setDadosFormulario] = useState({
-    nome: "",
-    telefone: "",
-    profissao: "",
-    bairro: ""
-  });
+
   
   const [cadastroRealizado, setCadastroRealizado] = useState(false);
   const [carregando, setCarregando] = useState(false);
@@ -212,13 +183,7 @@ export default function CadastroProfissional() {
         timestamp: new Date().toISOString()
       };
 
-      // Armazenar dados para mostrar na tela de sucesso
-      setDadosFormulario({
-        nome: dadosCadastro.nome,
-        telefone: dadosCadastro.telefone,
-        profissao: dadosCadastro.profissao,
-        bairro: dadosCadastro.bairro
-      });
+
 
       // Enviar para API
       const response = await fetch('/api/cadastro', {
@@ -242,18 +207,7 @@ export default function CadastroProfissional() {
     }
   };
 
-  // Função para renderizar estrelas
-  const renderEstrelas = (nota: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <FaStar
-        key={i}
-        className={`${i < nota ? 'text-yellow-400' : 'text-gray-300'}`}
-      />
-    ));
-  };
 
-  // Calcular média das avaliações exemplo
-  const mediaAvaliacoes = avaliacoesExemplo.reduce((acc, av) => acc + av.nota, 0) / avaliacoesExemplo.length;
 
   // Tela de sucesso
   if (cadastroRealizado) {
