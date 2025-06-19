@@ -1,0 +1,50 @@
+[
+  {
+    "id": "1703087400000",
+    "timestamp": "2024-01-15T10:30:00.000Z",
+    "status": "pendente",
+    "nome": "João Silva",
+    "telefone": "(69) 99999-1234",
+    "profissao": "Pedreiro",
+    "bairro": "Centro",
+    "servicosSelecionados": ["Alvenaria", "Reboco"],
+    "transportes": ["Moto", "Ônibus"],
+    "totalFotos": 3,
+    "experiencia": "5",
+    "temFotoPerfil": true,
+    "numeroFotosGaleria": 3,
+    "meiosTransporte": ["Moto", "Ônibus"]
+  },
+  {
+    "id": "1703087500000",
+    "timestamp": "2024-01-15T14:15:00.000Z",
+    "status": "aprovado",
+    "nome": "Maria Oliveira",
+    "telefone": "(69) 98888-5678",
+    "profissao": "Pintora",
+    "bairro": "Liberdade",
+    "servicosSelecionados": ["Pintura"],
+    "transportes": ["Carro"],
+    "totalFotos": 5,
+    "experiencia": "8",
+    "temFotoPerfil": true,
+    "numeroFotosGaleria": 5,
+    "meiosTransporte": ["Carro"]
+  },
+  {
+    "id": "1703087600000",
+    "timestamp": "2024-01-15T16:45:00.000Z",
+    "status": "pendente",
+    "nome": "Carlos Santos",
+    "telefone": "(69) 97777-9012",
+    "profissao": "Gesseiro",
+    "bairro": "Agenor de Carvalho",
+    "servicosSelecionados": ["Forro de Gesso"],
+    "transportes": ["Moto"],
+    "totalFotos": 2,
+    "experiencia": "3",
+    "temFotoPerfil": false,
+    "numeroFotosGaleria": 2,
+    "meiosTransporte": ["Moto"]
+  }
+] 
