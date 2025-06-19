@@ -15,13 +15,7 @@ const servicos = [
   { nome: "Alvenaria", icon: <FaCogs /> },
 ];
 
-const niveis = [
-  { label: "Não faço", emoji: "❌", cor: "bg-gray-200 text-gray-600" },
-  { label: "Meia colher", emoji: "🥄", cor: "bg-yellow-100 text-yellow-700" },
-  { label: "Colher cheia", emoji: "🥄🥄", cor: "bg-yellow-200 text-yellow-800" },
-  { label: "Profissional", emoji: "👷", cor: "bg-blue-100 text-blue-700" },
-  { label: "Especialista", emoji: "⭐", cor: "bg-green-100 text-green-700" },
-];
+// Removido sistema de níveis - agora é apenas seleção simples de serviços
 
 const transportes = [
   "A pé",
@@ -66,7 +60,7 @@ function BotaoVoltarTopo() {
 }
 
 export default function CadastroProfissional() {
-  const [nivelServicos, setNivelServicos] = useState<{ [key: string]: string }>({});
+  const [servicosSelecionados, setServicosSelecionados] = useState<string[]>([]);
   const [meiosTransporte, setMeiosTransporte] = useState<string[]>([]);
   const [experiencia, setExperiencia] = useState("");
   
@@ -88,7 +82,7 @@ export default function CadastroProfissional() {
   const progresso = Math.round(
     20 + // dados básicos sempre conta
     (fotoPerfil ? 15 : 0) + // foto de perfil
-    (Object.keys(nivelServicos).length / servicos.length) * 25 + // serviços
+    (servicosSelecionados.length / servicos.length) * 25 + // serviços
     (experiencia ? 10 : 0) + // experiência
     (meiosTransporte.length > 0 ? 15 : 0) + // transporte
     (fotosGaleria.length > 0 ? 15 : 0) // galeria
@@ -120,8 +114,12 @@ export default function CadastroProfissional() {
     };
   }, []);
 
-  const handleNivelClick = (servico: string, nivel: string) => {
-    setNivelServicos((prev) => ({ ...prev, [servico]: nivel }));
+  const handleServicoChange = (servico: string) => {
+    setServicosSelecionados((prev) =>
+      prev.includes(servico)
+        ? prev.filter((s) => s !== servico)
+        : [...prev, servico]
+    );
   };
 
   const handleTransporteChange = (transporte: string) => {
@@ -176,7 +174,7 @@ export default function CadastroProfissional() {
         profissao: formData.get('profissao') as string,
         bairro: formData.get('bairro') as string,
         experiencia,
-        nivelServicos,
+        servicosSelecionados,
         meiosTransporte,
         temFotoPerfil: fotoPerfil !== null,
         numeroFotosGaleria: fotosGaleria.length,
@@ -511,34 +509,36 @@ export default function CadastroProfissional() {
                 🔧 Seus Serviços
               </h2>
               <p className="text-gray-600 mb-6">
-                Selecione seu nível de habilidade em cada serviço:
+                Selecione os serviços que você oferece. Os clientes avaliarão a qualidade do seu trabalho:
               </p>
               
-              <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {servicos.map((servico) => (
-                  <div key={servico.nome} className="border-2 border-gray-100 rounded-2xl p-6 hover:border-blue-200 transition-colors">
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className="text-2xl text-blue-600">{servico.icon}</span>
-                      <h3 className="text-lg font-semibold text-gray-800">{servico.nome}</h3>
+                  <label key={servico.nome} className="cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={servicosSelecionados.includes(servico.nome)}
+                      onChange={() => handleServicoChange(servico.nome)}
+                    />
+                    <div className={`border-2 rounded-2xl p-6 transition-all duration-200 ${
+                      servicosSelecionados.includes(servico.nome)
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-lg transform scale-105'
+                        : 'bg-gray-50 text-gray-700 border-gray-200 hover:border-blue-300 hover:shadow-md hover:scale-105'
+                    }`}>
+                      <div className="flex items-center gap-3">
+                        <span className={`text-2xl ${
+                          servicosSelecionados.includes(servico.nome) ? 'text-white' : 'text-blue-600'
+                        }`}>
+                          {servico.icon}
+                        </span>
+                        <h3 className="text-lg font-semibold">{servico.nome}</h3>
+                        {servicosSelecionados.includes(servico.nome) && (
+                          <span className="ml-auto text-white">✓</span>
+                        )}
+                      </div>
                     </div>
-                    
-                    <div className="flex flex-wrap gap-3">
-                      {niveis.map((nivel) => (
-                        <button
-                          key={nivel.label}
-                          type="button"
-                          onClick={() => handleNivelClick(servico.nome, nivel.label)}
-                          className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
-                            nivelServicos[servico.nome] === nivel.label
-                              ? 'bg-blue-600 text-white shadow-lg transform scale-105'
-                              : nivel.cor + ' hover:shadow-md hover:scale-105'
-                          }`}
-                        >
-                          {nivel.emoji} {nivel.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                  </label>
                 ))}
               </div>
             </div>
@@ -655,8 +655,8 @@ export default function CadastroProfissional() {
                     <span>{experiencia ? '✅' : '❌'}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Serviços informados:</span>
-                    <span>{Object.keys(nivelServicos).length}/8</span>
+                    <span>Serviços selecionados:</span>
+                    <span>{servicosSelecionados.length}/{servicos.length}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Transporte:</span>
