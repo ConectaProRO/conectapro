@@ -70,11 +70,40 @@ export default function CadastroProfissional() {
     e.preventDefault();
     setCarregando(true);
     
-    // Simular processamento do cadastro
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    setCadastroRealizado(true);
-    setCarregando(false);
+    try {
+      // Coletar dados do formulário
+      const formData = new FormData(e.target as HTMLFormElement);
+      const dadosCadastro = {
+        nome: formData.get('nome'),
+        telefone: formData.get('telefone'),
+        profissao: formData.get('profissao'),
+        bairro: formData.get('bairro'),
+        nivelServicos,
+        meiosTransporte,
+        numeroFotos: fotos.length,
+        timestamp: new Date().toISOString()
+      };
+
+      // Enviar para API
+      const response = await fetch('/api/cadastro', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dadosCadastro),
+      });
+
+      if (response.ok) {
+        setCadastroRealizado(true);
+      } else {
+        alert('Erro ao enviar cadastro. Tente novamente.');
+      }
+    } catch (error) {
+      console.error('Erro:', error);
+      alert('Erro ao enviar cadastro. Verifique sua conexão.');
+    } finally {
+      setCarregando(false);
+    }
   };
 
   // Tela de sucesso
@@ -82,30 +111,30 @@ export default function CadastroProfissional() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
         <div className="bg-white rounded-3xl shadow-xl p-8 w-full max-w-2xl text-center">
-          <div className="text-6xl mb-6">🎉</div>
-          <h1 className="text-3xl font-bold mb-4 text-green-600">Cadastro Realizado com Sucesso!</h1>
+          <div className="text-6xl mb-6">📋</div>
+          <h1 className="text-3xl font-bold mb-4 text-blue-600">Cadastro Enviado para Análise!</h1>
           <p className="text-lg text-gray-700 mb-6">
-            Parabéns! Seu perfil profissional foi criado com sucesso.
+            Obrigado! Recebemos suas informações e entraremos em contato em breve.
           </p>
           
           <div className="bg-blue-50 rounded-2xl p-6 mb-6 text-left">
-            <h2 className="text-xl font-bold text-blue-800 mb-3">🚀 O que acontece agora?</h2>
+            <h2 className="text-xl font-bold text-blue-800 mb-3">📋 Processo de Análise</h2>
             <ul className="space-y-3 text-gray-700">
               <li className="flex items-start gap-3">
-                <span className="text-green-500 font-bold">✓</span>
-                <span><strong>Seu perfil está ativo</strong> - Clientes já podem encontrar você nas buscas</span>
+                <span className="text-blue-500 font-bold">1️⃣</span>
+                <span><strong>Recebemos seu cadastro</strong> - Suas informações estão seguras conosco</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-blue-500 font-bold">📍</span>
-                <span><strong>Aparece no mapa</strong> - Você será exibido como um ponto azul em Porto Velho-RO</span>
+                <span className="text-yellow-500 font-bold">2️⃣</span>
+                <span><strong>Análise em andamento</strong> - Verificamos os dados e serviços informados</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-purple-500 font-bold">📱</span>
-                <span><strong>Receba contatos</strong> - Clientes interessados entrarão em contato pelo WhatsApp</span>
+                <span className="text-purple-500 font-bold">3️⃣</span>
+                <span><strong>Contato em breve</strong> - Ligaremos para confirmar e ativar seu perfil</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-orange-500 font-bold">⭐</span>
-                <span><strong>Ganhe reputação</strong> - Trabalhos bem feitos aumentam sua visibilidade</span>
+                <span className="text-green-500 font-bold">4️⃣</span>
+                <span><strong>Perfil ativo</strong> - Após aprovação, você aparecerá nas buscas e no mapa</span>
               </li>
             </ul>
           </div>
@@ -144,24 +173,28 @@ export default function CadastroProfissional() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <input
               type="text"
+              name="nome"
               placeholder="Nome completo"
               className="border-none rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100 text-lg shadow-sm"
               required
             />
             <input
               type="tel"
+              name="telefone"
               placeholder="Telefone/WhatsApp"
               className="border-none rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100 text-lg shadow-sm"
               required
             />
             <input
               type="text"
+              name="profissao"
               placeholder="Profissão"
               className="border-none rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100 text-lg shadow-sm"
               required
             />
             <input
               type="text"
+              name="bairro"
               placeholder="Bairro onde mora"
               className="border-none rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-black bg-gray-100 text-lg shadow-sm"
               required
