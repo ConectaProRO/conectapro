@@ -163,7 +163,7 @@ export default function CadastroProfissional() {
               </li>
               <li className="flex items-start gap-3">
                 <span className="text-purple-500 font-bold">3️⃣</span>
-                <span><strong>Contato em breve</strong> - Ligaremos para confirmar e ativar seu perfil</span>
+                <span><strong>Contato em breve</strong> - Entraremos em contato para ativar seu perfil</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="text-green-500 font-bold">4️⃣</span>
