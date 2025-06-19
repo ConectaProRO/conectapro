@@ -20,13 +20,18 @@ interface Profissional {
   telefone: string;
   profissao: string;
   bairro: string;
-  nivelServicos: Record<string, string>;
+  servicosSelecionados: string[]; // Novo sistema
   transportes: string[];
   totalFotos: number;
   fotos?: string[];
   descricao?: string;
   experiencia?: string;
   preco?: string;
+  temFotoPerfil?: boolean;
+  numeroFotosGaleria?: number;
+  // Compatibilidade com dados antigos
+  nivelServicos?: Record<string, string>;
+  meiosTransporte?: string[];
 }
 
 interface Avaliacao {
@@ -151,9 +156,21 @@ export default function BuscarProfissional() {
     setMediaAvaliacao({ media: 0, total: 0 });
   };
 
-  const profissionaisFiltrados = profissionais.filter((prof) =>
-    servicoSelecionado && prof.nivelServicos[servicoSelecionado]
-  );
+  const profissionaisFiltrados = profissionais.filter((prof) => {
+    if (!servicoSelecionado) return false;
+    
+    // Novo sistema: verificar se o serviço está na lista
+    if (prof.servicosSelecionados && prof.servicosSelecionados.includes(servicoSelecionado)) {
+      return true;
+    }
+    
+    // Sistema antigo: verificar nivelServicos para compatibilidade
+    if (prof.nivelServicos && prof.nivelServicos[servicoSelecionado]) {
+      return true;
+    }
+    
+    return false;
+  });
 
   const renderEstrelas = (nota: number) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -313,7 +330,7 @@ export default function BuscarProfissional() {
                                 <span>{prof.telefone}</span>
                               </div>
                               
-                              {prof.nivelServicos[servicoSelecionado] && (
+                              {prof.nivelServicos?.[servicoSelecionado] && (
                                 <div className="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
                                   📊 {prof.nivelServicos[servicoSelecionado]}
                                 </div>
@@ -414,16 +431,26 @@ export default function BuscarProfissional() {
                   🔧 Especialidades
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {Object.entries(profissionalSelecionado.nivelServicos).map(([servico, nivel]) => (
-                    nivel !== "Não faço" && (
+                  {profissionalSelecionado.nivelServicos ? 
+                    Object.entries(profissionalSelecionado.nivelServicos).map(([servico, nivel]) => (
+                      nivel !== "Não faço" && (
+                        <div key={servico} className="flex justify-between items-center bg-white p-3 rounded-xl">
+                          <span className="font-medium">{servico}</span>
+                          <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
+                            {nivel}
+                          </span>
+                        </div>
+                      )
+                    )) :
+                    profissionalSelecionado.servicosSelecionados?.map((servico) => (
                       <div key={servico} className="flex justify-between items-center bg-white p-3 rounded-xl">
                         <span className="font-medium">{servico}</span>
-                        <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
-                          {nivel}
+                        <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
+                          ✓ Oferece
                         </span>
                       </div>
-                    )
-                  ))}
+                    ))
+                  }
                 </div>
               </div>
               
@@ -586,9 +613,11 @@ function ModalAvaliacao({
     ));
   };
 
-  const servicosDisponiveis = Object.entries(profissional.nivelServicos)
-    .filter(([, nivel]) => nivel !== "Não faço")
-    .map(([servico]) => servico);
+  const servicosDisponiveis = profissional.nivelServicos 
+    ? Object.entries(profissional.nivelServicos)
+        .filter(([, nivel]) => nivel !== "Não faço")
+        .map(([servico]) => servico)
+    : profissional.servicosSelecionados || [];
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
