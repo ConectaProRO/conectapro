@@ -143,20 +143,53 @@ export default function CadastroProfissional() {
   const handleGaleriaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
-      setFotosGaleria(prev => [...prev, ...filesArray]);
-      const newPreviews = filesArray.map(file => URL.createObjectURL(file));
+      
+      // Validar arquivos
+      const validFiles = filesArray.filter(file => {
+        const isImage = file.type.startsWith('image/');
+        const isValidSize = file.size <= 5 * 1024 * 1024; // 5MB
+        return isImage && isValidSize;
+      });
+
+      if (validFiles.length !== filesArray.length) {
+        alert('Alguns arquivos foram ignorados. Certifique-se de selecionar apenas imagens menores que 5MB.');
+      }
+
+      setFotosGaleria(prev => [...prev, ...validFiles]);
+      
+      // Criar previews com tratamento de erro
+      const newPreviews = validFiles.map(file => {
+        try {
+          return URL.createObjectURL(file);
+        } catch (error) {
+          console.error('Erro ao criar preview:', error);
+          return null;
+        }
+      }).filter(Boolean) as string[];
+      
       setPreviewsGaleria(prev => [...prev, ...newPreviews]);
     }
   };
 
   // Remover foto da galeria
   const removerFotoGaleria = (index: number) => {
+    // Limpar URL do preview para evitar vazamento de memória
+    const previewToRemove = previewsGaleria[index];
+    if (previewToRemove) {
+      URL.revokeObjectURL(previewToRemove);
+    }
+    
     setFotosGaleria(prev => prev.filter((_, i) => i !== index));
     setPreviewsGaleria(prev => prev.filter((_, i) => i !== index));
   };
 
   // Remover foto de perfil
   const removerFotoPerfil = () => {
+    // Limpar URL do preview para evitar vazamento de memória
+    if (previewFotoPerfil) {
+      URL.revokeObjectURL(previewFotoPerfil);
+    }
+    
     setFotoPerfil(null);
     setPreviewFotoPerfil("");
   };
@@ -604,23 +637,44 @@ export default function CadastroProfissional() {
               {previewsGaleria.length > 0 && (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {previewsGaleria.map((preview, index) => (
-                    <div key={index} className="relative group">
-                      <img
-                        src={preview}
-                        alt={`Trabalho ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-xl border-2 border-gray-200 shadow-md"
-                      />
+                    <div key={`${preview}-${index}`} className="relative group">
+                      <div className="w-full h-32 bg-gray-100 rounded-xl border-2 border-gray-200 shadow-md overflow-hidden">
+                        <img
+                          src={preview}
+                          alt={`Trabalho ${index + 1}`}
+                          className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                          onLoad={(e) => {
+                            const img = e.target as HTMLImageElement;
+                            img.style.opacity = '1';
+                          }}
+                          onError={(e) => {
+                            console.error('Erro ao carregar imagem:', preview);
+                            const img = e.target as HTMLImageElement;
+                            img.style.display = 'none';
+                          }}
+                          style={{ 
+                            opacity: '0',
+                            transition: 'opacity 0.3s ease-in-out'
+                          }}
+                        />
+                      </div>
                       <button
                         type="button"
                         onClick={() => removerFotoGaleria(index)}
                         className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors shadow-lg opacity-0 group-hover:opacity-100"
+                        title="Remover foto"
                       >
                         <FaTimes size={10} />
                       </button>
-                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded-xl flex items-center justify-center">
+                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded-xl flex items-center justify-center pointer-events-none">
                         <span className="text-white font-medium opacity-0 group-hover:opacity-100 transition-opacity">
                           Remover
                         </span>
+                      </div>
+                      
+                      {/* Indicador de carregamento */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
                       </div>
                     </div>
                   ))}
