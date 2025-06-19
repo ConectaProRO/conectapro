@@ -239,6 +239,29 @@ export default function AdminPage() {
     }
   };
 
+  const excluirTodosProfissionais = async () => {
+    try {
+      // Excluir todos os profissionais um por um
+      const promessas = cadastros.map(cadastro => 
+        fetch(`/api/admin/excluir-profissional?id=${cadastro.id}`, {
+          method: 'DELETE'
+        })
+      );
+
+      await Promise.all(promessas);
+      
+      // Limpar o estado local
+      setCadastros([]);
+      alert(`✅ Todos os ${cadastros.length} profissionais foram excluídos permanentemente!`);
+      
+      // Recarregar dados para confirmar
+      carregarDados();
+    } catch (error) {
+      console.error('Erro ao excluir todos os profissionais:', error);
+      alert('Erro ao excluir profissionais. Alguns podem não ter sido excluídos.');
+    }
+  };
+
   const formatarData = (timestamp: string) => {
     return new Date(timestamp).toLocaleString('pt-BR');
   };
@@ -314,6 +337,19 @@ export default function AdminPage() {
               className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400"
             >
               {carregando ? 'Carregando...' : 'Atualizar'}
+            </button>
+            <button
+              onClick={() => {
+                if (confirm('⚠️ ATENÇÃO: Deseja excluir TODOS os cadastros de profissionais? Esta ação é IRREVERSÍVEL!')) {
+                  if (confirm('🚨 CONFIRMAÇÃO FINAL: Tem certeza absoluta? Todos os dados serão perdidos permanentemente!')) {
+                    excluirTodosProfissionais();
+                  }
+                }
+              }}
+              className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
+            >
+              <FaTrash size={14} />
+              Limpar Todos
             </button>
             <Link href="/" className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
               Voltar ao Site
@@ -479,10 +515,11 @@ export default function AdminPage() {
                               
                               <button
                                 onClick={() => excluirProfissional(cadastro.id)}
-                                className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition-colors flex items-center gap-1"
+                                className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition-colors flex items-center gap-1 font-semibold"
+                                title="Excluir permanentemente este profissional"
                               >
                                 <FaTrash size={12} />
-                                Excluir
+                                🗑️ EXCLUIR
                               </button>
                             </div>
                           </td>
