@@ -114,6 +114,22 @@ export default function CadastroProfissional() {
     };
   }, []);
 
+  // Limpar URLs de preview quando o componente for desmontado
+  useEffect(() => {
+    return () => {
+      // Limpar previews da galeria
+      previewsGaleria.forEach(url => {
+        if (url) {
+          URL.revokeObjectURL(url);
+        }
+      });
+      // Limpar preview da foto de perfil
+      if (previewFotoPerfil) {
+        URL.revokeObjectURL(previewFotoPerfil);
+      }
+    };
+  }, []);
+
   const handleServicoChange = (servico: string) => {
     setServicosSelecionados((prev) =>
       prev.includes(servico)
@@ -148,26 +164,41 @@ export default function CadastroProfissional() {
       const validFiles = filesArray.filter(file => {
         const isImage = file.type.startsWith('image/');
         const isValidSize = file.size <= 5 * 1024 * 1024; // 5MB
+        
+        if (!isImage) {
+          console.warn('Arquivo ignorado - não é uma imagem:', file.name);
+        }
+        if (!isValidSize) {
+          console.warn('Arquivo ignorado - muito grande:', file.name, file.size);
+        }
+        
         return isImage && isValidSize;
       });
 
       if (validFiles.length !== filesArray.length) {
-        alert('Alguns arquivos foram ignorados. Certifique-se de selecionar apenas imagens menores que 5MB.');
+        alert('⚠️ Alguns arquivos foram ignorados. Use apenas imagens (JPG, PNG, WEBP) menores que 5MB.');
       }
 
+      // Adicionar arquivos válidos
       setFotosGaleria(prev => [...prev, ...validFiles]);
       
-      // Criar previews com tratamento de erro
-      const newPreviews = validFiles.map(file => {
+      // Criar previews com validação adicional
+      const newPreviews: string[] = [];
+      
+      validFiles.forEach(file => {
         try {
-          return URL.createObjectURL(file);
+          const objectURL = URL.createObjectURL(file);
+          newPreviews.push(objectURL);
+          console.log('✅ Preview criado para:', file.name);
         } catch (error) {
-          console.error('Erro ao criar preview:', error);
-          return null;
+          console.error('❌ Erro ao criar preview para:', file.name, error);
         }
-      }).filter(Boolean) as string[];
+      });
       
       setPreviewsGaleria(prev => [...prev, ...newPreviews]);
+      
+      // Limpar o input para permitir selecionar os mesmos arquivos novamente
+      e.target.value = '';
     }
   };
 
@@ -647,44 +678,52 @@ export default function CadastroProfissional() {
               {previewsGaleria.length > 0 && (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {previewsGaleria.map((preview, index) => (
-                    <div key={`${preview}-${index}`} className="relative group">
-                      <div className="w-full h-32 bg-gray-100 rounded-xl border-2 border-gray-200 shadow-md overflow-hidden">
+                    <div key={`galeria-${index}`} className="relative group">
+                      <div className="w-full h-32 bg-gray-100 rounded-xl border-2 border-gray-200 shadow-md overflow-hidden relative">
+                        {/* Indicador de carregamento - fica atrás da imagem */}
+                        <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                        </div>
+                        
                         <img
                           src={preview}
                           alt={`Trabalho ${index + 1}`}
-                          className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                          className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105 relative z-10"
                           onLoad={(e) => {
                             const img = e.target as HTMLImageElement;
-                            img.style.opacity = '1';
+                            const spinner = img.parentElement?.querySelector('.animate-spin')?.parentElement;
+                            if (spinner) {
+                              (spinner as HTMLElement).style.display = 'none';
+                            }
                           }}
                           onError={(e) => {
                             console.error('Erro ao carregar imagem:', preview);
                             const img = e.target as HTMLImageElement;
-                            img.style.display = 'none';
-                          }}
-                          style={{ 
-                            opacity: '0',
-                            transition: 'opacity 0.3s ease-in-out'
+                            const container = img.parentElement;
+                            if (container) {
+                              container.innerHTML = `
+                                <div class="flex items-center justify-center h-full text-red-500">
+                                  <span>❌ Erro ao carregar</span>
+                                </div>
+                              `;
+                            }
                           }}
                         />
                       </div>
+                      
                       <button
                         type="button"
                         onClick={() => removerFotoGaleria(index)}
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors shadow-lg opacity-0 group-hover:opacity-100"
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors shadow-lg opacity-0 group-hover:opacity-100 z-20"
                         title="Remover foto"
                       >
                         <FaTimes size={10} />
                       </button>
-                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded-xl flex items-center justify-center pointer-events-none">
+                      
+                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded-xl flex items-center justify-center pointer-events-none z-10">
                         <span className="text-white font-medium opacity-0 group-hover:opacity-100 transition-opacity">
                           Remover
                         </span>
-                      </div>
-                      
-                      {/* Indicador de carregamento */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
                       </div>
                     </div>
                   ))}
