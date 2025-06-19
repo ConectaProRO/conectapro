@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { FaStar, FaCheck, FaTimes, FaEye } from 'react-icons/fa';
+import { FaStar, FaCheck, FaTimes, FaEye, FaTrash, FaThumbsDown } from 'react-icons/fa';
 
 interface Cadastro {
   id: string;
@@ -131,6 +131,50 @@ export default function AdminPage() {
     } catch (error) {
       console.error('Erro ao aprovar profissional:', error);
       alert('Erro ao aprovar profissional.');
+    }
+  };
+
+  const desaprovarProfissional = async (id: string) => {
+    if (!confirm('Tem certeza que deseja desaprovar este profissional?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/admin/desaprovar-profissional', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+
+      if (response.ok) {
+        setCadastros(prev => prev.map(c => 
+          c.id === id ? { ...c, status: 'rejeitado' as const } : c
+        ));
+        alert('Profissional desaprovado com sucesso!');
+      }
+    } catch (error) {
+      console.error('Erro ao desaprovar profissional:', error);
+      alert('Erro ao desaprovar profissional.');
+    }
+  };
+
+  const excluirProfissional = async (id: string) => {
+    if (!confirm('ATENÇÃO: Tem certeza que deseja EXCLUIR permanentemente este profissional? Esta ação não pode ser desfeita!')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/excluir-profissional?id=${id}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        setCadastros(prev => prev.filter(c => c.id !== id));
+        alert('Profissional excluído permanentemente!');
+      }
+    } catch (error) {
+      console.error('Erro ao excluir profissional:', error);
+      alert('Erro ao excluir profissional.');
     }
   };
 
@@ -392,15 +436,35 @@ export default function AdminPage() {
                             </span>
                           </td>
                           <td className="px-6 py-4">
-                            {cadastro.status === 'pendente' && (
+                            <div className="flex flex-col gap-2">
+                              {cadastro.status === 'pendente' && (
+                                <button
+                                  onClick={() => aprovarProfissional(cadastro.id)}
+                                  className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 transition-colors flex items-center gap-1"
+                                >
+                                  <FaCheck size={12} />
+                                  Aprovar
+                                </button>
+                              )}
+                              
+                              {cadastro.status === 'aprovado' && (
+                                <button
+                                  onClick={() => desaprovarProfissional(cadastro.id)}
+                                  className="bg-orange-600 text-white px-3 py-1 rounded text-sm hover:bg-orange-700 transition-colors flex items-center gap-1"
+                                >
+                                  <FaThumbsDown size={12} />
+                                  Desaprovar
+                                </button>
+                              )}
+                              
                               <button
-                                onClick={() => aprovarProfissional(cadastro.id)}
-                                className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 transition-colors flex items-center gap-1"
+                                onClick={() => excluirProfissional(cadastro.id)}
+                                className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition-colors flex items-center gap-1"
                               >
-                                <FaCheck size={12} />
-                                Aprovar
+                                <FaTrash size={12} />
+                                Excluir
                               </button>
-                            )}
+                            </div>
                           </td>
                         </tr>
                       ))}
