@@ -12,13 +12,18 @@ interface Cadastro {
   telefone: string;
   profissao: string;
   bairro: string;
-  nivelServicos: Record<string, string>;
+  servicosSelecionados: string[]; // Novo sistema
   transportes: string[];
   totalFotos: number;
   fotos?: string[];
   descricao?: string;
   experiencia?: string;
   preco?: string;
+  temFotoPerfil?: boolean;
+  numeroFotosGaleria?: number;
+  // Compatibilidade com dados antigos
+  nivelServicos?: Record<string, string>;
+  meiosTransporte?: string[];
 }
 
 interface Avaliacao {
@@ -174,11 +179,21 @@ export default function AdminPage() {
     return new Date(timestamp).toLocaleString('pt-BR');
   };
 
-  const getServicosAtivos = (nivelServicos: Record<string, string>) => {
-    return Object.entries(nivelServicos)
-      .filter(([, nivel]) => nivel !== 'Não faço')
-      .map(([servico, nivel]) => `${servico} (${nivel})`)
-      .join(', ');
+  const getServicosAtivos = (cadastro: Cadastro) => {
+    // Novo sistema: usar servicosSelecionados
+    if (cadastro.servicosSelecionados && cadastro.servicosSelecionados.length > 0) {
+      return cadastro.servicosSelecionados.join(', ');
+    }
+    
+    // Sistema antigo: usar nivelServicos para compatibilidade
+    if (cadastro.nivelServicos) {
+      return Object.entries(cadastro.nivelServicos)
+        .filter(([, nivel]) => nivel !== 'Não faço')
+        .map(([servico, nivel]) => `${servico} (${nivel})`)
+        .join(', ');
+    }
+    
+    return 'Nenhum serviço selecionado';
   };
 
   const renderEstrelas = (nota: number) => {
@@ -322,6 +337,7 @@ export default function AdminPage() {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Contato</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Profissão/Bairro</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Serviços</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Detalhes</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ações</th>
                       </tr>
@@ -350,7 +366,18 @@ export default function AdminPage() {
                             <div className="text-xs text-gray-400">{cadastro.bairro}</div>
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-500 max-w-xs">
-                            <div className="truncate">{getServicosAtivos(cadastro.nivelServicos)}</div>
+                            <div className="truncate">{getServicosAtivos(cadastro)}</div>
+                          </td>
+                          <td className="px-6 py-4 text-xs text-gray-500">
+                            <div className="space-y-1">
+                              {cadastro.experiencia && (
+                                <div>📈 {cadastro.experiencia} anos</div>
+                              )}
+                              {(cadastro.meiosTransporte || cadastro.transportes)?.length > 0 && (
+                                <div>🚗 {(cadastro.meiosTransporte || cadastro.transportes || []).join(', ')}</div>
+                              )}
+                              <div>📸 {cadastro.temFotoPerfil ? '✅' : '❌'} Perfil | {cadastro.numeroFotosGaleria || 0} fotos</div>
+                            </div>
                           </td>
                           <td className="px-6 py-4">
                             <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
