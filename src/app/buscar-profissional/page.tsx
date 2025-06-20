@@ -25,6 +25,7 @@ interface Profissional {
   totalFotos: number;
   fotos?: string[];
   fotoPerfil?: string; // Foto de perfil em base64
+  visivelNoSite?: boolean; // Controla se aparece no site
   descricao?: string;
   experiencia?: string;
   preco?: string;
