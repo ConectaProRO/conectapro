@@ -8,6 +8,7 @@ interface Cadastro {
   id: string;
   timestamp: string;
   status: 'pendente' | 'aprovado' | 'rejeitado';
+  visivelNoSite?: boolean; // Controla se aparece no site independente do status
   nome: string;
   telefone: string;
   profissao: string;
@@ -175,6 +176,50 @@ export default function AdminPage() {
     } catch (error) {
       console.error('Erro ao excluir profissional:', error);
       alert('Erro ao excluir profissional.');
+    }
+  };
+
+  const tornarVisivel = async (id: string) => {
+    try {
+      const response = await fetch('/api/admin/tornar-visivel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+
+      if (response.ok) {
+        setCadastros(prev => prev.map(c => 
+          c.id === id ? { ...c, visivelNoSite: true } : c
+        ));
+        alert('Profissional agora está VISÍVEL no site!');
+      }
+    } catch (error) {
+      console.error('Erro ao tornar profissional visível:', error);
+      alert('Erro ao tornar profissional visível.');
+    }
+  };
+
+  const tornarInvisivel = async (id: string) => {
+    if (!confirm('Tem certeza que deseja OCULTAR este profissional do site? Ele não aparecerá nas buscas.')) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/admin/tornar-invisivel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+
+      if (response.ok) {
+        setCadastros(prev => prev.map(c => 
+          c.id === id ? { ...c, visivelNoSite: false } : c
+        ));
+        alert('Profissional agora está OCULTO do site!');
+      }
+    } catch (error) {
+      console.error('Erro ao tornar profissional invisível:', error);
+      alert('Erro ao tornar profissional invisível.');
     }
   };
 
@@ -438,18 +483,18 @@ export default function AdminPage() {
                 </div>
               ) : (
                 <>
-                  <div className="bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-200 p-6 m-4 rounded-xl shadow-lg">
+                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 p-6 m-4 rounded-xl shadow-lg">
                     <div className="flex items-center gap-3">
-                      <span className="text-3xl">🚨</span>
+                      <span className="text-3xl">ℹ️</span>
                       <div>
-                        <p className="text-lg font-bold text-red-800 mb-1">
-                          IMPORTANTE: Botões de Exclusão
+                        <p className="text-lg font-bold text-blue-800 mb-2">
+                          📋 CONTROLES DISPONÍVEIS
                         </p>
-                        <p className="text-sm text-red-700">
-                          <strong>Role a tabela para a DIREITA</strong> para ver a coluna &quot;🗑️ AÇÕES&quot; com os botões de exclusão.
-                          <br />
-                          Cada profissional tem botões para <strong>EXCLUIR</strong> (vermelho) e <strong>DESAPROVAR</strong> (laranja).
-                        </p>
+                        <div className="text-sm text-blue-700 space-y-1">
+                          <p><strong>👁️ Visibilidade:</strong> Controla se o profissional aparece no site (útil para ausências temporárias)</p>
+                          <p><strong>🗑️ Ações:</strong> Role para a DIREITA para ver botões de aprovar, desaprovar e excluir</p>
+                          <p><strong>💡 Dica:</strong> Use "Ocultar" quando o profissional estiver assinando carteira, viajando, etc.</p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -464,6 +509,7 @@ export default function AdminPage() {
                         <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Serviços</th>
                         <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Detalhes</th>
                         <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase bg-blue-50">👁️ Visibilidade</th>
                         <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase w-40 bg-red-50">🚨 AÇÕES</th>
                       </tr>
                     </thead>
@@ -515,6 +561,35 @@ export default function AdminPage() {
                               {cadastro.status === 'pendente' ? 'Pendente' : 
                                cadastro.status === 'aprovado' ? 'Aprovado' : 'Rejeitado'}
                             </span>
+                          </td>
+                          <td className="px-3 py-4">
+                            <div className="flex flex-col gap-2">
+                              <span className={`inline-flex px-3 py-2 text-sm font-bold rounded-lg ${
+                                cadastro.visivelNoSite !== false 
+                                  ? 'bg-green-100 text-green-800 border-2 border-green-300'
+                                  : 'bg-red-100 text-red-800 border-2 border-red-300'
+                              }`}>
+                                {cadastro.visivelNoSite !== false ? '👁️ VISÍVEL' : '🙈 OCULTO'}
+                              </span>
+                              
+                              {cadastro.visivelNoSite !== false ? (
+                                <button
+                                  onClick={() => tornarInvisivel(cadastro.id)}
+                                  className="bg-orange-600 text-white px-3 py-1 rounded-lg text-xs font-bold hover:bg-orange-700 transition-colors flex items-center justify-center gap-1"
+                                  title="Ocultar do site (temporariamente indisponível)"
+                                >
+                                  🙈 Ocultar
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => tornarVisivel(cadastro.id)}
+                                  className="bg-blue-600 text-white px-3 py-1 rounded-lg text-xs font-bold hover:bg-blue-700 transition-colors flex items-center justify-center gap-1"
+                                  title="Mostrar no site novamente"
+                                >
+                                  👁️ Mostrar
+                                </button>
+                              )}
+                            </div>
                           </td>
                           <td className="px-3 py-4 w-40">
                             <div className="flex flex-col gap-2 min-w-[140px]">

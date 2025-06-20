@@ -16,6 +16,7 @@ export interface Cadastro {
   id: string;
   timestamp: string;
   status: 'pendente' | 'aprovado' | 'rejeitado';
+  visivelNoSite?: boolean; // Controla se aparece no site independente do status
   nome: string;
   telefone: string;
   profissao: string;
@@ -187,7 +188,9 @@ export function obterCadastros(): Cadastro[] {
 
 export function obterProfissionaisAprovados(): Cadastro[] {
   garantirInicializacao();
-  return cadastrosData.filter(c => c.status === 'aprovado');
+  return cadastrosData.filter(c => 
+    c.status === 'aprovado' && c.visivelNoSite !== false
+  );
 }
 
 export function obterProfissionalPorId(id: string): Cadastro | undefined {
