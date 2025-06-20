@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { FaStar, FaCheck, FaTimes, FaEye, FaTrash, FaThumbsDown, FaSync } from 'react-icons/fa';
+import { FaStar, FaCheck, FaTimes, FaEye, FaTrash, FaThumbsDown } from 'react-icons/fa';
 
 interface Cadastro {
   id: string;
@@ -493,7 +493,7 @@ export default function AdminPage() {
                         <div className="text-sm text-blue-700 space-y-1">
                           <p><strong>👁️ Visibilidade:</strong> Controla se o profissional aparece no site (útil para ausências temporárias)</p>
                           <p><strong>🗑️ Ações:</strong> Role para a DIREITA para ver botões de aprovar, desaprovar e excluir</p>
-                          <p><strong>💡 Dica:</strong> Use "Ocultar" quando o profissional estiver assinando carteira, viajando, etc.</p>
+                          <p><strong>💡 Dica:</strong> Use &quot;Ocultar&quot; quando o profissional estiver assinando carteira, viajando, etc.</p>
                         </div>
                       </div>
                     </div>
