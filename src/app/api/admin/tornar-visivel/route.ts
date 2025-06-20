@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     const filePath = join(process.cwd(), 'data', 'cadastros.json');
     const data = JSON.parse(readFileSync(filePath, 'utf8'));
     
-    const index = data.findIndex((item: any) => item.id === id);
+    const index = data.findIndex((item: { id: string }) => item.id === id);
     if (index === -1) {
       return NextResponse.json({ error: 'Profissional não encontrado' }, { status: 404 });
     }
