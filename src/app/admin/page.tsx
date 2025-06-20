@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { FaStar, FaCheck, FaTimes, FaEye, FaTrash, FaThumbsDown } from 'react-icons/fa';
+import { FaStar, FaCheck, FaTimes, FaEye, FaTrash, FaThumbsDown, FaSync } from 'react-icons/fa';
 
 interface Cadastro {
   id: string;
@@ -429,12 +429,19 @@ export default function AdminPage() {
                 </div>
               ) : (
                 <>
-                  <div className="bg-yellow-50 border border-yellow-200 p-4 m-4 rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <span className="text-yellow-600">⚠️</span>
-                      <p className="text-sm text-yellow-800">
-                        <strong>Dica:</strong> Role horizontalmente para ver a coluna &quot;🗑️ AÇÕES&quot; onde estão os botões de exclusão.
-                      </p>
+                  <div className="bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-200 p-6 m-4 rounded-xl shadow-lg">
+                    <div className="flex items-center gap-3">
+                      <span className="text-3xl">🚨</span>
+                      <div>
+                        <p className="text-lg font-bold text-red-800 mb-1">
+                          IMPORTANTE: Botões de Exclusão
+                        </p>
+                        <p className="text-sm text-red-700">
+                          <strong>Role a tabela para a DIREITA</strong> para ver a coluna &quot;🗑️ AÇÕES&quot; com os botões de exclusão.
+                          <br />
+                          Cada profissional tem botões para <strong>EXCLUIR</strong> (vermelho) e <strong>DESAPROVAR</strong> (laranja).
+                        </p>
+                      </div>
                     </div>
                   </div>
                   <div className="overflow-x-auto">
@@ -448,7 +455,7 @@ export default function AdminPage() {
                         <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Serviços</th>
                         <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Detalhes</th>
                         <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase w-32">🗑️ AÇÕES</th>
+                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase w-40 bg-red-50">🚨 AÇÕES</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
@@ -500,34 +507,34 @@ export default function AdminPage() {
                                cadastro.status === 'aprovado' ? 'Aprovado' : 'Rejeitado'}
                             </span>
                           </td>
-                          <td className="px-3 py-4 w-32">
-                            <div className="flex flex-col gap-2">
+                          <td className="px-3 py-4 w-40">
+                            <div className="flex flex-col gap-2 min-w-[140px]">
                               {cadastro.status === 'pendente' && (
                                 <button
                                   onClick={() => aprovarProfissional(cadastro.id)}
-                                  className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 transition-colors flex items-center gap-1"
+                                  className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-700 transition-colors flex items-center justify-center gap-2 shadow-lg"
                                 >
-                                  <FaCheck size={12} />
-                                  Aprovar
+                                  <FaCheck size={14} />
+                                  ✅ APROVAR
                                 </button>
                               )}
                               
                               {cadastro.status === 'aprovado' && (
                                 <button
                                   onClick={() => desaprovarProfissional(cadastro.id)}
-                                  className="bg-orange-600 text-white px-3 py-1 rounded text-sm hover:bg-orange-700 transition-colors flex items-center gap-1"
+                                  className="bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-orange-700 transition-colors flex items-center justify-center gap-2 shadow-lg"
                                 >
-                                  <FaThumbsDown size={12} />
-                                  Desaprovar
+                                  <FaThumbsDown size={14} />
+                                  👎 DESAPROVAR
                                 </button>
                               )}
                               
                               <button
                                 onClick={() => excluirProfissional(cadastro.id)}
-                                className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition-colors flex items-center gap-1 font-semibold"
+                                className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-700 transition-colors flex items-center justify-center gap-2 shadow-lg border-2 border-red-700"
                                 title="Excluir permanentemente este profissional"
                               >
-                                <FaTrash size={12} />
+                                <FaTrash size={14} />
                                 🗑️ EXCLUIR
                               </button>
                             </div>
