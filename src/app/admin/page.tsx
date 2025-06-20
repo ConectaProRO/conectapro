@@ -330,14 +330,23 @@ export default function AdminPage() {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Dashboard Admin</h1>
-          <div className="flex gap-4">
-            <button
-              onClick={carregarDados}
-              disabled={carregando}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400"
-            >
-              {carregando ? 'Carregando...' : 'Atualizar'}
-            </button>
+                      <div className="flex gap-4">
+              <button
+                onClick={carregarDados}
+                disabled={carregando}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400"
+              >
+                {carregando ? 'Carregando...' : '🔄 Atualizar'}
+              </button>
+              <button
+                onClick={() => {
+                  console.log('Dados atuais:', { cadastros, avaliacoes });
+                  alert(`Dados carregados:\n• ${cadastros.length} profissionais\n• ${avaliacoes.length} avaliações`);
+                }}
+                className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+              >
+                🔍 Debug
+              </button>
             <button
               onClick={() => {
                 if (confirm('⚠️ ATENÇÃO: Deseja excluir TODOS os cadastros de profissionais? Esta ação é IRREVERSÍVEL!')) {
