@@ -5,12 +5,83 @@ import Link from "next/link";
 const postsBlog = [
   {
     id: 1,
-    titulo: "5 Dicas para Não Ser Enganado na Obra",
-    resumo: "Orientações práticas para evitar golpes, atrasos e cobranças abusivas na construção civil. Proteja seu investimento!",
-    data: "20 de Janeiro, 2025",
-    categoria: "Proteção",
+    titulo: "Como Surgiu a ConectaPro? A História por Trás da Plataforma",
+    resumo: "Descubra a origem da ConectaPro: nasceu da experiência real em obras, da necessidade de profissionais e da falta de transparência no mercado da construção civil em Porto Velho.",
+    data: "22 de Janeiro, 2025",
+    categoria: "História",
     imagem: "/conectapro.png",
-    cta: "Quer contratar um profissional de confiança em Porto Velho? Clique aqui e fale direto com quem faz!"
+    conteudo: `
+      <h2>A Realidade do Mercado da Construção em Porto Velho</h2>
+      
+      <p>A ConectaPro não nasceu de uma ideia teórica ou de um escritório climatizado. Ela surgiu do chão da obra, literalmente. <strong>Anos de vivência em canteiros de obras em Porto Velho</strong> revelaram uma realidade que muitos conhecem, mas poucos falam abertamente: o tamanho gigantesco do mercado informal da construção civil.</p>
+
+      <p>Imagine a seguinte cena: você está em uma obra e vê profissionais extremamente qualificados, com anos de experiência, que sabem fazer seu trabalho com excelência, mas que <strong>não têm tempo nem conhecimento para divulgar seus serviços</strong>. Eles passam o dia inteiro trabalhando, chegam em casa cansados, e a ideia de criar um perfil no Instagram ou investir em marketing digital parece um mundo distante.</p>
+
+      <h2>O Problema da Gestão de Obras</h2>
+
+      <p>Durante esses anos, ficou claro que <strong>a melhor forma de administrar uma obra é separando-a por etapas</strong> e colocando em cada etapa um profissional especialista em determinado serviço. Não adianta querer que um pedreiro faça instalação elétrica ou que um pintor resolva problemas hidráulicos. Cada profissional tem sua especialidade, e quando você coloca a pessoa certa no lugar certo, o resultado é sempre superior.</p>
+
+      <p>Mas como encontrar esses especialistas? Como saber quem é realmente bom no que faz? E mais importante: <strong>como fazer isso sem pagar taxas abusivas para intermediários</strong> que nunca pisaram em uma obra?</p>
+
+      <h2>A Informalidade e Seus Riscos</h2>
+
+      <p>Uma das coisas que mais chamava atenção era ver que <strong>muitos serviços eram executados sem contrato formal</strong>. Não por má fé, mas pela correria do dia a dia. O profissional precisava trabalhar, o cliente precisava resolver seu problema, e no meio dessa urgência, as formalidades ficavam para depois.</p>
+
+      <p>Resultado? Mal-entendidos sobre prazos, valores, materiais inclusos ou não, garantias... Problemas que poderiam ser evitados com um simples contrato bem elaborado, mas que muitas vezes não acontecia por <strong>falta de ajuda ou conhecimento de como fazer</strong>.</p>
+
+      <h2>As Mensagens que Mudaram Tudo</h2>
+
+      <p>O ponto de virada veio através de mensagens. Profissionais experientes, que sabiam fazer seu trabalho com os olhos fechados, me procuravam com uma pergunta simples mas reveladora: <strong>"Quanto devo cobrar pelo meu serviço?"</strong></p>
+
+      <p>Do outro lado, clientes me perguntavam: <strong>"Quanto está custando a mão de obra hoje?"</strong>, <strong>"Não tenho noção de quanto vai custar minha obra"</strong>. Era um desencontro total: quem sabia fazer não sabia precificar, e quem precisava fazer não sabia quanto pagar.</p>
+
+      <h2>A Questão dos Projetos e Orçamentos</h2>
+
+      <p>A realidade é dura: <strong>nem todos têm condição de contratar um profissional qualificado</strong> para entregar um projeto em plataforma BIM, com projetos 3D compatibilizados, análise de interferências, projeto detalhado para evitar retrabalho e uma planilha orçamentária com quantitativos precisos.</p>
+
+      <p>Mas isso não significa que essas pessoas devem ficar sem orientação. Todo mundo merece ter acesso a informações básicas sobre sua obra, mesmo que não possa pagar por um projeto completo.</p>
+
+      <h2>A Pergunta Final que Definiu Tudo</h2>
+
+      <p>A gota d'água foi receber mensagens de profissionais perguntando: <strong>"Qual o preço do m² para entregar na chave?"</strong></p>
+
+      <p>Essa pergunta mostrou o tamanho do problema. Profissionais qualificados, com anos de experiência, não tinham uma referência confiável de preços. Não sabiam se estavam cobrando muito, pouco, ou se estavam sendo justos tanto com eles mesmos quanto com seus clientes.</p>
+
+      <h2>Nasce a ConectaPro</h2>
+
+      <p>Foi assim que surgiu a ConectaPro. Não como mais uma plataforma digital, mas como uma <strong>solução real para problemas reais</strong> que vivenciamos no dia a dia da construção civil em Porto Velho.</p>
+
+      <p>Nossa missão é simples:</p>
+      <ul>
+        <li><strong>Conectar</strong> profissionais qualificados com clientes que precisam de seus serviços</li>
+        <li><strong>Fornecer</strong> ferramentas práticas como calculadoras de orçamento e gerador de contratos</li>
+        <li><strong>Eliminar</strong> intermediários desnecessários que só encarecem o serviço</li>
+        <li><strong>Dar transparência</strong> aos preços e processos da construção civil</li>
+        <li><strong>Profissionalizar</strong> relações que antes eram informais</li>
+      </ul>
+
+      <h2>Por Que "ConectaPro"?</h2>
+
+      <p>O nome diz tudo: <strong>Conecta + Pro</strong>. Conectamos profissionais (Pro) com quem precisa de seus serviços. Simples, direto, sem enrolação.</p>
+
+      <p>Não somos mais uma empresa de tecnologia que quer "revolucionar" um mercado que não conhece. Somos pessoas que viveram os problemas da construção civil na pele e decidiram fazer algo a respeito.</p>
+
+      <h2>O Futuro da Construção Civil em Porto Velho</h2>
+
+      <p>Acreditamos que o futuro da construção civil em Porto Velho passa pela <strong>profissionalização das relações</strong>, pela <strong>transparência nos preços</strong> e pela <strong>valorização do profissional qualificado</strong>.</p>
+
+      <p>A ConectaPro é nossa contribuição para esse futuro. Um futuro onde:</p>
+      <ul>
+        <li>Profissionais qualificados são valorizados e bem remunerados</li>
+        <li>Clientes têm acesso a informações claras sobre seus projetos</li>
+        <li>Contratos formais protegem ambas as partes</li>
+        <li>Preços justos beneficiam todo mundo</li>
+        <li>A qualidade do trabalho é o que realmente importa</li>
+      </ul>
+
+      <p><strong>Essa é nossa história. Essa é nossa missão. Bem-vindo à ConectaPro!</strong></p>
+    `,
+    cta: "Conhece nossa história? Agora faça parte dela! Encontre profissionais qualificados ou cadastre-se como profissional."
   },
   {
     id: 2,
@@ -126,10 +197,10 @@ export default function Blog() {
                 </p>
                 
                 <Link 
-                  href="/buscar-profissional" 
+                  href={post.id === 1 ? "/blog/como-surgiu-a-conectapro" : "/buscar-profissional"}
                   className="text-blue-600 font-semibold hover:text-blue-800 transition-colors inline-block"
                 >
-                  {post.cta}
+                  {post.id === 1 ? "Leia a história completa →" : post.cta}
                 </Link>
               </div>
             </article>
