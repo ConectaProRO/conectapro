@@ -299,10 +299,15 @@ export default function RootLayout({
                   href="/calculadoras" 
                   className="text-white hover:text-blue-100 font-medium px-4 py-2 rounded-full transition-all duration-300 hover:bg-white hover:bg-opacity-20"
                 >
-                  🧮 Calculadora
+                  🧮 Calculadoras
                 </Link>
                 <Link 
-                  href="/gerador-contrato" 
+                  href="/precos-cub" 
+                  className="text-white hover:text-blue-100 font-medium px-4 py-2 rounded-full transition-all duration-300 hover:bg-white hover:bg-opacity-20"
+                >
+                  💰 Preços CUB
+                </Link>
+                <Link href="/gerador-contrato" 
                   className="text-white hover:text-blue-100 font-medium px-4 py-2 rounded-full transition-all duration-300 hover:bg-white hover:bg-opacity-20"
                 >
                   📄 Contrato

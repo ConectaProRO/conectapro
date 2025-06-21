@@ -96,6 +96,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
+      url: `${baseUrl}/calculadoras/parede/alvenaria`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    },
+    {
       url: `${baseUrl}/calculadoras/pintura`,
       lastModified: new Date(),
       changeFrequency: 'monthly' as const,
