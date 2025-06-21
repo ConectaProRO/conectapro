@@ -90,6 +90,12 @@ export default function RootLayout({
                   👷 Cadastrar
                 </Link>
                 <Link 
+                  href="/calculadoras" 
+                  className="text-white hover:text-blue-100 font-medium px-4 py-2 rounded-full transition-all duration-300 hover:bg-white hover:bg-opacity-20"
+                >
+                  🧮 Calculadora
+                </Link>
+                <Link 
                   href="/sobre" 
                   className="text-white hover:text-blue-100 font-medium px-4 py-2 rounded-full transition-all duration-300 hover:bg-white hover:bg-opacity-20"
                 >
@@ -153,6 +159,9 @@ export default function RootLayout({
                   </Link>
                   <Link href="/cadastro-profissional" className="block text-gray-300 hover:text-white transition-colors">
                     Cadastrar-se
+                  </Link>
+                  <Link href="/calculadora-orcamento" className="block text-gray-300 hover:text-white transition-colors">
+                    Calculadora de Orçamento
                   </Link>
                   <Link href="/sobre" className="block text-gray-300 hover:text-white transition-colors">
                     Sobre Nós

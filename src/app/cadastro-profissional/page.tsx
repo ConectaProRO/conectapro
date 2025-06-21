@@ -2,17 +2,17 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { FaUpload, FaPaintRoller, FaTools, FaCogs, FaBrush, FaHardHat, FaWrench, FaCubes, FaThLarge, FaArrowUp, FaUser, FaCamera, FaTimes } from "react-icons/fa";
+import { FaUpload, FaTools, FaCogs, FaBrush, FaHardHat, FaCubes, FaThLarge, FaArrowUp, FaUser, FaCamera, FaTimes, FaBolt, FaWater } from "react-icons/fa";
 
 const servicos = [
   { nome: "Forma e Concretagem", icon: <FaCubes /> },
   { nome: "Contra-Piso", icon: <FaThLarge /> },
-  { nome: "Porcelanato e Cerâmica", icon: <FaTools /> },
-  { nome: "Pintura", icon: <FaPaintRoller /> },
-  { nome: "Forro de Gesso", icon: <FaBrush /> },
-  { nome: "Metalúrgica e Solda", icon: <FaWrench /> },
-  { nome: "Reboco", icon: <FaHardHat /> },
+  { nome: "Cerâmica e Porcelanato", icon: <FaTools /> },
   { nome: "Alvenaria", icon: <FaCogs /> },
+  { nome: "Reboco", icon: <FaHardHat /> },
+  { nome: "Instalações Hidrosanitárias", icon: <FaWater /> },
+  { nome: "Instalações Elétricas", icon: <FaBolt /> },
+  { nome: "Forro de Gesso", icon: <FaBrush /> },
 ];
 
 const transportes = [
@@ -71,6 +71,7 @@ export default function CadastroProfissional() {
   const [cadastroRealizado, setCadastroRealizado] = useState(false);
   const [carregando, setCarregando] = useState(false);
   const [mostrarAviso, setMostrarAviso] = useState(false);
+  const [etapaUpload, setEtapaUpload] = useState('');
   // Progresso atualizado: dados pessoais, foto perfil, serviços, experiência, transporte, galeria
   const progresso = Math.round(
     20 + // dados básicos sempre conta
@@ -101,8 +102,27 @@ export default function CadastroProfissional() {
   const handleFotoPerfilChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      
+      // Validar arquivo - mais restritivo
+      const isImage = file.type.startsWith('image/');
+      const isValidSize = file.size <= 2 * 1024 * 1024; // 2MB
+      const isValidType = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(file.type);
+      
+      if (!isImage || !isValidType) {
+        alert('⚠️ Use apenas imagens JPG, PNG ou WEBP para foto de perfil.');
+        e.target.value = '';
+        return;
+      }
+      
+      if (!isValidSize) {
+        alert('⚠️ A foto de perfil deve ter menos que 2MB.');
+        e.target.value = '';
+        return;
+      }
+      
       setFotoPerfil(file);
       setPreviewFotoPerfil(URL.createObjectURL(file));
+      console.log('✅ Foto de perfil selecionada:', file.name, (file.size / 1024).toFixed(1) + 'KB');
     }
   };
 
@@ -111,23 +131,37 @@ export default function CadastroProfissional() {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
       
-      // Validar arquivos
+      // Limitar número total de fotos - mais restritivo
+      const totalFotos = fotosGaleria.length + filesArray.length;
+      if (totalFotos > 8) {
+        alert('⚠️ Máximo de 8 fotos na galeria para evitar problemas de conexão.');
+        e.target.value = '';
+        return;
+      }
+      
+      // Validar arquivos - mais restritivo
       const validFiles = filesArray.filter(file => {
         const isImage = file.type.startsWith('image/');
-        const isValidSize = file.size <= 5 * 1024 * 1024; // 5MB
+        const isValidSize = file.size <= 2 * 1024 * 1024; // 2MB (mais restritivo)
+        const isValidType = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(file.type);
         
-        if (!isImage) {
-          console.warn('Arquivo ignorado - não é uma imagem:', file.name);
+        if (!isImage || !isValidType) {
+          console.warn('Arquivo ignorado - formato inválido:', file.name, file.type);
         }
         if (!isValidSize) {
-          console.warn('Arquivo ignorado - muito grande:', file.name, file.size);
+          console.warn('Arquivo ignorado - muito grande:', file.name, (file.size / 1024 / 1024).toFixed(2) + 'MB');
         }
         
-        return isImage && isValidSize;
+        return isImage && isValidSize && isValidType;
       });
 
       if (validFiles.length !== filesArray.length) {
-        alert('⚠️ Alguns arquivos foram ignorados. Use apenas imagens (JPG, PNG, WEBP) menores que 5MB.');
+        alert('⚠️ Alguns arquivos foram ignorados. Use apenas imagens JPG, PNG ou WEBP menores que 2MB.');
+      }
+
+      if (validFiles.length === 0) {
+        e.target.value = '';
+        return;
       }
 
       // Adicionar arquivos válidos
@@ -140,7 +174,7 @@ export default function CadastroProfissional() {
         try {
           const objectURL = URL.createObjectURL(file);
           newPreviews.push(objectURL);
-          console.log('✅ Preview criado para:', file.name);
+          console.log('✅ Preview criado para:', file.name, (file.size / 1024).toFixed(1) + 'KB');
         } catch (error) {
           console.error('❌ Erro ao criar preview para:', file.name, error);
         }
@@ -176,13 +210,70 @@ export default function CadastroProfissional() {
     setPreviewFotoPerfil("");
   };
 
-  // Função para converter arquivo para base64
-  const converterParaBase64 = (file: File): Promise<string> => {
+  // Função para comprimir imagem de forma extremamente agressiva
+  const comprimirImagemAgressiva = (file: File, maxWidth: number = 400, quality: number = 0.5): Promise<string> => {
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = error => reject(error);
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = () => {
+        // Calcular novas dimensões - extremamente agressivo
+        let { width, height } = img;
+        
+        // Reduzir drasticamente o tamanho
+        const maxDimension = maxWidth;
+        if (width > height) {
+          if (width > maxDimension) {
+            height = (height * maxDimension) / width;
+            width = maxDimension;
+          }
+        } else {
+          if (height > maxDimension) {
+            width = (width * maxDimension) / height;
+            height = maxDimension;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        // Desenhar imagem redimensionada
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        // Converter para base64 com compressão extrema
+        let dataURL = canvas.toDataURL('image/jpeg', quality);
+        let sizeKB = dataURL.length / 1024;
+        
+        console.log(`📏 Imagem inicial: ${width}x${height}, ${sizeKB.toFixed(1)}KB`);
+        
+        // Loop de compressão até ficar < 100KB
+        let currentQuality = quality;
+        while (sizeKB > 100 && currentQuality > 0.2) {
+          currentQuality *= 0.8;
+          dataURL = canvas.toDataURL('image/jpeg', currentQuality);
+          sizeKB = dataURL.length / 1024;
+          console.log(`🔧 Recomprimindo com qualidade ${(currentQuality * 100).toFixed(0)}%: ${sizeKB.toFixed(1)}KB`);
+        }
+        
+        // Se ainda muito grande, reduzir dimensões
+        if (sizeKB > 100) {
+          const newWidth = Math.floor(width * 0.7);
+          const newHeight = Math.floor(height * 0.7);
+          canvas.width = newWidth;
+          canvas.height = newHeight;
+          ctx?.drawImage(img, 0, 0, newWidth, newHeight);
+          dataURL = canvas.toDataURL('image/jpeg', 0.4);
+          sizeKB = dataURL.length / 1024;
+          console.log(`📐 Redimensionado para ${newWidth}x${newHeight}: ${sizeKB.toFixed(1)}KB`);
+        }
+        
+        console.log(`✅ Compressão final: ${sizeKB.toFixed(1)}KB`);
+        resolve(dataURL);
+      };
+      
+      img.onerror = () => reject(new Error('Erro ao processar imagem'));
+      img.src = URL.createObjectURL(file);
     });
   };
 
@@ -190,6 +281,7 @@ export default function CadastroProfissional() {
     e.preventDefault();
     console.log('🚀 Iniciando envio do cadastro completo...');
     setCarregando(true);
+    setEtapaUpload('Preparando dados...');
     
     try {
       const formData = new FormData(e.target as HTMLFormElement);
@@ -198,10 +290,12 @@ export default function CadastroProfissional() {
       let fotoPerfilBase64 = '';
       if (fotoPerfil) {
         try {
-          fotoPerfilBase64 = await converterParaBase64(fotoPerfil);
-          console.log('✅ Foto de perfil convertida para base64');
+          setEtapaUpload('Comprimindo foto de perfil...');
+          fotoPerfilBase64 = await comprimirImagemAgressiva(fotoPerfil);
+          console.log('✅ Foto de perfil comprimida');
         } catch (error) {
-          console.error('❌ Erro ao converter foto de perfil:', error);
+          console.error('❌ Erro ao comprimir foto de perfil:', error);
+          setEtapaUpload('Erro ao processar foto de perfil');
         }
       }
       
@@ -209,13 +303,16 @@ export default function CadastroProfissional() {
       const fotosGaleriaBase64: string[] = [];
       if (fotosGaleria.length > 0) {
         try {
-          for (const foto of fotosGaleria) {
-            const fotoBase64 = await converterParaBase64(foto);
+          setEtapaUpload(`Comprimindo ${fotosGaleria.length} fotos da galeria...`);
+          for (let i = 0; i < fotosGaleria.length; i++) {
+            setEtapaUpload(`Comprimindo foto ${i + 1} de ${fotosGaleria.length}...`);
+            const fotoBase64 = await comprimirImagemAgressiva(fotosGaleria[i]);
             fotosGaleriaBase64.push(fotoBase64);
           }
-          console.log(`✅ ${fotosGaleriaBase64.length} fotos da galeria convertidas para base64`);
+          console.log(`✅ ${fotosGaleriaBase64.length} fotos da galeria comprimidas`);
         } catch (error) {
-          console.error('❌ Erro ao converter fotos da galeria:', error);
+          console.error('❌ Erro ao comprimir fotos da galeria:', error);
+          setEtapaUpload('Erro ao processar fotos da galeria');
         }
       }
       
@@ -235,16 +332,95 @@ export default function CadastroProfissional() {
         timestamp: new Date().toISOString()
       };
 
+      // Verificar tamanho total da requisição
+      const dadosJSON = JSON.stringify(dados);
+      const tamanhoMB = new Blob([dadosJSON]).size / (1024 * 1024);
+      
+      console.log(`📤 Tamanho da requisição: ${tamanhoMB.toFixed(2)}MB`);
       console.log('📤 Dados completos (com fotos):', {
         ...dados,
-        fotoPerfil: dados.fotoPerfil ? '✅ Foto de perfil incluída' : '❌ Sem foto de perfil',
-        fotos: `✅ ${dados.fotos.length} fotos da galeria incluídas`
+        fotoPerfil: dados.fotoPerfil ? `✅ Foto de perfil (${(fotoPerfilBase64.length / 1024).toFixed(1)}KB)` : '❌ Sem foto de perfil',
+        fotos: `✅ ${dados.fotos.length} fotos da galeria (${(fotosGaleriaBase64.join('').length / 1024).toFixed(1)}KB total)`
       });
+      
+      // Verificar se o tamanho é muito grande - limite mais restritivo
+      if (tamanhoMB > 5) {
+        alert('⚠️ As imagens ainda são muito grandes. Tente usar menos fotos.');
+        return;
+      }
+      
+      // Se há fotos na galeria, dividir em lotes pequenos
+      if (fotosGaleriaBase64.length > 2) {
+        setEtapaUpload('Preparando envio em lotes pequenos...');
+        
+        // Primeiro lote: dados básicos + foto perfil + primeiras 2 fotos
+        const primeiroLote = {
+          ...dados,
+          fotos: fotosGaleriaBase64.slice(0, 2),
+          isFirstBatch: true,
+          totalBatches: Math.ceil(fotosGaleriaBase64.length / 2)
+        };
+        
+        // Enviar primeiro lote
+        setEtapaUpload('Enviando dados básicos...');
+        const response1 = await fetch('/api/cadastro', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(primeiroLote),
+        });
+        
+        if (!response1.ok) {
+          throw new Error(`Erro no envio inicial: ${response1.status}`);
+        }
+        
+        const result1 = await response1.json();
+        const cadastroId = result1.id;
+        
+        // Enviar fotos restantes uma por vez
+        for (let i = 2; i < fotosGaleriaBase64.length; i++) {
+          setEtapaUpload(`Enviando foto ${i + 1} de ${fotosGaleriaBase64.length}...`);
+          
+          const fotoIndividual = {
+            cadastroId,
+            fotos: [fotosGaleriaBase64[i]], // Uma foto por vez
+            batchNumber: i - 1,
+            isAdditionalBatch: true
+          };
+          
+          const response = await fetch('/api/cadastro/adicionar-fotos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(fotoIndividual),
+          });
+          
+          if (!response.ok) {
+            console.warn(`Erro na foto ${i + 1}, continuando...`);
+          }
+          
+          // Pequena pausa entre uploads
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+        
+        // Sucesso
+        setMostrarAviso(true);
+        setTimeout(() => {
+          setMostrarAviso(false);
+          setCadastroRealizado(true);
+        }, 3000);
+        
+        return;
+      }
 
+      setEtapaUpload('Enviando cadastro...');
       const response = await fetch('/api/cadastro', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dados),
+        headers: { 
+          'Content-Type': 'application/json',
+          'Content-Length': dadosJSON.length.toString()
+        },
+        body: dadosJSON,
       });
 
       if (response.ok) {
@@ -260,14 +436,36 @@ export default function CadastroProfissional() {
           setCadastroRealizado(true);
         }, 3000);
       } else {
-        const errorData = await response.json();
-        alert('❌ Erro ao enviar cadastro: ' + (errorData.message || 'Tente novamente em alguns minutos.'));
+        console.error('❌ Erro HTTP:', response.status, response.statusText);
+        
+        let errorMessage = 'Erro desconhecido';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || 'Erro no servidor';
+        } catch {
+          errorMessage = `Erro ${response.status}: ${response.statusText}`;
+        }
+        
+        if (response.status === 413) {
+          alert('❌ As imagens são muito grandes. Tente usar menos fotos ou imagens menores.');
+        } else if (response.status >= 500) {
+          alert('❌ Erro no servidor. Tente novamente em alguns minutos.');
+        } else {
+          alert('❌ Erro ao enviar cadastro: ' + errorMessage);
+        }
       }
     } catch (error) {
       console.error('❌ Erro:', error);
-      alert('❌ Erro de conexão. Verifique sua internet e tente novamente.');
+      setEtapaUpload('Erro de conexão');
+      
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        alert('❌ Erro de conexão. Verifique sua internet e tente novamente.');
+      } else {
+        alert('❌ Erro inesperado. Tente novamente em alguns minutos.');
+      }
     } finally {
       setCarregando(false);
+      setEtapaUpload('');
     }
   };
 
@@ -745,7 +943,7 @@ export default function CadastroProfissional() {
                         {fotoPerfil ? 'Alterar foto de perfil' : 'Clique para adicionar sua foto'}
                       </p>
                       <p className="text-sm text-gray-500">
-                        Formatos aceitos: JPG, PNG (máx. 5MB)
+                        Formatos aceitos: JPG, PNG, WEBP (máx. 2MB)
                       </p>
                     </label>
                   </div>
@@ -826,7 +1024,7 @@ export default function CadastroProfissional() {
                 🖼️ Galeria de Trabalhos
               </h2>
               <p className="text-gray-600 mb-6">
-                Mostre seus melhores trabalhos! Quanto mais fotos, maior a confiança dos clientes:
+                Mostre seus melhores trabalhos! Máximo de 8 fotos, cada uma com até 2MB:
               </p>
               
               {/* Upload de fotos */}
@@ -845,7 +1043,7 @@ export default function CadastroProfissional() {
                     Clique para adicionar fotos dos seus trabalhos
                   </p>
                   <p className="text-sm text-gray-500">
-                    {fotosGaleria.length} foto(s) adicionada(s) • Formatos: JPG, PNG
+                    {fotosGaleria.length}/8 foto(s) adicionada(s) • Formatos: JPG, PNG, WEBP (máx. 2MB cada)
                   </p>
                 </label>
               </div>
@@ -914,7 +1112,21 @@ export default function CadastroProfissional() {
                 disabled={carregando}
                 className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-12 py-4 rounded-full text-xl font-bold shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {carregando ? "Enviando..." : "🚀 Finalizar Cadastro"}
+                {carregando ? (
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <div className="flex items-center gap-3">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      <span>Processando...</span>
+                    </div>
+                    {etapaUpload && (
+                      <div className="text-sm opacity-90">
+                        {etapaUpload}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  "🚀 Finalizar Cadastro"
+                )}
               </button>
               
               <p className="text-gray-500 mt-4 text-sm">

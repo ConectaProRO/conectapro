@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { FaCalculator, FaPaintRoller, FaHammer, FaRuler, FaMoneyBillWave, FaWhatsapp, FaArrowLeft, FaInfoCircle, FaTools, FaHome } from "react-icons/fa";
+import { FaCalculator, FaHammer, FaRuler, FaMoneyBillWave, FaWhatsapp, FaArrowLeft, FaInfoCircle, FaTools, FaHome, FaCubes, FaThLarge, FaBolt, FaWater } from "react-icons/fa";
 
 interface Material {
   nome: string;
@@ -10,23 +10,96 @@ interface Material {
   rendimento?: number;
   quantidade?: number;
 }
-const tiposServicos = {
-  pintura: {
-    nome: "Pintura",
-    icone: FaPaintRoller,
+
+interface ItemSINAPI {
+  codigo: string;
+  descricao: string;
+  unidade: string;
+  quantidade: number;
+  preco: number;
+}
+
+interface ServicoTradicional {
+  nome: string;
+  icone: React.ComponentType<{ className?: string }>;
+  unidade: string;
+  tipo?: never;
+  materiais: Record<string, Material>;
+  maoDeObra: { min: number; max: number };
+  fatores: Record<string, Record<string, number>>;
+}
+
+interface ServicoSINAPI {
+  nome: string;
+  icone: React.ComponentType<{ className?: string }>;
+  unidade: string;
+  tipo: "sinapi";
+  composicao: {
+    maoDeObra: ItemSINAPI[];
+    equipamentos: ItemSINAPI[];
+    materiais: ItemSINAPI[];
+  };
+  fatores: Record<string, Record<string, number>>;
+}
+
+type TipoServico = ServicoTradicional | ServicoSINAPI;
+
+// Dados SINAPI baseados na tabela oficial - já incorporados nos serviços
+
+const tiposServicos: Record<string, TipoServico> = {
+  formaeConcretagem: {
+    nome: "Forma e Concretagem",
+    icone: FaCubes,
+    unidade: "m³",
+    tipo: "sinapi",
+    composicao: {
+      maoDeObra: [
+        { codigo: "88262", descricao: "Carpinteiro de formas", unidade: "H", quantidade: 2.286, preco: 29.80 },
+        { codigo: "88309", descricao: "Pedreiro", unidade: "H", quantidade: 6.857, preco: 30.21 },
+        { codigo: "88316", descricao: "Servente", unidade: "H", quantidade: 16.074, preco: 25.95 }
+      ],
+      equipamentos: [
+        { codigo: "90587", descricao: "Vibrador de imersão", unidade: "CHI", quantidade: 0.477, preco: 0.53 }
+      ],
+      materiais: [
+        { codigo: "00038408", descricao: "Concreto usinado bombeável C25", unidade: "m³", quantidade: 1.103, preco: 927.08 }
+      ]
+    },
+    fatores: {
+      complexidade: { simples: 1, media: 1.2, alta: 1.4 },
+      acesso: { facil: 1, medio: 1.1, dificil: 1.3 }
+    }
+  },
+  contraPiso: {
+    nome: "Contra-Piso",
+    icone: FaThLarge,
     unidade: "m²",
     materiais: {
-      tinta: { nome: "Tinta", preco: 45, rendimento: 12, unidade: "litro" } as Material,
-      primer: { nome: "Primer/Selador", preco: 35, rendimento: 15, unidade: "litro" } as Material,
-      lixa: { nome: "Lixa", preco: 8, quantidade: 0.1, unidade: "folha" } as Material,
-      rolo: { nome: "Rolo + Bandeja", preco: 25, quantidade: 0.05, unidade: "conjunto" } as Material,
-      pincel: { nome: "Pincel", preco: 15, quantidade: 0.03, unidade: "unidade" } as Material,
+      cimento: { nome: "Cimento", preco: 28, quantidade: 0.5, unidade: "saco 50kg" },
+      areia: { nome: "Areia", preco: 45, quantidade: 0.08, unidade: "m³" },
+      brita: { nome: "Brita 0", preco: 55, quantidade: 0.05, unidade: "m³" },
+      aditivo: { nome: "Aditivo impermeabilizante", preco: 25, quantidade: 0.02, unidade: "litro" },
     },
-    maoDeObra: { min: 8, max: 15 }, // por m²
+    maoDeObra: { min: 15, max: 25 },
     fatores: {
-      textura: { lisa: 1, rugosa: 1.3, muito_rugosa: 1.5 },
-      demaosTinta: { uma: 1, duas: 1.8, tres: 2.5 },
-      altura: { baixa: 1, media: 1.2, alta: 1.4 }
+      espessura: { "3cm": 1, "5cm": 1.6, "7cm": 2.2 },
+      superficie: { lisa: 1, irregular: 1.2 }
+    }
+  },
+  ceramicaPorcelanato: {
+    nome: "Cerâmica e Porcelanato",
+    icone: FaTools,
+    unidade: "m²",
+    materiais: {
+      piso: { nome: "Cerâmica/Porcelanato", preco: 35, quantidade: 1.1, unidade: "m²" },
+      argamassa: { nome: "Argamassa colante", preco: 22, quantidade: 0.3, unidade: "saco 20kg" },
+      rejunte: { nome: "Rejunte", preco: 18, quantidade: 0.1, unidade: "kg" },
+      espacador: { nome: "Espaçador", preco: 12, quantidade: 0.02, unidade: "kg" },
+    },
+    maoDeObra: { min: 20, max: 35 },
+    fatores: {
+      formato: { "30x30": 1, "45x45": 1.1, "60x60": 1.2, "90x90": 1.4 },
+      complexidade: { simples: 1, media: 1.2, alta: 1.5 }
     }
   },
   alvenaria: {
@@ -74,6 +147,40 @@ const tiposServicos = {
       tipo: { liso: 1, decorativo: 1.4, sanca: 1.8 },
       altura: { baixa: 1, alta: 1.3 }
     }
+  },
+  instalacoesHidrosanitarias: {
+    nome: "Instalações Hidrosanitárias",
+    icone: FaWater,
+    unidade: "ponto",
+    materiais: {
+      tubo: { nome: "Tubo PVC 25mm", preco: 8.5, quantidade: 3, unidade: "metro" },
+      conexoes: { nome: "Conexões diversas", preco: 15, quantidade: 5, unidade: "unidade" },
+      registro: { nome: "Registro esfera", preco: 35, quantidade: 0.5, unidade: "unidade" },
+      soldaFria: { nome: "Solda fria", preco: 12, quantidade: 0.1, unidade: "bisnaga" },
+      fita: { nome: "Fita veda rosca", preco: 3, quantidade: 0.2, unidade: "rolo" },
+    },
+    maoDeObra: { min: 80, max: 150 },
+    fatores: {
+      complexidade: { simples: 1, media: 1.3, alta: 1.8 },
+      acesso: { facil: 1, medio: 1.2, dificil: 1.5 }
+    }
+  },
+  instalacoesEletricas: {
+    nome: "Instalações Elétricas",
+    icone: FaBolt,
+    unidade: "ponto",
+    materiais: {
+      fio: { nome: "Fio 2,5mm²", preco: 4.2, quantidade: 8, unidade: "metro" },
+      eletroduto: { nome: "Eletroduto flexível", preco: 2.8, quantidade: 6, unidade: "metro" },
+      tomada: { nome: "Tomada + espelho", preco: 18, quantidade: 1, unidade: "conjunto" },
+      disjuntor: { nome: "Disjuntor 20A", preco: 25, quantidade: 0.3, unidade: "unidade" },
+      caixinha: { nome: "Caixa 4x2", preco: 3.5, quantidade: 1, unidade: "unidade" },
+    },
+    maoDeObra: { min: 60, max: 120 },
+    fatores: {
+      complexidade: { simples: 1, media: 1.4, alta: 2.0 },
+      acesso: { facil: 1, medio: 1.3, dificil: 1.6 }
+    }
   }
 };
 
@@ -104,7 +211,7 @@ export default function CalculadoraOrcamento() {
       return;
     }
 
-    const servico = tiposServicos[servicoSelecionado as keyof typeof tiposServicos];
+    const servico = tiposServicos[servicoSelecionado];
     const areaNum = parseFloat(area);
     
     // Calcular fator multiplicador baseado nas opções selecionadas
@@ -116,31 +223,72 @@ export default function CalculadoraOrcamento() {
       }
     });
 
-    // Calcular materiais
-    const materiaisCalculados = Object.entries(servico.materiais).map(([, material]) => {
-      let quantidade;
-      if (material.rendimento) {
-        quantidade = (areaNum * fatorTotal) / material.rendimento;
-      } else {
-        quantidade = areaNum * material.quantidade * fatorTotal;
-      }
-      
-      const custo = quantidade * material.preco;
-      
-      return {
-        nome: material.nome,
-        quantidade: Math.ceil(quantidade * 10) / 10,
-        unidade: material.unidade,
-        precoUnitario: material.preco,
-        custoTotal: custo
-      };
-    });
-
-    const custoMateriais = materiaisCalculados.reduce((sum, item) => sum + item.custoTotal, 0);
+    let materiaisCalculados: Array<{
+      nome: string;
+      quantidade: number;
+      unidade: string;
+      precoUnitario: number;
+      custoTotal: number;
+    }> = [];
     
-    // Calcular mão de obra
-    const maoDeObraMin = areaNum * servico.maoDeObra.min * fatorTotal;
-    const maoDeObraMax = areaNum * servico.maoDeObra.max * fatorTotal;
+    let custoMateriais = 0;
+    let maoDeObraMin = 0;
+    let maoDeObraMax = 0;
+
+    if (servico.tipo === "sinapi") {
+      // Cálculo SINAPI
+      const todosItens = [
+        ...servico.composicao.maoDeObra,
+        ...servico.composicao.equipamentos,
+        ...servico.composicao.materiais
+      ];
+
+      materiaisCalculados = todosItens.map((item) => {
+        const quantidade = areaNum * item.quantidade * fatorTotal;
+        const custo = quantidade * item.preco;
+        
+        return {
+          nome: item.descricao,
+          quantidade: Math.ceil(quantidade * 100) / 100,
+          unidade: item.unidade,
+          precoUnitario: item.preco,
+          custoTotal: custo
+        };
+      });
+
+      custoMateriais = materiaisCalculados.reduce((sum, item) => sum + item.custoTotal, 0);
+      
+      // Para SINAPI, mão de obra já está incluída nos itens
+      maoDeObraMin = 0;
+      maoDeObraMax = 0;
+    } else {
+      // Cálculo tradicional
+      materiaisCalculados = Object.entries(servico.materiais).map(([, material]) => {
+        let quantidade;
+        if (material.rendimento) {
+          quantidade = (areaNum * fatorTotal) / material.rendimento;
+        } else {
+          quantidade = areaNum * (material.quantidade || 1) * fatorTotal;
+        }
+        
+        const custo = quantidade * material.preco;
+        
+        return {
+          nome: material.nome,
+          quantidade: Math.ceil(quantidade * 10) / 10,
+          unidade: material.unidade,
+          precoUnitario: material.preco,
+          custoTotal: custo
+        };
+      });
+
+      custoMateriais = materiaisCalculados.reduce((sum, item) => sum + item.custoTotal, 0);
+      
+      // Calcular mão de obra tradicional
+      maoDeObraMin = areaNum * servico.maoDeObra.min * fatorTotal;
+      maoDeObraMax = areaNum * servico.maoDeObra.max * fatorTotal;
+    }
+
     const maoDeObraMedia = (maoDeObraMin + maoDeObraMax) / 2;
 
     // Total
@@ -173,7 +321,7 @@ export default function CalculadoraOrcamento() {
     }).format(valor);
   };
 
-  const servicoAtual = servicoSelecionado ? tiposServicos[servicoSelecionado as keyof typeof tiposServicos] : null;
+  const servicoAtual = servicoSelecionado ? tiposServicos[servicoSelecionado] : null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">

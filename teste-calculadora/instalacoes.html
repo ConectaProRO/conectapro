@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadoras de Instalações - ConectaPro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+        }
+        .calculadora-card {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .calculadora-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(14, 165, 233, 0.4);
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        }
+        .calculadora-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .disponivel {
+            opacity: 1;
+        }
+        .em-breve {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .em-breve:hover {
+            transform: none;
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.3);
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+        }
+        .status-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #10b981;
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-weight: 600;
+        }
+        .em-breve-badge {
+            background: #f59e0b;
+            color: white;
+        }
+        /* Header Suspenso */
+        .header-suspenso {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(14, 165, 233, 0.2);
+            z-index: 1000;
+            padding: 0.75rem 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+        }
+        .nav-btn {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .nav-btn:hover {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+        }
+        .nav-btn.secondary {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+        }
+        .nav-btn.secondary:hover {
+            background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+        }
+        body {
+            padding-top: 4rem;
+        }
+        @media (max-width: 640px) {
+            .nav-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .nav-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            body {
+                padding-top: 6rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header Suspenso -->
+    <div class="header-suspenso">
+        <div class="nav-buttons">
+            <button onclick="voltarCalculadoras()" class="nav-btn">
+                🧮 Voltar às Calculadoras
+            </button>
+            <button onclick="irConectaPro()" class="nav-btn secondary">
+                🏠 ConectaPro
+            </button>
+        </div>
+    </div>
+
+    <!-- Header Principal -->
+    <div class="bg-gradient-primary text-white py-12 px-4">
+        <div class="max-w-6xl mx-auto text-center">
+            <h1 class="text-4xl font-bold mb-4">🔧 Calculadoras de Instalações</h1>
+            <p class="text-xl text-sky-100 mb-2">
+                Orçamentos completos para instalações prediais
+            </p>
+            <p class="text-sky-200 text-lg">
+                Hidráulica, Esgoto e Elétrica com dados SINAPI oficiais
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Calculadoras de Instalações -->
+        <div class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">
+                Escolha o Tipo de Instalação
+            </h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Instalação Hidráulica -->
+                <div class="calculadora-card em-breve relative" onclick="alertaEmBreve('Instalação Hidráulica')">
+                    <div class="status-badge em-breve-badge">Em Breve</div>
+                    <div class="text-center text-white">
+                        <div class="calculadora-icon">🚿</div>
+                        <h3 class="text-2xl font-bold mb-3">Instalação Hidráulica</h3>
+                        <p class="text-sky-100 mb-4">
+                            Água fria, quente e sistema de pressurização
+                        </p>
+                        <div class="text-sm text-sky-200">
+                            <div>• Tubulação PVC e PPR</div>
+                            <div>• Conexões e registros</div>
+                            <div>• Mão de obra especializada</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instalação de Esgoto -->
+                <div class="calculadora-card em-breve relative" onclick="alertaEmBreve('Instalação de Esgoto')">
+                    <div class="status-badge em-breve-badge">Em Breve</div>
+                    <div class="text-center text-white">
+                        <div class="calculadora-icon">🚽</div>
+                        <h3 class="text-2xl font-bold mb-3">Instalação de Esgoto</h3>
+                        <p class="text-sky-100 mb-4">
+                            Esgoto sanitário e águas pluviais
+                        </p>
+                        <div class="text-sm text-sky-200">
+                            <div>• Tubulação PVC esgoto</div>
+                            <div>• Caixas de inspeção</div>
+                            <div>• Sistema de ventilação</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instalação Elétrica -->
+                <div class="calculadora-card em-breve relative" onclick="alertaEmBreve('Instalação Elétrica')">
+                    <div class="status-badge em-breve-badge">Em Breve</div>
+                    <div class="text-center text-white">
+                        <div class="calculadora-icon">⚡</div>
+                        <h3 class="text-2xl font-bold mb-3">Instalação Elétrica</h3>
+                        <p class="text-sky-100 mb-4">
+                            Circuitos, quadros e pontos elétricos
+                        </p>
+                        <div class="text-sm text-sky-200">
+                            <div>• Fios e cabos elétricos</div>
+                            <div>• Eletrodutos e caixas</div>
+                            <div>• Disjuntores e tomadas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Integração ConectaPro -->
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">🔗 Integração ConectaPro</h3>
+            <div class="text-center">
+                <p class="text-gray-600 mb-4">
+                    Precisa de profissionais qualificados para executar instalações prediais?
+                </p>
+                <a href="../src/app/page.tsx" target="_blank" 
+                   class="inline-block bg-gradient-primary text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300">
+                    🏠 Encontrar Profissionais no ConectaPro
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        console.log('🔧 Hub de Calculadoras de Instalações iniciado!');
+
+        function abrirCalculadora(arquivo) {
+            console.log('Abrindo calculadora:', arquivo);
+            window.open(arquivo, '_blank');
+        }
+
+        function alertaEmBreve(tipo) {
+            alert(`🚧 Calculadora de ${tipo} em desenvolvimento!\n\nEm breve teremos esta opção disponível com dados SINAPI oficiais para instalações prediais.`);
+        }
+
+        // Funções de navegação
+        function voltarCalculadoras() {
+            window.location.href = 'index.html';
+        }
+        
+        function irConectaPro() {
+            // Tentar ir para a página principal do ConectaPro
+            if (window.opener) {
+                window.opener.location.href = '../src/app/page.tsx';
+                window.close();
+            } else {
+                window.open('../src/app/page.tsx', '_blank');
+            }
+        }
+
+        console.log('🔧 Hub de Instalações carregado com sucesso!');
+    </script>
+</body>
+</html> 

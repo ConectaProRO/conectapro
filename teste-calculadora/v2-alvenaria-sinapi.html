@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Alvenaria - SINAPI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { 
+            font-family: 'Arial', sans-serif; 
+            font-size: 18px;
+        }
+        .campo-input {
+            font-size: 2rem;
+            padding: 1.5rem;
+            border: 3px solid #cbd5e1;
+            border-radius: 1rem;
+            text-align: center;
+            font-weight: bold;
+            width: 100%;
+            background-color: #f8fafc;
+        }
+        .campo-input:focus {
+            border-color: #ef4444;
+            outline: none;
+            background-color: white;
+        }
+        .botao-calcular {
+            font-size: 1.5rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .botao-calcular:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+        }
+        .cartao {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+        .item-composicao {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-left: 4px solid #ef4444;
+            background: #fef2f2;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        /* Header Suspenso */
+        .header-suspenso {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+            z-index: 1000;
+            padding: 0.75rem 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+        }
+        .nav-btn {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .nav-btn:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        .nav-btn.secondary {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+        }
+        .nav-btn.secondary:hover {
+            background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+        }
+        body {
+            padding-top: 4rem;
+        }
+        @media (max-width: 640px) {
+            .nav-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .nav-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            body {
+                padding-top: 6rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-red-50 to-orange-50 min-h-screen p-4">
+    
+    <!-- Header Suspenso -->
+    <div class="header-suspenso">
+        <div class="nav-buttons">
+            <button onclick="voltarCalculadoras()" class="nav-btn">
+                🧮 Voltar às Calculadoras
+            </button>
+            <button onclick="irConectaPro()" class="nav-btn secondary">
+                🏠 ConectaPro
+            </button>
+        </div>
+    </div>
+    
+    <!-- Cabeçalho -->
+    <header class="text-center mb-8">
+        <div class="text-5xl mb-4">🧱</div>
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Calculadora de Alvenaria</h1>
+        <p class="text-lg text-gray-600">Baseado em Composições SINAPI Oficiais</p>
+        <div class="bg-red-100 text-red-800 px-4 py-2 rounded-lg mt-4 inline-block">
+            <strong>SINAPI:</strong> Alvenaria de Vedação - Bloco Cerâmico 9x19x19cm
+        </div>
+    </header>
+
+    <div class="max-w-4xl mx-auto">
+        
+        <!-- Informações do Serviço -->
+        <div class="cartao bg-blue-50 border-l-4 border-blue-400">
+            <h2 class="text-xl font-bold text-blue-800 mb-3">📋 Especificações Técnicas:</h2>
+            <div class="space-y-2 text-blue-700">
+                <p><strong>Serviço:</strong> Alvenaria de Vedação com Bloco Cerâmico/Tijolo Vazado</p>
+                <p><strong>Dimensões:</strong> 9x19x19cm (8 furos na horizontal)</p>
+                <p><strong>Argamassa:</strong> Traço 1:2:8 (cimento, ligante e areia)</p>
+                <p><strong>Referência:</strong> SINAPI 05/2025 (adaptado para realidade do campo)</p>
+            </div>
+        </div>
+
+        <!-- Formulário -->
+        <div class="cartao">
+            <div class="text-center mb-6">
+                <div class="text-6xl mb-4">📐</div>
+                <h2 class="text-2xl font-bold text-gray-800">Área da Alvenaria</h2>
+                <p class="text-gray-600">Quantos metros quadrados de parede</p>
+            </div>
+            
+            <div class="mb-6">
+                <label for="areaAlvenaria" class="block text-lg font-semibold text-gray-700 mb-3">
+                    Digite a área da alvenaria:
+                </label>
+                <input 
+                    type="number" 
+                    id="areaAlvenaria" 
+                    class="campo-input"
+                    placeholder="Ex: 25"
+                    step="0.1"
+                    min="0"
+                >
+                <div class="text-center mt-3">
+                    <span class="text-xl font-bold text-red-600">metros quadrados (m²)</span>
+                </div>
+            </div>
+            
+            <!-- Dica de Cálculo -->
+            <div class="bg-gray-50 p-4 rounded-lg text-center mb-6">
+                <div class="text-sm text-gray-600">
+                    <strong>💡 Como calcular:</strong><br>
+                    <strong>Área = Comprimento × Altura</strong><br>
+                    <strong>Exemplo:</strong> Parede de 10m × 2,5m = 25m²<br>
+                    <em>Lembre-se de descontar portas e janelas!</em>
+                </div>
+            </div>
+
+            <!-- Tipo de Orçamento -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-700 mb-3">Escolha o tipo de orçamento:</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="selecionarModalidade('sinapi')" id="btn-sinapi"
+                            class="p-4 border-2 rounded-xl transition-all text-center hover:shadow-lg">
+                        <div class="text-2xl mb-2">🏛️</div>
+                        <div class="font-bold">SINAPI Oficial</div>
+                        <div class="text-sm text-gray-600">Valores oficiais da Caixa</div>
+                        <div class="text-xs text-gray-500">Com todos os encargos</div>
+                    </button>
+                    
+                    <button onclick="selecionarModalidade('mercado')" id="btn-mercado"
+                            class="p-4 border-2 border-blue-500 bg-blue-50 rounded-xl transition-all text-center shadow-lg">
+                        <div class="text-2xl mb-2">🏠</div>
+                        <div class="font-bold">Mercado Local</div>
+                        <div class="text-sm text-gray-600">Valores praticados na região</div>
+                        <div class="text-xs text-gray-500">Pedreiros autônomos</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Botão Calcular -->
+            <div class="text-center">
+                <button onclick="calcularAlvenaria()" class="botao-calcular">
+                    🧮 CALCULAR ORÇAMENTO
+                </button>
+            </div>
+        </div>
+
+        <!-- Resultado -->
+        <div id="resultado" class="hidden">
+            <!-- Resumo do Orçamento -->
+            <div class="cartao bg-gradient-to-r from-red-500 to-red-600 text-white">
+                <h2 class="text-3xl font-bold text-center mb-6">💰 Orçamento de Alvenaria</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white bg-opacity-20 rounded-2xl p-6 text-center">
+                        <div class="text-4xl mb-2">📐</div>
+                        <h3 class="text-xl font-bold mb-2">Área Total</h3>
+                        <div id="resultado-area" class="text-3xl font-bold"></div>
+                    </div>
+                    
+                    <div class="bg-white bg-opacity-20 rounded-2xl p-6 text-center">
+                        <div class="text-4xl mb-2">💰</div>
+                        <h3 class="text-xl font-bold mb-2">Valor Total</h3>
+                        <div id="resultado-valor" class="text-3xl font-bold"></div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-6 p-4 bg-white bg-opacity-30 rounded-2xl">
+                    <p class="text-lg opacity-90">Valor calculado pela soma real dos componentes</p>
+                    <p id="tipo-orcamento" class="text-sm opacity-80 mt-1"></p>
+                    <p class="text-xs opacity-70 mt-1">Baseado em preços SINAPI 05/2025</p>
+                    
+                    <button onclick="document.getElementById('explicacao-detalhada').scrollIntoView({behavior: 'smooth'})" 
+                            class="mt-3 bg-white bg-opacity-40 hover:bg-opacity-60 text-white px-4 py-2 rounded-lg text-sm transition-all">
+                        💡 Ver Modalidades
+                    </button>
+                </div>
+            </div>
+
+            <!-- Composição Detalhada -->
+            <div class="cartao">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+                    🔍 Composição Detalhada SINAPI
+                </h3>
+                
+                <div class="space-y-6">
+                    
+                    <!-- Mão de Obra -->
+                    <div>
+                        <h4 class="text-xl font-bold text-red-600 mb-4 flex items-center">
+                            <span class="mr-2">👷</span> Mão de Obra
+                        </h4>
+                        <div class="space-y-3">
+                            <div class="item-composicao">
+                                <div class="flex-1">
+                                    <div class="font-semibold" id="pedreiro-titulo">Pedreiro</div>
+                                    <div class="text-sm text-gray-600" id="pedreiro-descricao">Mercado local | <span id="pedreiro-horas"></span>h × R$ 20,00</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-bold text-red-600" id="pedreiro-valor"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="item-composicao">
+                                <div class="flex-1">
+                                    <div class="font-semibold" id="servente-titulo">Servente</div>
+                                    <div class="text-sm text-gray-600" id="servente-descricao">Mercado local | <span id="servente-horas"></span>h × R$ 15,00</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-bold text-red-600" id="servente-valor"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Materiais -->
+                    <div>
+                        <h4 class="text-xl font-bold text-red-600 mb-4 flex items-center">
+                            <span class="mr-2">🧱</span> Materiais
+                        </h4>
+                        <div class="space-y-3">
+                            <div class="item-composicao">
+                                <div class="flex-1">
+                                    <div class="font-semibold">Bloco Cerâmico 9x19x19cm</div>
+                                    <div class="text-sm text-gray-600">Código: 00007271 | <span id="bloco-qtd"></span> un × R$ 0,98</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-bold text-red-600" id="bloco-valor"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Componentes dinâmicos -->
+                            <div id="componentes-dinamicos"></div>
+                        </div>
+                    </div>
+
+                    <!-- Total -->
+                    <div class="border-t-2 border-red-200 pt-4">
+                        <div class="item-composicao bg-red-100 border-red-500">
+                            <div class="flex-1">
+                                <div class="font-bold text-lg">TOTAL GERAL</div>
+                                <div class="text-sm text-gray-600">Todos os custos incluídos</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-bold text-red-600 text-2xl" id="total-geral"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de Compras (apenas mercado local) -->
+                <div id="lista-compras" class="hidden bg-green-50 border-l-4 border-green-400 p-4 rounded-lg mt-6">
+                    <div class="flex">
+                        <div class="text-green-400 mr-3 text-xl">🛒</div>
+                        <div>
+                            <h4 class="font-bold text-green-800">Lista de Compras</h4>
+                            <div class="text-sm text-green-700 mt-2">
+                                <p>Leve esta lista para a loja de materiais:</p>
+                                <div id="lista-materiais" class="mt-3 space-y-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botão WhatsApp -->
+                <div class="text-center mt-8">
+                    <button onclick="compartilharWhatsApp()" 
+                            class="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-2xl text-lg font-bold transition-all">
+                        📱 Compartilhar Orçamento
+                    </button>
+                </div>
+                
+                <!-- Explicação Simples -->
+                <div id="explicacao-detalhada" class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-lg mt-6">
+                    <div class="flex">
+                        <div class="text-blue-400 mr-3 text-xl">💡</div>
+                        <div>
+                            <h4 class="font-bold text-blue-800">Duas Modalidades de Orçamento</h4>
+                            <div class="text-sm text-blue-700 mt-2 space-y-2">
+                                <div class="bg-white p-3 rounded">
+                                    <p><strong>🏛️ SINAPI Oficial:</strong> Valores da Caixa Econômica com todos os encargos trabalhistas</p>
+                                    <p><strong>🏠 Mercado Local:</strong> Valores praticados por pedreiros autônomos da região</p>
+                                </div>
+                                
+                                <p class="text-gray-600">
+                                    <strong>Materiais:</strong> Preços SINAPI em ambas modalidades<br>
+                                    <strong>Diferença:</strong> Apenas valores de mão de obra
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Duas modalidades de orçamento - 05/2025
+        const modalidades = {
+            sinapi: {
+                nome: "SINAPI Oficial (Caixa Econômica)",
+                composicao: {
+                    // Mão de obra SINAPI oficial
+                    pedreiro: { codigo: "88309", descricao: "Pedreiro com Encargos", valor_hora: 30.21, coeficiente: 1.61, unidade: "h" },
+                    servente: { codigo: "88316", descricao: "Servente com Encargos", valor_hora: 25.95, coeficiente: 0.805, unidade: "h" },
+                    
+                    // Equipamentos SINAPI
+                    betoneira_chi: { codigo: "88831", descricao: "Betoneira 400L CHI", valor_chi: 0.45, coeficiente: 3.45, unidade: "CHI" },
+                    betoneira_chp: { codigo: "88830", descricao: "Betoneira 400L CHP", valor_chp: 2.83, coeficiente: 1.05, unidade: "CHP" },
+                    operador_betoneira: { codigo: "88377", descricao: "Operador Betoneira", valor_hora: 25.54, coeficiente: 4.5, unidade: "h" },
+                    
+                    // Materiais principais SINAPI
+                    bloco: { codigo: "00007271", descricao: "Bloco Cerâmico 9x19x19cm", valor_unitario: 0.98, coeficiente: 28.31, unidade: "un" },
+                    pino_aco: { codigo: "00037395", descricao: "Pino de Aço Furo 27mm", valor_cento: 44.88, coeficiente: 0.005, unidade: "cento" },
+                    tela_aco: { codigo: "00034557", descricao: "Tela Aço Soldada Galvanizada", valor_m: 3.04, coeficiente: 0.42, unidade: "m" },
+                    
+                    // Argamassa completa (87292)
+                    argamassa: { codigo: "87292", descricao: "Argamassa 1:2:8", valor_m3: 748.43, coeficiente: 0.0091, unidade: "m³" }
+                }
+            },
+            mercado: {
+                nome: "Mercado Local (Pedreiros Autônomos)",
+                composicao: {
+                    // Mão de obra de mercado
+                    pedreiro: { codigo: "88309", descricao: "Pedreiro", valor_hora: 20.00, coeficiente: 1.5, unidade: "h" },
+                    servente: { codigo: "88316", descricao: "Servente", valor_hora: 15.00, coeficiente: 0.5, unidade: "h" },
+                    
+                    // Materiais mantém preço SINAPI (credibilidade)
+                    bloco: { codigo: "00007271", descricao: "Bloco Cerâmico 9x19x19cm", valor_unitario: 0.98, coeficiente: 28.31, unidade: "un" },
+                    cimento: { codigo: "00001379", descricao: "Cimento Portland", valor_kg: 1.12, coeficiente: 1.78, unidade: "kg" },
+                    areia: { codigo: "00000370", descricao: "Areia Média", valor_m3: 140.00, coeficiente: 0.0106, unidade: "m³" },
+                    ligante: { codigo: "00001106", descricao: "Ligante para Massa", valor_kg: 1.42, coeficiente: 1.58, unidade: "kg" }
+                }
+            }
+        };
+
+        let modalidadeSelecionada = 'mercado'; // Padrão: mercado local
+
+        function selecionarModalidade(tipo) {
+            modalidadeSelecionada = tipo;
+            
+            // Remover seleção anterior
+            document.querySelectorAll('[id^="btn-"]').forEach(btn => {
+                btn.className = 'p-4 border-2 border-gray-200 rounded-xl transition-all text-center hover:shadow-lg';
+            });
+            
+            // Adicionar seleção atual
+            const btnId = tipo === 'sinapi' ? 'btn-sinapi' : 'btn-mercado';
+            document.getElementById(btnId).className = 
+                'p-4 border-2 border-blue-500 bg-blue-50 rounded-xl transition-all text-center shadow-lg';
+            
+            // Recalcular se já tem valores
+            const area = parseFloat(document.getElementById('areaAlvenaria').value) || 0;
+            if (area > 0) {
+                calcularAlvenaria();
+            }
+        }
+
+        function calcularAlvenaria() {
+            console.log('🧮 Função calcularAlvenaria chamada');
+            const area = parseFloat(document.getElementById('areaAlvenaria').value) || 0;
+            console.log('📐 Área:', area);
+            
+            if (area === 0) {
+                alert('⚠️ Por favor, informe a área da alvenaria!');
+                return;
+            }
+            
+            if (area < 0) {
+                alert('⚠️ A área não pode ser negativa!');
+                return;
+            }
+
+            // Calcular composição detalhada
+            console.log('🎯 Modalidade selecionada:', modalidadeSelecionada);
+            const dados = modalidades[modalidadeSelecionada];
+            console.log('📋 Dados:', dados);
+            const comp = dados.composicao;
+            console.log('🧱 Composição:', comp);
+            
+            // Mão de obra
+            const pedreiroHoras = area * comp.pedreiro.coeficiente;
+            const serventeHoras = area * comp.servente.coeficiente;
+            const pedreiroValor = pedreiroHoras * comp.pedreiro.valor_hora;
+            const serventeValor = serventeHoras * comp.servente.valor_hora;
+            
+            // Material principal
+            const blocoQuantidade = area * comp.bloco.coeficiente;
+            const blocoValor = blocoQuantidade * comp.bloco.valor_unitario;
+            
+            let valorTotal = pedreiroValor + serventeValor + blocoValor;
+            let componentes = [];
+            
+            if (modalidadeSelecionada === 'sinapi') {
+                // Equipamentos SINAPI
+                const betoneiraCHI = area * comp.betoneira_chi.coeficiente * comp.betoneira_chi.valor_chi;
+                const betoneiraCHP = area * comp.betoneira_chp.coeficiente * comp.betoneira_chp.valor_chp;
+                const operadorHoras = area * comp.operador_betoneira.coeficiente;
+                const operadorValor = operadorHoras * comp.operador_betoneira.valor_hora;
+                
+                // Materiais especiais SINAPI
+                const pinoQuantidade = area * comp.pino_aco.coeficiente;
+                const pinoValor = pinoQuantidade * comp.pino_aco.valor_cento;
+                const telaQuantidade = area * comp.tela_aco.coeficiente;
+                const telaValor = telaQuantidade * comp.tela_aco.valor_m;
+                
+                // Argamassa completa
+                const argamassaQuantidade = area * comp.argamassa.coeficiente;
+                const argamassaValor = argamassaQuantidade * comp.argamassa.valor_m3;
+                
+                valorTotal += betoneiraCHI + betoneiraCHP + operadorValor + pinoValor + telaValor + argamassaValor;
+                
+                componentes = [
+                    { nome: 'Equipamentos Betoneira', valor: betoneiraCHI + betoneiraCHP, descricao: 'CHI + CHP' },
+                    { nome: 'Operador Betoneira', horas: operadorHoras, valor: operadorValor },
+                    { nome: 'Pinos de Aço', qtd: pinoQuantidade, unidade: 'cento', valor: pinoValor },
+                    { nome: 'Tela Aço Soldada', qtd: telaQuantidade, unidade: 'metros', valor: telaValor },
+                    { nome: 'Argamassa 1:2:8', qtd: argamassaQuantidade, unidade: 'm³', valor: argamassaValor }
+                ];
+            } else {
+                // Modalidade mercado local (materiais decompostos)
+                const cimentoQuantidade = area * comp.cimento.coeficiente;
+                const areiaQuantidade = area * comp.areia.coeficiente;
+                const liganteQuantidade = area * comp.ligante.coeficiente;
+                
+                const cimentoValor = cimentoQuantidade * comp.cimento.valor_kg;
+                const areiaValor = areiaQuantidade * comp.areia.valor_m3;
+                const liganteValor = liganteQuantidade * comp.ligante.valor_kg;
+                
+                valorTotal += cimentoValor + areiaValor + liganteValor;
+                
+                // Converter para unidades práticas de compra
+                const cimentoSacos = cimentoQuantidade / 50; // 50kg por saco
+                const areiaM3 = areiaQuantidade; // já em m³
+                const liganteSacos = liganteQuantidade / 20; // 20kg por saco
+                
+                componentes = [
+                    { nome: 'Cimento Portland', qtd: cimentoSacos, unidade: 'sacos 50kg', valor: cimentoValor },
+                    { nome: 'Areia Média', qtd: areiaM3, unidade: 'm³', valor: areiaValor },
+                    { nome: 'Ligante para Massa', qtd: liganteSacos, unidade: 'sacos 20kg', valor: liganteValor }
+                ];
+            }
+
+            // Mostrar resultado
+            document.getElementById('resultado-area').textContent = `${area} m²`;
+            document.getElementById('resultado-valor').textContent = `R$ ${valorTotal.toFixed(2)}`;
+            document.getElementById('tipo-orcamento').textContent = dados.nome;
+            
+            // Mostrar composição
+            document.getElementById('pedreiro-titulo').textContent = comp.pedreiro.descricao;
+            document.getElementById('pedreiro-horas').textContent = pedreiroHoras.toFixed(1);
+            document.getElementById('pedreiro-valor').textContent = `R$ ${pedreiroValor.toFixed(2)}`;
+            document.getElementById('pedreiro-descricao').innerHTML = 
+                `${dados.nome} | ${pedreiroHoras.toFixed(1)}h × R$ ${comp.pedreiro.valor_hora.toFixed(2)}`;
+            
+            document.getElementById('servente-titulo').textContent = comp.servente.descricao;
+            document.getElementById('servente-horas').textContent = serventeHoras.toFixed(1);
+            document.getElementById('servente-valor').textContent = `R$ ${serventeValor.toFixed(2)}`;
+            document.getElementById('servente-descricao').innerHTML = 
+                `${dados.nome} | ${serventeHoras.toFixed(1)}h × R$ ${comp.servente.valor_hora.toFixed(2)}`;
+            
+            // Exibir bloco principal
+            document.getElementById('bloco-qtd').textContent = Math.ceil(blocoQuantidade);
+            document.getElementById('bloco-valor').textContent = `R$ ${blocoValor.toFixed(2)}`;
+            
+            // Preencher componentes dinâmicos
+            const containerDinamicos = document.getElementById('componentes-dinamicos');
+            containerDinamicos.innerHTML = '';
+            
+            componentes.forEach(comp => {
+                const div = document.createElement('div');
+                div.className = 'item-composicao';
+                
+                let descricaoDetalhe = '';
+                if (comp.qtd !== undefined) {
+                    const qtdTexto = comp.qtd.toFixed(comp.qtd < 1 ? 2 : 1);
+                    const unidadeTexto = comp.unidade || 'unidades';
+                    descricaoDetalhe = `${qtdTexto} ${unidadeTexto}`;
+                } else if (comp.horas !== undefined) {
+                    descricaoDetalhe = `${comp.horas.toFixed(1)}h × R$ ${(comp.valor/comp.horas).toFixed(2)}`;
+                } else if (comp.descricao) {
+                    descricaoDetalhe = comp.descricao;
+                } else {
+                    descricaoDetalhe = 'Valor unitário';
+                }
+                
+                div.innerHTML = `
+                    <div class="flex-1">
+                        <div class="font-semibold">${comp.nome}</div>
+                        <div class="text-sm text-gray-600">${descricaoDetalhe}</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-bold text-red-600">R$ ${comp.valor.toFixed(2)}</div>
+                    </div>
+                `;
+                
+                containerDinamicos.appendChild(div);
+            });
+            
+            document.getElementById('total-geral').textContent = `R$ ${valorTotal.toFixed(2)}`;
+            
+            // Lista de compras para mercado local
+            const listaCompras = document.getElementById('lista-compras');
+            const listaMateriais = document.getElementById('lista-materiais');
+            
+            if (modalidadeSelecionada === 'mercado') {
+                // Mostrar lista de compras
+                listaCompras.classList.remove('hidden');
+                listaMateriais.innerHTML = '';
+                
+                // Adicionar blocos
+                const divBloco = document.createElement('div');
+                divBloco.className = 'font-semibold text-green-800';
+                divBloco.textContent = `• ${Math.ceil(blocoQuantidade)} blocos cerâmicos 9x19x19cm`;
+                listaMateriais.appendChild(divBloco);
+                
+                // Adicionar materiais da argamassa
+                componentes.forEach(comp => {
+                    const div = document.createElement('div');
+                    div.className = 'font-semibold text-green-800';
+                    const qtdTexto = comp.qtd.toFixed(comp.qtd < 1 ? 2 : 1);
+                    div.textContent = `• ${qtdTexto} ${comp.unidade} de ${comp.nome.toLowerCase()}`;
+                    listaMateriais.appendChild(div);
+                });
+            } else {
+                // Ocultar lista de compras para SINAPI
+                listaCompras.classList.add('hidden');
+            }
+            
+            // Exibir resultado
+            document.getElementById('resultado').classList.remove('hidden');
+            document.getElementById('resultado').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function compartilharWhatsApp() {
+            const area = document.getElementById('resultado-area').textContent;
+            const valorTotal = document.getElementById('total-geral').textContent;
+            const tipo = modalidades[modalidadeSelecionada].nome;
+            
+            const mensagem = `🧱 *Orçamento de Alvenaria*\n\n` +
+                           `📐 Área: ${area}m²\n` +
+                           `💰 Valor: ${valorTotal}\n` +
+                           `📋 Tipo: ${tipo}\n\n` +
+                           `*Materiais inclusos:*\n` +
+                           `• Bloco cerâmico 9x19x19cm\n` +
+                           `• Cimento Portland\n` +
+                           `• Areia média\n` +
+                           `• Ligante para massa\n` +
+                           `• Mão de obra especializada\n\n` +
+                           `*Base SINAPI adaptada para realidade do campo*\n` +
+                           `Calculado pelo ConectaPro`;
+            
+            window.open(`https://wa.me/?text=${encodeURIComponent(mensagem)}`, '_blank');
+        }
+
+        // Evento Enter
+        document.getElementById('areaAlvenaria').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') calcularAlvenaria();
+        });
+        
+        // Funções de navegação
+        function voltarCalculadoras() {
+            window.location.href = 'index.html';
+        }
+        
+        function irConectaPro() {
+            // Tentar ir para a página principal do ConectaPro
+            if (window.opener) {
+                window.opener.location.href = '../src/app/page.tsx';
+                window.close();
+            } else {
+                window.open('../src/app/page.tsx', '_blank');
+            }
+        }
+        
+        console.log('🧱 Calculadora de Alvenaria SINAPI - Carregada!');
+    </script>
+</body>
+</html> 
