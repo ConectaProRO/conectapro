@@ -55,6 +55,13 @@ export default function MobileMenu() {
                 🧮 Calculadoras
               </Link>
               <Link 
+                href="/gerador-contrato" 
+                className="text-white hover:text-blue-100 font-medium px-4 py-3 rounded-xl transition-all duration-300 hover:bg-white hover:bg-opacity-20"
+                onClick={() => setIsOpen(false)}
+              >
+                📄 Gerador de Contrato
+              </Link>
+              <Link 
                 href="/sobre" 
                 className="text-white hover:text-blue-100 font-medium px-4 py-3 rounded-xl transition-all duration-300 hover:bg-white hover:bg-opacity-20"
                 onClick={() => setIsOpen(false)}
