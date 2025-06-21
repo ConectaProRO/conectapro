@@ -19,6 +19,8 @@ const nextConfig: NextConfig = {
     domains: ['conectapro.app', 'www.conectapro.app'],
     formats: ['image/webp', 'image/avif'],
   },
+  // Configurações para aceitar requisições maiores
+  serverExternalPackages: [],
   async redirects() {
     return [
       {
@@ -52,6 +54,36 @@ const nextConfig: NextConfig = {
         ],
       },
     ];
+  },
+  // Ignorar pasta de testes no build
+  webpack: (config: any) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+    };
+    
+    // Ignorar arquivos de teste no build
+    config.module.rules.push({
+      test: /teste-calculadora\/.*\.(ts|tsx|js|jsx)$/,
+      loader: 'ignore-loader'
+    });
+    
+    return config;
+  },
+  
+  // Excluir pasta teste-calculadora do build
+  pageExtensions: ['tsx', 'ts', 'jsx', 'js'].map(ext => 
+    `!teste-calculadora/**/*.${ext}`
+  ).concat(['tsx', 'ts', 'jsx', 'js']),
+  
+  eslint: {
+    // Ignorar arquivos de teste no linting
+    ignoreDuringBuilds: false,
+    dirs: ['src'] // Apenas lint na pasta src
+  },
+  
+  typescript: {
+    // Ignorar erros de TypeScript apenas nos arquivos de teste
+    ignoreBuildErrors: false,
   },
 };
 

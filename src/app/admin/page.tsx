@@ -44,17 +44,21 @@ interface Estatisticas {
   total: number;
   pendentes: number;
   aprovados: number;
+  rejeitados: number;
+  visiveis: number;
+  ocultos: number;
   totalAvaliacoes: number;
   avaliacoesPendentes: number;
   avaliacoesAprovadas: number;
+  avaliacoesRejeitadas: number;
 }
 
 export default function AdminPage() {
   const [cadastros, setCadastros] = useState<Cadastro[]>([]);
   const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
   const [estatisticas, setEstatisticas] = useState<Estatisticas>({
-    total: 0, pendentes: 0, aprovados: 0,
-    totalAvaliacoes: 0, avaliacoesPendentes: 0, avaliacoesAprovadas: 0
+    total: 0, pendentes: 0, aprovados: 0, rejeitados: 0, visiveis: 0, ocultos: 0,
+    totalAvaliacoes: 0, avaliacoesPendentes: 0, avaliacoesAprovadas: 0, avaliacoesRejeitadas: 0
   });
   const [senha, setSenha] = useState('');
   const [autenticado, setAutenticado] = useState(false);
@@ -95,6 +99,36 @@ export default function AdminPage() {
       calcularEstatisticas();
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
+      alert('Erro ao carregar dados. Verifique a conexão.');
+    } finally {
+      setCarregando(false);
+    }
+  };
+
+  const recarregarDados = async () => {
+    if (!confirm('Deseja recarregar todos os dados do servidor? Isso pode ajudar se os dados estiverem desatualizados.')) {
+      return;
+    }
+
+    setCarregando(true);
+    try {
+      const response = await fetch('/api/admin/recarregar-dados', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (response.ok) {
+        const resultado = await response.json();
+        alert(`Dados recarregados com sucesso!\n${resultado.dados.cadastros} cadastros e ${resultado.dados.avaliacoes} avaliações encontrados.`);
+        
+        // Recarregar dados na interface
+        await carregarDados();
+      } else {
+        alert('Erro ao recarregar dados do servidor.');
+      }
+    } catch (error) {
+      console.error('Erro ao recarregar dados:', error);
+      alert('Erro ao recarregar dados.');
     } finally {
       setCarregando(false);
     }
@@ -105,9 +139,13 @@ export default function AdminPage() {
       total: cadastros.length,
       pendentes: cadastros.filter(c => c.status === 'pendente').length,
       aprovados: cadastros.filter(c => c.status === 'aprovado').length,
+      rejeitados: cadastros.filter(c => c.status === 'rejeitado').length,
+      visiveis: cadastros.filter(c => c.visivelNoSite !== false).length,
+      ocultos: cadastros.filter(c => c.visivelNoSite === false).length,
       totalAvaliacoes: avaliacoes.length,
       avaliacoesPendentes: avaliacoes.filter(a => a.status === 'pendente').length,
       avaliacoesAprovadas: avaliacoes.filter(a => a.status === 'aprovada').length,
+      avaliacoesRejeitadas: avaliacoes.filter(a => a.status === 'rejeitada').length,
     });
   }, [cadastros, avaliacoes]);
 
@@ -413,31 +451,88 @@ export default function AdminPage() {
 
         {/* Estatísticas */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-          <h2 className="text-xl font-bold mb-4">Resumo Geral</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <h3 className="font-bold text-blue-800 text-sm">Total Cadastros</h3>
-              <p className="text-2xl font-bold text-blue-600">{estatisticas.total}</p>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold">📊 Resumo Geral</h2>
+            <div className="flex gap-3">
+              <button
+                onClick={carregarDados}
+                disabled={carregando}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+              >
+                {carregando ? '⏳' : '🔄'} Atualizar
+              </button>
+              <button
+                onClick={recarregarDados}
+                disabled={carregando}
+                className="bg-purple-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-purple-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+              >
+                {carregando ? '⏳' : '🔧'} Recarregar Dados
+              </button>
             </div>
-            <div className="bg-yellow-50 p-4 rounded-lg">
-              <h3 className="font-bold text-yellow-800 text-sm">Pendentes</h3>
-              <p className="text-2xl font-bold text-yellow-600">{estatisticas.pendentes}</p>
+          </div>
+          
+          {/* Seção Profissionais */}
+          <div className="mb-6">
+            <h3 className="text-lg font-bold text-gray-800 mb-3">👷 Profissionais</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+              <div className="bg-blue-50 p-4 rounded-lg border-2 border-blue-200">
+                <h4 className="font-bold text-blue-800 text-sm">Total</h4>
+                <p className="text-2xl font-bold text-blue-600">{estatisticas.total}</p>
+              </div>
+              <div className="bg-yellow-50 p-4 rounded-lg border-2 border-yellow-200">
+                <h4 className="font-bold text-yellow-800 text-sm">Pendentes</h4>
+                <p className="text-2xl font-bold text-yellow-600">{estatisticas.pendentes}</p>
+              </div>
+              <div className="bg-green-50 p-4 rounded-lg border-2 border-green-200">
+                <h4 className="font-bold text-green-800 text-sm">Aprovados</h4>
+                <p className="text-2xl font-bold text-green-600">{estatisticas.aprovados}</p>
+              </div>
+              <div className="bg-red-50 p-4 rounded-lg border-2 border-red-200">
+                <h4 className="font-bold text-red-800 text-sm">Rejeitados</h4>
+                <p className="text-2xl font-bold text-red-600">{estatisticas.rejeitados}</p>
+              </div>
+              <div className="bg-indigo-50 p-4 rounded-lg border-2 border-indigo-200">
+                <h4 className="font-bold text-indigo-800 text-sm">Visíveis</h4>
+                <p className="text-2xl font-bold text-indigo-600">{estatisticas.visiveis}</p>
+                <p className="text-xs text-indigo-600 mt-1">({estatisticas.ocultos} ocultos)</p>
+              </div>
             </div>
-            <div className="bg-green-50 p-4 rounded-lg">
-              <h3 className="font-bold text-green-800 text-sm">Aprovados</h3>
-              <p className="text-2xl font-bold text-green-600">{estatisticas.aprovados}</p>
+          </div>
+
+          {/* Seção Avaliações */}
+          <div>
+            <h3 className="text-lg font-bold text-gray-800 mb-3">⭐ Avaliações</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-purple-50 p-4 rounded-lg border-2 border-purple-200">
+                <h4 className="font-bold text-purple-800 text-sm">Total</h4>
+                <p className="text-2xl font-bold text-purple-600">{estatisticas.totalAvaliacoes}</p>
+              </div>
+              <div className="bg-orange-50 p-4 rounded-lg border-2 border-orange-200">
+                <h4 className="font-bold text-orange-800 text-sm">Pendentes</h4>
+                <p className="text-2xl font-bold text-orange-600">{estatisticas.avaliacoesPendentes}</p>
+              </div>
+              <div className="bg-teal-50 p-4 rounded-lg border-2 border-teal-200">
+                <h4 className="font-bold text-teal-800 text-sm">Aprovadas</h4>
+                <p className="text-2xl font-bold text-teal-600">{estatisticas.avaliacoesAprovadas}</p>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                <h4 className="font-bold text-gray-800 text-sm">Rejeitadas</h4>
+                <p className="text-2xl font-bold text-gray-600">{estatisticas.avaliacoesRejeitadas}</p>
+              </div>
             </div>
-            <div className="bg-purple-50 p-4 rounded-lg">
-              <h3 className="font-bold text-purple-800 text-sm">Total Avaliações</h3>
-              <p className="text-2xl font-bold text-purple-600">{estatisticas.totalAvaliacoes}</p>
-            </div>
-            <div className="bg-orange-50 p-4 rounded-lg">
-              <h3 className="font-bold text-orange-800 text-sm">Aval. Pendentes</h3>
-              <p className="text-2xl font-bold text-orange-600">{estatisticas.avaliacoesPendentes}</p>
-            </div>
-            <div className="bg-teal-50 p-4 rounded-lg">
-              <h3 className="font-bold text-teal-800 text-sm">Aval. Aprovadas</h3>
-              <p className="text-2xl font-bold text-teal-600">{estatisticas.avaliacoesAprovadas}</p>
+          </div>
+
+          {/* Status da Persistência */}
+          <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-200 rounded-lg">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">💾</span>
+              <div>
+                <p className="font-bold text-green-800">Sistema de Backup Ativo</p>
+                <p className="text-sm text-green-700">
+                  Dados salvos automaticamente em arquivos + backups incrementais. 
+                  <strong> Os dados agora persistem entre atualizações!</strong>
+                </p>
+              </div>
             </div>
           </div>
         </div>

@@ -48,6 +48,13 @@ export default function MobileMenu() {
                 👷 Cadastrar-se
               </Link>
               <Link 
+                href="/calculadoras" 
+                className="text-white hover:text-blue-100 font-medium px-4 py-3 rounded-xl transition-all duration-300 hover:bg-white hover:bg-opacity-20"
+                onClick={() => setIsOpen(false)}
+              >
+                🧮 Calculadoras
+              </Link>
+              <Link 
                 href="/sobre" 
                 className="text-white hover:text-blue-100 font-medium px-4 py-3 rounded-xl transition-all duration-300 hover:bg-white hover:bg-opacity-20"
                 onClick={() => setIsOpen(false)}

@@ -6,12 +6,12 @@ import { FaStar, FaWhatsapp, FaTimes, FaArrowUp, FaSearch, FaMapMarkerAlt, FaPho
 const servicos = [
   "Forma e Concretagem",
   "Contra-Piso",
-  "Porcelanato e Cerâmica",
-  "Pintura",
-  "Forro de Gesso",
-  "Metalúrgica e Solda",
-  "Reboco",
+  "Cerâmica e Porcelanato",
   "Alvenaria",
+  "Reboco",
+  "Instalações Hidrosanitárias",
+  "Instalações Elétricas",
+  "Forro de Gesso",
 ];
 
 interface Profissional {
