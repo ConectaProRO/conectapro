@@ -4,12 +4,6 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { FaUpload, FaTools, FaCogs, FaBrush, FaHardHat, FaCubes, FaThLarge, FaArrowUp, FaUser, FaCamera, FaTimes, FaBolt, FaWater } from "react-icons/fa";
 
-export const metadata = {
-  title: "Cadastrar como Profissional da Construção | ConectaPro Porto Velho",
-  description: "Cadastre-se GRÁTIS como pedreiro, pintor, eletricista ou encanador em Porto Velho-RO. Receba contatos diretos via WhatsApp, mostre seu portfólio e aumente sua renda!",
-  keywords: "cadastro pedreiro porto velho, cadastro pintor porto velho, cadastro eletricista, cadastro encanador, trabalho construção civil",
-};
-
 const servicos = [
   { nome: "Forma e Concretagem", icon: <FaCubes /> },
   { nome: "Contra-Piso", icon: <FaThLarge /> },

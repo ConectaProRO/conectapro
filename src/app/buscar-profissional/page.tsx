@@ -3,12 +3,6 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { FaStar, FaWhatsapp, FaTimes, FaArrowUp, FaSearch, FaMapMarkerAlt, FaPhone, FaUserCheck } from "react-icons/fa";
 
-export const metadata = {
-  title: "Buscar Profissionais da Construção em Porto Velho-RO | ConectaPro",
-  description: "Encontre pedreiros, pintores, eletricistas e encanadores qualificados em Porto Velho-RO. Veja avaliações, portfólio e entre em contato direto via WhatsApp. Gratuito!",
-  keywords: "buscar pedreiro porto velho, encontrar pintor porto velho, eletricista porto velho, encanador porto velho, profissionais construção civil",
-};
-
 const servicos = [
   "Forma e Concretagem",
   "Contra-Piso",
