@@ -5,7 +5,21 @@ import CalculadoraHeader from "../../components/CalculadoraHeader";
 export default function ForroGessoPage() {
   const [area, setArea] = useState("");
   const [tipoForro, setTipoForro] = useState("liso");
-  const [resultado, setResultado] = useState<any>(null);
+  const [resultado, setResultado] = useState<{
+    area: number;
+    tipo: string;
+    fator: number;
+    sinapi: {
+      maoDeObra: number;
+      materiais: number;
+      total: number;
+    };
+    mercado: {
+      maoDeObra: number;
+      materiais: number;
+      total: number;
+    };
+  } | null>(null);
 
   const precos = {
     sinapi: {
