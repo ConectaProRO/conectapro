@@ -98,8 +98,11 @@ export default function GeradorContratoPage() {
     // Título centralizado
     pdf.setFontSize(16);
     pdf.setFont('helvetica', 'bold');
-    pdf.text('CONTRATO DE PRESTAÇÃO DE SERVIÇOS', pageWidth/2, yPosition, { align: 'center' });
     pdf.setTextColor(0, 0, 0);
+    const titulo = 'CONTRATO DE PRESTAÇÃO DE SERVIÇOS';
+    const tituloWidth = pdf.getTextWidth(titulo);
+    const xCentro = (pageWidth - tituloWidth) / 2;
+    pdf.text(titulo, xCentro, yPosition);
     yPosition += 15;
     
     // CONTRATANTE
