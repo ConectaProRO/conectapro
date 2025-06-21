@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { FaDownload, FaFileContract, FaUser, FaBuilding, FaCalendar, FaDollarSign, FaClipboardList } from "react-icons/fa";
+import jsPDF from 'jspdf';
 
 interface ContratoData {
   // Dados do Contratante (Cliente)
@@ -66,126 +67,149 @@ export default function GeradorContratoPage() {
   };
 
   const gerarContratoPDF = () => {
-    // Criar conteúdo HTML do contrato
-    const contratoHTML = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="UTF-8">
-        <title>Contrato de Prestação de Serviços</title>
-        <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; margin: 40px; }
-          .header { text-align: center; margin-bottom: 30px; }
-          .section { margin-bottom: 20px; }
-          .title { font-weight: bold; text-decoration: underline; margin-bottom: 10px; }
-          .clause { margin-bottom: 15px; text-align: justify; }
-          .signature { margin-top: 50px; display: flex; justify-content: space-between; }
-          .signature-box { text-align: center; width: 45%; }
-          .line { border-bottom: 1px solid #000; margin-bottom: 5px; height: 20px; }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <h1>CONTRATO DE PRESTAÇÃO DE SERVIÇOS</h1>
-          <p><strong>Gerado via ConectaPro - conectapro.app</strong></p>
-        </div>
-
-        <div class="section">
-          <div class="title">CONTRATANTE:</div>
-          <p><strong>Nome:</strong> ${contratoData.contratanteNome}</p>
-          <p><strong>CPF:</strong> ${contratoData.contratanteCpf}</p>
-          <p><strong>RG:</strong> ${contratoData.contratanteRg}</p>
-          <p><strong>Endereço:</strong> ${contratoData.contratanteEndereco}</p>
-          <p><strong>Telefone:</strong> ${contratoData.contratanteTelefone}</p>
-          <p><strong>E-mail:</strong> ${contratoData.contratanteEmail}</p>
-        </div>
-
-        <div class="section">
-          <div class="title">CONTRATADO:</div>
-          <p><strong>Nome:</strong> ${contratoData.contratadoNome}</p>
-          <p><strong>CPF/CNPJ:</strong> ${contratoData.contratadoCpfCnpj}</p>
-          <p><strong>RG:</strong> ${contratoData.contratadoRg}</p>
-          <p><strong>Endereço:</strong> ${contratoData.contratadoEndereco}</p>
-          <p><strong>Telefone:</strong> ${contratoData.contratadoTelefone}</p>
-          <p><strong>E-mail:</strong> ${contratoData.contratadoEmail}</p>
-        </div>
-
-        <div class="section">
-          <div class="title">OBJETO DO CONTRATO:</div>
-          <div class="clause">
-            <strong>1. SERVIÇO:</strong> ${contratoData.tipoServico}
-          </div>
-          <div class="clause">
-            <strong>2. DESCRIÇÃO DETALHADA:</strong> ${contratoData.descricaoDetalhada}
-          </div>
-          <div class="clause">
-            <strong>3. LOCAL DE EXECUÇÃO:</strong> ${contratoData.localExecucao}
-          </div>
-        </div>
-
-        <div class="section">
-          <div class="title">CONDIÇÕES:</div>
-          <div class="clause">
-            <strong>4. PRAZO:</strong> O serviço deverá ser executado no prazo de ${contratoData.prazoExecucao}, com início em ${contratoData.dataInicio}.
-          </div>
-          <div class="clause">
-            <strong>5. VALOR:</strong> O valor total dos serviços é de R$ ${contratoData.valorTotal}.
-          </div>
-          <div class="clause">
-            <strong>6. FORMA DE PAGAMENTO:</strong> ${contratoData.formaPagamento}.
-          </div>
-          <div class="clause">
-            <strong>7. RESPONSABILIDADES:</strong> O CONTRATADO se compromete a executar os serviços com qualidade e dentro do prazo estabelecido, fornecendo materiais de primeira qualidade quando especificado.
-          </div>
-          <div class="clause">
-            <strong>8. GARANTIA:</strong> Os serviços possuem garantia de 90 (noventa) dias contra defeitos de execução.
-          </div>
-          ${contratoData.observacoes ? `
-          <div class="clause">
-            <strong>9. OBSERVAÇÕES:</strong> ${contratoData.observacoes}
-          </div>
-          ` : ''}
-        </div>
-
-        <div class="clause">
-          E por estarem assim justos e contratados, assinam o presente instrumento em duas vias de igual teor.
-        </div>
-
-        <p style="text-align: center; margin-top: 30px;">
-          <strong>Porto Velho - RO, ${new Date().toLocaleDateString('pt-BR')}</strong>
-        </p>
-
-        <div class="signature">
-          <div class="signature-box">
-            <div class="line"></div>
-            <p><strong>CONTRATANTE</strong><br>${contratoData.contratanteNome}</p>
-          </div>
-          <div class="signature-box">
-            <div class="line"></div>
-            <p><strong>CONTRATADO</strong><br>${contratoData.contratadoNome}</p>
-          </div>
-        </div>
-
-        <div style="text-align: center; margin-top: 50px; font-size: 12px; color: #666;">
-          <p>Contrato gerado através da plataforma ConectaPro</p>
-          <p>www.conectapro.app - Conectando profissionais em Porto Velho</p>
-        </div>
-      </body>
-      </html>
-    `;
-
-    // Criar e baixar o arquivo
-    const blob = new Blob([contratoHTML], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `contrato-${contratoData.contratanteNome.replace(/\s+/g, '-')}-${Date.now()}.html`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    alert('Contrato gerado com sucesso! Você pode abrir o arquivo HTML e imprimir como PDF.');
+    const pdf = new jsPDF();
+    
+    // Configurações do PDF
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const margin = 20;
+    const lineHeight = 7;
+    let yPosition = 30;
+    
+    // Função para adicionar texto com quebra de linha
+    const addText = (text: string, x: number, y: number, options: any = {}) => {
+      const { fontSize = 10, fontStyle = 'normal', maxWidth = pageWidth - 2 * margin } = options;
+      pdf.setFontSize(fontSize);
+      pdf.setFont('helvetica', fontStyle);
+      
+      const lines = pdf.splitTextToSize(text, maxWidth);
+      pdf.text(lines, x, y);
+      return y + (lines.length * lineHeight);
+    };
+    
+    // Função para verificar se precisa de nova página
+    const checkNewPage = (currentY: number, nextItemHeight: number = 20) => {
+      if (currentY + nextItemHeight > pdf.internal.pageSize.getHeight() - margin) {
+        pdf.addPage();
+        return 30; // Reset Y position
+      }
+      return currentY;
+    };
+    
+    // Título
+    yPosition = addText('CONTRATO DE PRESTAÇÃO DE SERVIÇOS', pageWidth/2, yPosition, { 
+      fontSize: 16, 
+      fontStyle: 'bold' 
+    });
+    pdf.setTextColor(0, 0, 0);
+    yPosition += 10;
+    
+    // CONTRATANTE
+    yPosition = checkNewPage(yPosition);
+    yPosition = addText('CONTRATANTE:', margin, yPosition, { fontSize: 12, fontStyle: 'bold' });
+    yPosition += 5;
+    
+    yPosition = addText(`Nome: ${contratoData.contratanteNome}`, margin, yPosition);
+    yPosition = addText(`CPF: ${contratoData.contratanteCpf}`, margin, yPosition);
+    if (contratoData.contratanteRg) {
+      yPosition = addText(`RG: ${contratoData.contratanteRg}`, margin, yPosition);
+    }
+    yPosition = addText(`Endereço: ${contratoData.contratanteEndereco}`, margin, yPosition);
+    if (contratoData.contratanteTelefone) {
+      yPosition = addText(`Telefone: ${contratoData.contratanteTelefone}`, margin, yPosition);
+    }
+    if (contratoData.contratanteEmail) {
+      yPosition = addText(`E-mail: ${contratoData.contratanteEmail}`, margin, yPosition);
+    }
+    yPosition += 10;
+    
+    // CONTRATADO
+    yPosition = checkNewPage(yPosition);
+    yPosition = addText('CONTRATADO:', margin, yPosition, { fontSize: 12, fontStyle: 'bold' });
+    yPosition += 5;
+    
+    yPosition = addText(`Nome: ${contratoData.contratadoNome}`, margin, yPosition);
+    yPosition = addText(`CPF/CNPJ: ${contratoData.contratadoCpfCnpj}`, margin, yPosition);
+    if (contratoData.contratadoRg) {
+      yPosition = addText(`RG: ${contratoData.contratadoRg}`, margin, yPosition);
+    }
+    yPosition = addText(`Endereço: ${contratoData.contratadoEndereco}`, margin, yPosition);
+    if (contratoData.contratadoTelefone) {
+      yPosition = addText(`Telefone: ${contratoData.contratadoTelefone}`, margin, yPosition);
+    }
+    if (contratoData.contratadoEmail) {
+      yPosition = addText(`E-mail: ${contratoData.contratadoEmail}`, margin, yPosition);
+    }
+    yPosition += 10;
+    
+    // OBJETO DO CONTRATO
+    yPosition = checkNewPage(yPosition);
+    yPosition = addText('OBJETO DO CONTRATO:', margin, yPosition, { fontSize: 12, fontStyle: 'bold' });
+    yPosition += 5;
+    
+    yPosition = addText(`1. SERVIÇO: ${contratoData.tipoServico}`, margin, yPosition, { fontStyle: 'bold' });
+    yPosition += 3;
+    yPosition = addText(`2. DESCRIÇÃO DETALHADA: ${contratoData.descricaoDetalhada}`, margin, yPosition, { fontStyle: 'bold' });
+    yPosition += 3;
+    yPosition = addText(`3. LOCAL DE EXECUÇÃO: ${contratoData.localExecucao}`, margin, yPosition, { fontStyle: 'bold' });
+    yPosition += 10;
+    
+    // CONDIÇÕES
+    yPosition = checkNewPage(yPosition);
+    yPosition = addText('CONDIÇÕES:', margin, yPosition, { fontSize: 12, fontStyle: 'bold' });
+    yPosition += 5;
+    
+    const dataInicio = contratoData.dataInicio ? ` com início em ${new Date(contratoData.dataInicio).toLocaleDateString('pt-BR')}` : '';
+    yPosition = addText(`4. PRAZO: O serviço deverá ser executado no prazo de ${contratoData.prazoExecucao}${dataInicio}.`, margin, yPosition, { fontStyle: 'bold' });
+    yPosition += 3;
+    yPosition = addText(`5. VALOR: O valor total dos serviços é de R$ ${contratoData.valorTotal}.`, margin, yPosition, { fontStyle: 'bold' });
+    yPosition += 3;
+    yPosition = addText(`6. FORMA DE PAGAMENTO: ${contratoData.formaPagamento}.`, margin, yPosition, { fontStyle: 'bold' });
+    yPosition += 3;
+    yPosition = addText('7. RESPONSABILIDADES: O CONTRATADO se compromete a executar os serviços com qualidade e dentro do prazo estabelecido, fornecendo materiais de primeira qualidade quando especificado.', margin, yPosition, { fontStyle: 'bold' });
+    yPosition += 3;
+    yPosition = addText('8. GARANTIA: Os serviços possuem garantia de 90 (noventa) dias contra defeitos de execução.', margin, yPosition, { fontStyle: 'bold' });
+    yPosition += 3;
+    
+    if (contratoData.observacoes) {
+      yPosition = addText(`9. OBSERVAÇÕES: ${contratoData.observacoes}`, margin, yPosition, { fontStyle: 'bold' });
+      yPosition += 5;
+    }
+    
+    // Cláusula final
+    yPosition = checkNewPage(yPosition, 30);
+    yPosition = addText('E por estarem assim justos e contratados, assinam o presente instrumento em duas vias de igual teor.', margin, yPosition);
+    yPosition += 15;
+    
+    // Data
+    yPosition = addText(`Porto Velho - RO, ${new Date().toLocaleDateString('pt-BR')}`, pageWidth/2, yPosition, { fontStyle: 'bold' });
+    yPosition += 25;
+    
+    // Assinaturas
+    yPosition = checkNewPage(yPosition, 40);
+    const signatureY = yPosition;
+    
+    // Linha para assinatura do contratante
+    pdf.line(margin, signatureY, (pageWidth/2) - 10, signatureY);
+    yPosition = addText('CONTRATANTE', margin + 20, signatureY + 10, { fontStyle: 'bold' });
+    yPosition = addText(contratoData.contratanteNome, margin + 20, signatureY + 17);
+    
+    // Linha para assinatura do contratado
+    pdf.line((pageWidth/2) + 10, signatureY, pageWidth - margin, signatureY);
+    addText('CONTRATADO', (pageWidth/2) + 30, signatureY + 10, { fontStyle: 'bold' });
+    addText(contratoData.contratadoNome, (pageWidth/2) + 30, signatureY + 17);
+    
+    // Rodapé
+    const footerY = pdf.internal.pageSize.getHeight() - 20;
+    pdf.setFontSize(8);
+    pdf.setTextColor(100, 100, 100);
+    pdf.text('Contrato gerado através da plataforma ConectaPro', pageWidth/2, footerY, { align: 'center' });
+    pdf.text('www.conectapro.app - Conectando profissionais em Porto Velho', pageWidth/2, footerY + 5, { align: 'center' });
+    
+    // Salvar o PDF
+    const fileName = `contrato-${contratoData.contratanteNome.replace(/\s+/g, '-')}-${Date.now()}.pdf`;
+    pdf.save(fileName);
+    
+    alert('Contrato PDF gerado com sucesso! 📄✅');
   };
 
   const nextStep = () => {
