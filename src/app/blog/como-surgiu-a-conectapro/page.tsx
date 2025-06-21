@@ -1,5 +1,30 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Como Surgiu a ConectaPro? História da Plataforma de Profissionais em Porto Velho - RO",
+  description: "Descubra como nasceu a ConectaPro: da experiência real em obras em Porto Velho à criação da maior plataforma de pedreiros, pintores, eletricistas e encanadores de Rondônia. Encontre profissionais qualificados sem taxa.",
+  keywords: "ConectaPro Porto Velho, pedreiro Porto Velho, pintor Porto Velho, eletricista Porto Velho, encanador Porto Velho, construção civil Rondônia, reforma Porto Velho, mão de obra qualificada RO, orçamento construção, contrato obra, profissionais construção civil",
+  openGraph: {
+    title: "Como Surgiu a ConectaPro? História da Plataforma de Profissionais em Porto Velho - RO",
+    description: "Descubra como nasceu a ConectaPro: da experiência real em obras em Porto Velho à criação da maior plataforma de pedreiros, pintores, eletricistas e encanadores de Rondônia.",
+    images: ["/conectapro.png"],
+    locale: "pt_BR",
+    type: "article",
+    publishedTime: "2025-01-22",
+    authors: ["ConectaPro"]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Como Surgiu a ConectaPro? História da Plataforma de Profissionais em Porto Velho - RO",
+    description: "Da experiência real em obras à maior plataforma de profissionais da construção civil em Porto Velho - RO",
+    images: ["/conectapro.png"]
+  },
+  alternates: {
+    canonical: "https://conectapro.vercel.app/blog/como-surgiu-a-conectapro"
+  }
+};
 
 export default function ComoSurgiuConectaPro() {
   return (
@@ -25,11 +50,11 @@ export default function ComoSurgiuConectaPro() {
           </div>
           
           <h1 className="text-4xl font-bold text-gray-900 mb-6 leading-tight">
-            Como Surgiu a ConectaPro? A História por Trás da Plataforma
+            Como Surgiu a ConectaPro? A História da Maior Plataforma de Profissionais da Construção Civil em Porto Velho - RO
           </h1>
           
           <p className="text-xl text-gray-600 leading-relaxed mb-8">
-            Descubra a origem da ConectaPro: nasceu da experiência real em obras, da necessidade de profissionais e da falta de transparência no mercado da construção civil em Porto Velho.
+            Descubra a origem da ConectaPro: nasceu da experiência real em obras em Porto Velho, da necessidade de conectar pedreiros, pintores, eletricistas e encanadores qualificados com clientes que precisam de reforma e construção em Rondônia.
           </p>
 
           <div className="relative h-64 mb-8 rounded-2xl overflow-hidden">
@@ -44,14 +69,14 @@ export default function ComoSurgiuConectaPro() {
 
         {/* Conteúdo do artigo */}
         <div className="prose prose-lg max-w-none">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4 mt-8">A Realidade do Mercado da Construção em Porto Velho</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4 mt-8">A Realidade do Mercado da Construção Civil e Reforma em Porto Velho - RO</h2>
           
           <p className="mb-6 text-gray-700 leading-relaxed">
-            A ConectaPro não nasceu de uma ideia teórica ou de um escritório climatizado. Ela surgiu do chão da obra, literalmente. <strong>Anos de vivência em canteiros de obras em Porto Velho</strong> revelaram uma realidade que muitos conhecem, mas poucos falam abertamente: o tamanho gigantesco do mercado informal da construção civil.
+            A ConectaPro não nasceu de uma ideia teórica ou de um escritório climatizado. Ela surgiu do chão da obra, literalmente. <strong>Anos de vivência em canteiros de obras em Porto Velho - Rondônia</strong> revelaram uma realidade que muitos conhecem, mas poucos falam abertamente: o tamanho gigantesco do mercado informal da construção civil e reforma em RO.
           </p>
 
           <p className="mb-6 text-gray-700 leading-relaxed">
-            Imagine a seguinte cena: você está em uma obra e vê profissionais extremamente qualificados, com anos de experiência, que sabem fazer seu trabalho com excelência, mas que <strong>não têm tempo nem conhecimento para divulgar seus serviços</strong>. Eles passam o dia inteiro trabalhando, chegam em casa cansados, e a ideia de criar um perfil no Instagram ou investir em marketing digital parece um mundo distante.
+            Imagine a seguinte cena: você está em uma obra em Porto Velho e vê <strong>pedreiros, pintores, eletricistas e encanadores</strong> extremamente qualificados, com anos de experiência, que sabem fazer seu trabalho com excelência, mas que <strong>não têm tempo nem conhecimento para divulgar seus serviços de mão de obra</strong>. Eles passam o dia inteiro trabalhando, chegam em casa cansados, e a ideia de criar um perfil no Instagram ou investir em marketing digital parece um mundo distante.
           </p>
 
           <h2 className="text-2xl font-bold text-gray-900 mb-4 mt-8">O Problema da Gestão de Obras</h2>
