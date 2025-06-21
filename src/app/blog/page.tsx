@@ -2,6 +2,12 @@
 import Image from "next/image";
 import Link from "next/link";
 
+export const metadata = {
+  title: "Blog ConectaPro - Dicas de Construção Civil em Porto Velho-RO",
+  description: "Artigos e dicas sobre construção civil, reforma, tabela SINAPI, preços de materiais e contratação de profissionais em Porto Velho-RO. Conteúdo gratuito para seu projeto!",
+  keywords: "blog construção civil, dicas reforma porto velho, tabela sinapi rondônia, preços construção porto velho, como contratar pedreiro",
+};
+
 const postsBlog = [
   {
     id: 1,

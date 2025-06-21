@@ -4,6 +4,12 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { FaWhatsapp, FaMapMarkerAlt, FaUsers, FaHandshake, FaRocket, FaShieldAlt } from "react-icons/fa";
 
+export const metadata = {
+  title: "Sobre o ConectaPro - Plataforma de Profissionais da Construção",
+  description: "Conheça a história do ConectaPro: plataforma 100% gratuita que conecta profissionais da construção civil com clientes em Porto Velho-RO. Sem taxas, sem intermediários!",
+  keywords: "sobre conectapro, história conectapro, plataforma construção civil porto velho, marketplace profissionais",
+};
+
 export default function Sobre() {
   const observerRef = useRef<IntersectionObserver | null>(null);
 

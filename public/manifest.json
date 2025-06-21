@@ -1,11 +1,11 @@
 {
-  "name": "ConectaPro",
+  "name": "ConectaPro - Profissionais da Construção Porto Velho",
   "short_name": "ConectaPro",
-  "description": "Plataforma para conectar profissionais da construção civil com clientes em Rondônia",
+  "description": "Conecte-se com os melhores profissionais da construção civil em Porto Velho-RO. Pedreiros, pintores, eletricistas e encanadores. 100% gratuito!",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#3b82f6",
+  "theme_color": "#2563eb",
   "orientation": "portrait",
   "icons": [
     {
@@ -19,10 +19,48 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
+    },
+    {
+      "src": "/conectapro.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
-  "categories": ["business", "productivity"],
+  "categories": ["business", "productivity", "utilities"],
   "lang": "pt-BR",
   "scope": "/",
-  "id": "conectapro-app"
+  "id": "conectapro-porto-velho",
+  "screenshots": [
+    {
+      "src": "/conectapro.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "platform": "wide",
+      "label": "Página inicial do ConectaPro"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Buscar Profissional",
+      "short_name": "Buscar",
+      "description": "Encontre profissionais da construção",
+      "url": "/buscar-profissional",
+      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Cadastrar-se",
+      "short_name": "Cadastro",
+      "description": "Cadastre-se como profissional",
+      "url": "/cadastro-profissional",
+      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Calculadoras",
+      "short_name": "Calcular",
+      "description": "Calculadoras de orçamento",
+      "url": "/calculadoras",
+      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
 } 

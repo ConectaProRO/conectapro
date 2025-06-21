@@ -18,8 +18,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ConectaPro - Porto Velho, RO",
-  description: "Conectando profissionais da construção com clientes em Porto Velho. Encontre pedreiros, pintores, eletricistas e muito mais.",
+  title: "ConectaPro - Encontre Profissionais da Construção em Porto Velho-RO",
+  description: "Plataforma gratuita que conecta profissionais da construção civil (pedreiros, pintores, eletricistas, encanadores) com clientes em Porto Velho-RO. Contato direto, sem taxas, com calculadoras SINAPI.",
+  keywords: "pedreiro porto velho, pintor porto velho, eletricista porto velho, encanador porto velho, construção civil rondônia, profissionais construção, calculadora sinapi, orçamento construção",
   manifest: "/manifest.json",
   icons: {
     icon: "/icon-192x192.png",
@@ -27,6 +28,191 @@ export const metadata: Metadata = {
   },
   themeColor: "#2563eb",
   viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
+  openGraph: {
+    title: "ConectaPro - Profissionais da Construção em Porto Velho",
+    description: "Encontre pedreiros, pintores, eletricistas e encanadores qualificados em Porto Velho-RO. Plataforma gratuita, contato direto via WhatsApp.",
+    url: "https://conectapro.app",
+    siteName: "ConectaPro",
+    locale: "pt_BR",
+    type: "website",
+    images: [
+      {
+        url: "/conectapro.png",
+        width: 1200,
+        height: 630,
+        alt: "ConectaPro - Plataforma de Profissionais da Construção",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ConectaPro - Profissionais da Construção Porto Velho",
+    description: "Conecte-se com os melhores profissionais da construção civil em Porto Velho-RO. Gratuito e direto!",
+    images: ["/conectapro.png"],
+  },
+};
+
+// Schema.org structured data
+const schemaOrgData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://conectapro.app/#organization",
+      "name": "ConectaPro",
+      "url": "https://conectapro.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://conectapro.app/conectapro.png",
+        "width": 512,
+        "height": 512
+      },
+      "description": "Plataforma gratuita que conecta profissionais da construção civil com clientes em Porto Velho-RO",
+      "areaServed": {
+        "@type": "City",
+        "name": "Porto Velho",
+        "addressRegion": "RO",
+        "addressCountry": "BR"
+      },
+      "serviceType": [
+        "Construção Civil",
+        "Pedreiro",
+        "Pintor",
+        "Eletricista", 
+        "Encanador",
+        "Alvenaria",
+        "Instalações Elétricas",
+        "Instalações Hidráulicas"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+55-69-99256-1830",
+        "contactType": "customer service",
+        "availableLanguage": "Portuguese"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Porto Velho",
+        "addressRegion": "RO", 
+        "addressCountry": "BR"
+      },
+      "sameAs": [
+        "https://conectapro.app"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://conectapro.app/#website",
+      "url": "https://conectapro.app",
+      "name": "ConectaPro",
+      "description": "Conectando profissionais da construção com clientes em Porto Velho-RO",
+      "publisher": {
+        "@id": "https://conectapro.app/#organization"
+      },
+      "inLanguage": "pt-BR",
+      "potentialAction": [
+        {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://conectapro.app/buscar-profissional?servico={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      ]
+    },
+    {
+      "@type": "Service",
+      "@id": "https://conectapro.app/#service",
+      "name": "Conexão de Profissionais da Construção Civil",
+      "description": "Conectamos profissionais qualificados da construção civil com clientes que precisam de serviços em Porto Velho-RO",
+      "provider": {
+        "@id": "https://conectapro.app/#organization"
+      },
+      "areaServed": {
+        "@type": "City",
+        "name": "Porto Velho",
+        "addressRegion": "RO",
+        "addressCountry": "BR"
+      },
+      "serviceType": "Marketplace de Serviços",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "BRL",
+        "description": "Serviço 100% gratuito para profissionais e clientes"
+      },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Serviços de Construção Civil",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Pedreiro",
+              "description": "Serviços de alvenaria, forma e concretagem"
+            }
+          },
+          {
+            "@type": "Offer", 
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Pintor",
+              "description": "Serviços de pintura residencial e comercial"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service", 
+              "name": "Eletricista",
+              "description": "Instalações elétricas residenciais e comerciais"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Encanador", 
+              "description": "Instalações hidrosanitárias"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "@type": "LocalBusiness",
+      "@id": "https://conectapro.app/#localbusiness",
+      "name": "ConectaPro Porto Velho",
+      "image": "https://conectapro.app/conectapro.png",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Porto Velho",
+        "addressRegion": "RO",
+        "addressCountry": "BR"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -8.7619,
+        "longitude": -63.9039
+      },
+      "url": "https://conectapro.app",
+      "telephone": "+55-69-99256-1830",
+      "email": "conectaproro@gmail.com",
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+        ],
+        "opens": "00:00",
+        "closes": "23:59"
+      },
+      "priceRange": "Gratuito",
+      "paymentAccepted": "Não aplicável - Serviço gratuito",
+      "currenciesAccepted": "BRL"
+    }
+  ]
 };
 
 export default function RootLayout({
@@ -45,6 +231,26 @@ export default function RootLayout({
         <meta name="msapplication-tap-highlight" content="no" />
         <link rel="apple-touch-icon" href="/icon-192x192.png" />
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+        
+        {/* Schema.org structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(schemaOrgData),
+          }}
+        />
+        
+        {/* Additional meta tags for better SEO */}
+        <meta name="author" content="ConectaPro" />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        <meta name="googlebot" content="index, follow" />
+        <link rel="canonical" href="https://conectapro.app" />
+        
+        {/* Geo tags for local SEO */}
+        <meta name="geo.region" content="BR-RO" />
+        <meta name="geo.placename" content="Porto Velho" />
+        <meta name="geo.position" content="-8.7619;-63.9039" />
+        <meta name="ICBM" content="-8.7619, -63.9039" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
@@ -180,8 +386,8 @@ export default function RootLayout({
                 <h3 className="font-bold mb-4 text-white">Contato</h3>
                 <div className="space-y-2 text-gray-300 text-sm">
                   <p>📍 Porto Velho - RO</p>
-                  <p>📞 (69) 99999-9999</p>
-                  <p>✉️ contato@conectapro.app</p>
+                  <p>📞 (69) 99256-1830</p>
+                  <p>✉️ conectaproro@gmail.com</p>
                 </div>
               </div>
             </div>
