@@ -3,12 +3,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import CalculadoraHeader from "../../../components/CalculadoraHeader";
 
-export const metadata = {
-  title: "Calculadora de Viga (Formas) SINAPI - Porto Velho | ConectaPro",
-  description: "Calcule materiais e mão de obra para formas de vigas em concreto armado baseado na tabela SINAPI 2025. Valores atualizados para Porto Velho-RO!",
-  keywords: "calculadora viga, forma viga concreto, estrutura concreto armado, sinapi rondonia, orcamento viga",
-};
-
 // Dados SINAPI baseados na imagem fornecida - AF_09/2020 (05/2025)
 const dadosSINAPI = {
   formasViga: {

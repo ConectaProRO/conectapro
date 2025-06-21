@@ -3,12 +3,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import CalculadoraHeader from "../../../components/CalculadoraHeader";
 
-export const metadata = {
-  title: "Calculadora de Piso de Concreto SINAPI - Porto Velho | ConectaPro",
-  description: "Calcule materiais e mão de obra para execução de passeio (calçada) ou piso de concreto baseado na tabela SINAPI 2025. Valores atualizados para Porto Velho-RO!",
-  keywords: "calculadora piso concreto, calcada concreto, passeio concreto, sinapi rondonia, orcamento piso",
-};
-
 // Dados SINAPI baseados na imagem fornecida - AF_08/2022 (05/2025)
 const dadosSINAPI = {
   pisoConcreto: {
