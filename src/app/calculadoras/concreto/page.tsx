@@ -20,33 +20,33 @@ export default function ConcretoHubPage() {
           </p>
 
           <div className="grid md:grid-cols-2 gap-6">
-            {/* Fundação - Em Breve */}
-            <div className="bg-gradient-to-br from-gray-100 to-gray-50 border-2 border-gray-300 rounded-2xl p-6 opacity-75">
+            {/* Fundação - ATIVO */}
+            <a href="/calculadoras/concreto/fundacao" className="bg-gradient-to-br from-amber-500 to-amber-600 text-white rounded-2xl p-6 hover:from-amber-600 hover:to-amber-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
               <div className="text-center">
                 <div className="text-4xl mb-4">🏗️</div>
-                <h3 className="text-xl font-bold text-gray-700 mb-2">Fundação</h3>
-                <p className="text-sm text-gray-600 mb-3">
-                  Sapatas e blocos de fundação
+                <h3 className="text-xl font-bold mb-2">Fundação</h3>
+                <p className="text-sm opacity-90 mb-3">
+                  Sapatas, blocos e vigas baldrame (SINAPI)
                 </p>
-                <div className="inline-block bg-gray-400 text-white px-3 py-1 rounded-full text-xs font-bold">
-                  Em Breve
+                <div className="inline-block bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                  ✅ Ativo
                 </div>
               </div>
-            </div>
+            </a>
 
-            {/* Viga - Em Breve */}
-            <div className="bg-gradient-to-br from-gray-100 to-gray-50 border-2 border-gray-300 rounded-2xl p-6 opacity-75">
+            {/* Viga - ATIVO */}
+            <a href="/calculadoras/concreto/viga" className="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl p-6 hover:from-blue-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
               <div className="text-center">
                 <div className="text-4xl mb-4">📏</div>
-                <h3 className="text-xl font-bold text-gray-700 mb-2">Viga</h3>
-                <p className="text-sm text-gray-600 mb-3">
-                  Vigas de concreto armado
+                <h3 className="text-xl font-bold mb-2">Viga</h3>
+                <p className="text-sm opacity-90 mb-3">
+                  Formas para vigas de concreto armado (SINAPI)
                 </p>
-                <div className="inline-block bg-gray-400 text-white px-3 py-1 rounded-full text-xs font-bold">
-                  Em Breve
+                <div className="inline-block bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                  ✅ Ativo
                 </div>
               </div>
-            </div>
+            </a>
 
             {/* Pilar - Em Breve */}
             <div className="bg-gradient-to-br from-gray-100 to-gray-50 border-2 border-gray-300 rounded-2xl p-6 opacity-75">
@@ -62,19 +62,19 @@ export default function ConcretoHubPage() {
               </div>
             </div>
 
-            {/* Laje - Em Breve */}
-            <div className="bg-gradient-to-br from-gray-100 to-gray-50 border-2 border-gray-300 rounded-2xl p-6 opacity-75">
+            {/* Piso - ATIVO */}
+            <a href="/calculadoras/concreto/piso" className="bg-gradient-to-br from-slate-500 to-slate-600 text-white rounded-2xl p-6 hover:from-slate-600 hover:to-slate-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
               <div className="text-center">
-                <div className="text-4xl mb-4">▬</div>
-                <h3 className="text-xl font-bold text-gray-700 mb-2">Laje</h3>
-                <p className="text-sm text-gray-600 mb-3">
-                  Lajes de concreto armado
+                <div className="text-4xl mb-4">🏢</div>
+                <h3 className="text-xl font-bold mb-2">Piso</h3>
+                <p className="text-sm opacity-90 mb-3">
+                  Passeios e pisos de concreto armado (SINAPI)
                 </p>
-                <div className="inline-block bg-gray-400 text-white px-3 py-1 rounded-full text-xs font-bold">
-                  Em Breve
+                <div className="inline-block bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                  ✅ Ativo
                 </div>
               </div>
-            </div>
+            </a>
           </div>
 
           {/* Informações */}
@@ -84,7 +84,7 @@ export default function ConcretoHubPage() {
               <li>• <strong>Fundação:</strong> Elementos de base das construções</li>
               <li>• <strong>Viga:</strong> Elementos horizontais de sustentação</li>
               <li>• <strong>Pilar:</strong> Elementos verticais de sustentação</li>
-              <li>• <strong>Laje:</strong> Elementos de cobertura e separação de pavimentos</li>
+              <li>• <strong>Piso:</strong> Elementos de pavimentação em concreto</li>
             </ul>
           </div>
         </div>

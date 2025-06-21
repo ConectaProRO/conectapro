@@ -3,6 +3,12 @@ import React from "react";
 import Link from "next/link";
 import { FaHammer, FaPaintBrush, FaPlug, FaHome, FaCubes } from "react-icons/fa";
 
+export const metadata = {
+  title: "Calculadoras de Construção Civil SINAPI - Porto Velho | ConectaPro",
+  description: "Calculadoras gratuitas baseadas em SINAPI para orçamento de obras: concreto, piso, parede, pintura, instalações e forro de gesso. Valores atualizados para Porto Velho-RO!",
+  keywords: "calculadora sinapi, orçamento construção porto velho, calculadora concreto, calculadora piso, calculadora pintura, preços construção civil",
+};
+
 export default function CalculadorasPage() {
   return (
     <div className="min-h-screen bg-gray-50">
