@@ -3,12 +3,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import CalculadoraHeader from "../../../components/CalculadoraHeader";
 
-export const metadata = {
-  title: "Calculadora de Fundação (Sapatas) SINAPI - Porto Velho | ConectaPro",
-  description: "Calcule materiais e mão de obra para fundações rasas (sapatas, blocos, vigas baldrame) baseado na tabela SINAPI 2025. Valores atualizados para Porto Velho-RO!",
-  keywords: "calculadora fundacao, sapata concreto, blocos fundacao, vigas baldrame, sinapi rondonia, orcamento fundacao",
-};
-
 // Dados SINAPI baseados na imagem fornecida - AF_01/2024 (05/2025)
 const dadosSINAPI = {
   formasSapata: {
