@@ -95,13 +95,12 @@ export default function GeradorContratoPage() {
       return currentY;
     };
     
-    // Título
-    yPosition = addText('CONTRATO DE PRESTAÇÃO DE SERVIÇOS', pageWidth/2, yPosition, { 
-      fontSize: 16, 
-      fontStyle: 'bold' 
-    });
+    // Título centralizado
+    pdf.setFontSize(16);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('CONTRATO DE PRESTAÇÃO DE SERVIÇOS', pageWidth/2, yPosition, { align: 'center' });
     pdf.setTextColor(0, 0, 0);
-    yPosition += 10;
+    yPosition += 15;
     
     // CONTRATANTE
     yPosition = checkNewPage(yPosition);
