@@ -11,6 +11,15 @@ const postsBlog = [
     categoria: "História",
     imagem: "/conectapro.png",
     cta: "Conhece nossa história? Agora faça parte dela! Encontre profissionais qualificados ou cadastre-se como profissional."
+  },
+  {
+    id: 2,
+    titulo: "Tabela SINAPI Porto Velho 2025: Preços Oficiais vs Mercado Local",
+    resumo: "Entenda a tabela SINAPI 2025, compare preços oficiais com mercado local de Porto Velho e descubra quanto custa contratar pedreiro, pintor, eletricista e encanador em Rondônia.",
+    data: "22 de Janeiro, 2025",
+    categoria: "Preços",
+    imagem: "/conectapro.png",
+    cta: "Domine os preços da construção civil! Use nossas calculadoras SINAPI gratuitas."
   }
 ];
 
@@ -31,8 +40,7 @@ export default function Blog() {
         </div>
 
         {/* Grid de posts */}
-        <div className="flex justify-center">
-          <div className="max-w-md w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {postsBlog.map((post) => (
             <article key={post.id} className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300">
               <div className="relative h-48">
@@ -64,15 +72,20 @@ export default function Blog() {
                 </p>
                 
                 <Link 
-                  href={post.id === 1 ? "/blog/como-surgiu-a-conectapro" : "/buscar-profissional"}
+                  href={
+                    post.id === 1 ? "/blog/como-surgiu-a-conectapro" : 
+                    post.id === 2 ? "/blog/o-que-e-tabela-sinapi" : 
+                    "/buscar-profissional"
+                  }
                   className="text-blue-600 font-semibold hover:text-blue-800 transition-colors inline-block"
                 >
-                  {post.id === 1 ? "Leia a história completa →" : post.cta}
+                  {post.id === 1 ? "Leia a história completa →" : 
+                   post.id === 2 ? "Entenda a tabela SINAPI →" : 
+                   post.cta}
                 </Link>
               </div>
             </article>
                       ))}
-          </div>
         </div>
 
         {/* Call to action principal */}
