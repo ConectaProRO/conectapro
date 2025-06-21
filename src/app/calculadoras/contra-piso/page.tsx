@@ -5,7 +5,27 @@ import CalculadoraHeader from "../../components/CalculadoraHeader";
 export default function ContraPisoPage() {
   const [area, setArea] = useState("");
   const [modalidade, setModalidade] = useState("mercado");
-  const [resultado, setResultado] = useState<any>(null);
+  const [resultado, setResultado] = useState<{
+    area: number;
+    modalidade: string;
+    maoObra: {
+      pedreiro: { horas: number; valor: number; descricao: string };
+      servente: { horas: number; valor: number; descricao: string };
+      total: number;
+    };
+    materiais: {
+      componentes: Array<{
+        nome: string;
+        qtd: number;
+        unidade: string;
+        valor: number;
+        tipo: string;
+      }>;
+      total: number;
+    };
+    total: number;
+    valorPorM2: number;
+  } | null>(null);
 
   const modalidades = {
     sinapi: {
@@ -43,54 +63,60 @@ export default function ContraPisoPage() {
     const pedreiroValor = pedreiroHoras * comp.pedreiro.valor_hora;
     const serventeValor = serventeHoras * comp.servente.valor_hora;
 
-    let componentes: any[] = [];
+    let componentes: Array<{
+      nome: string;
+      qtd: number;
+      unidade: string;
+      valor: number;
+      tipo: string;
+    }> = [];
     let totalMateriais = 0;
 
     if (modalidade === 'sinapi') {
       // Modalidade SINAPI - usar argamassa pronta
-      const argamassaQuantidade = areaNum * (comp as any).argamassa.coeficiente;
-      const argamassaValor = argamassaQuantidade * (comp as any).argamassa.valor_m3;
+      const argamassaQuantidade = areaNum * (comp as Record<string, any>).argamassa.coeficiente;
+      const argamassaValor = argamassaQuantidade * (comp as Record<string, any>).argamassa.valor_m3;
       
       totalMateriais = argamassaValor;
       
-      componentes = [
-        { 
-          nome: (comp as any).argamassa.descricao, 
-          qtd: argamassaQuantidade, 
-          unidade: 'm³', 
-          valor: argamassaValor, 
-          tipo: 'material' 
-        }
-      ];
+              componentes = [
+          { 
+            nome: (comp as Record<string, any>).argamassa.descricao, 
+            qtd: argamassaQuantidade, 
+            unidade: 'm³', 
+            valor: argamassaValor, 
+            tipo: 'material' 
+          }
+        ];
     } else {
       // Modalidade mercado local - materiais decompostos
-      const cimentoQuantidade = areaNum * (comp as any).cimento.coeficiente;
-      const areiaQuantidade = areaNum * (comp as any).areia.coeficiente;
+      const cimentoQuantidade = areaNum * (comp as Record<string, any>).cimento.coeficiente;
+      const areiaQuantidade = areaNum * (comp as Record<string, any>).areia.coeficiente;
       
-      const cimentoValor = cimentoQuantidade * (comp as any).cimento.valor_kg;
-      const areiaValor = areiaQuantidade * (comp as any).areia.valor_m3;
+      const cimentoValor = cimentoQuantidade * (comp as Record<string, any>).cimento.valor_kg;
+      const areiaValor = areiaQuantidade * (comp as Record<string, any>).areia.valor_m3;
       
       totalMateriais = cimentoValor + areiaValor;
       
       // Converter para unidades práticas de compra
       const cimentoSacos = cimentoQuantidade / 50; // 50kg por saco
       
-      componentes = [
-        { 
-          nome: (comp as any).cimento.descricao, 
-          qtd: cimentoSacos, 
-          unidade: 'sacos 50kg', 
-          valor: cimentoValor, 
-          tipo: 'material' 
-        },
-        { 
-          nome: (comp as any).areia.descricao, 
-          qtd: areiaQuantidade, 
-          unidade: 'm³', 
-          valor: areiaValor, 
-          tipo: 'material' 
-        }
-      ];
+              componentes = [
+          { 
+            nome: (comp as Record<string, any>).cimento.descricao, 
+            qtd: cimentoSacos, 
+            unidade: 'sacos 50kg', 
+            valor: cimentoValor, 
+            tipo: 'material' 
+          },
+          { 
+            nome: (comp as Record<string, any>).areia.descricao, 
+            qtd: areiaQuantidade, 
+            unidade: 'm³', 
+            valor: areiaValor, 
+            tipo: 'material' 
+          }
+        ];
     }
 
     // Calcular totais
@@ -275,7 +301,7 @@ export default function ContraPisoPage() {
                   <span className="mr-2">🧱</span> Materiais
                 </h4>
                 <div className="space-y-3">
-                  {resultado.materiais.componentes.map((comp: any, index: number) => (
+                  {resultado.materiais.componentes.map((comp, index: number) => (
                     <div key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                       <div>
                         <div className="font-semibold">{comp.nome}</div>

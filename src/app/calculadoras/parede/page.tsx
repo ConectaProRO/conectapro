@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import Link from "next/link";
+
 import CalculadoraHeader from "../../components/CalculadoraHeader";
 
 export default function ParedeHubPage() {
