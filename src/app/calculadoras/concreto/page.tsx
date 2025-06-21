@@ -48,19 +48,19 @@ export default function ConcretoHubPage() {
               </div>
             </a>
 
-            {/* Pilar - Em Breve */}
-            <div className="bg-gradient-to-br from-gray-100 to-gray-50 border-2 border-gray-300 rounded-2xl p-6 opacity-75">
+            {/* Pilar - ATIVO */}
+            <a href="/calculadoras/concreto/pilar" className="bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-2xl p-6 hover:from-purple-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
               <div className="text-center">
                 <div className="text-4xl mb-4">🏛️</div>
-                <h3 className="text-xl font-bold text-gray-700 mb-2">Pilar</h3>
-                <p className="text-sm text-gray-600 mb-3">
-                  Pilares de concreto armado
+                <h3 className="text-xl font-bold mb-2">Pilar</h3>
+                <p className="text-sm opacity-90 mb-3">
+                  Formas para pilares de concreto armado (SINAPI)
                 </p>
-                <div className="inline-block bg-gray-400 text-white px-3 py-1 rounded-full text-xs font-bold">
-                  Em Breve
+                <div className="inline-block bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                  ✅ Ativo
                 </div>
               </div>
-            </div>
+            </a>
 
             {/* Piso - ATIVO */}
             <a href="/calculadoras/concreto/piso" className="bg-gradient-to-br from-slate-500 to-slate-600 text-white rounded-2xl p-6 hover:from-slate-600 hover:to-slate-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
