@@ -54,7 +54,8 @@ export default function MobileMenu() {
     { href: "/gerador-contrato", icon: "📄", title: "Gerador de Contrato", description: "Criar contratos" },
 
     { href: "/blog", icon: "📝", title: "Blog", description: "Artigos e dicas" },
-    { href: "/sobre", icon: "ℹ️", title: "Sobre", description: "Conheça a ConectaPro" }
+    { href: "/sobre", icon: "ℹ️", title: "Sobre", description: "Conheça a ConectaPro" },
+    { href: "/admin", icon: "⚙️", title: "Admin", description: "Painel administrativo" }
   ];
 
   return (

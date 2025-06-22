@@ -370,10 +370,14 @@ export default function RootLayout({
                           <span className="text-lg">📝</span>
                           <span className="text-gray-700 hover:text-blue-600">Blog</span>
                         </Link>
-                        <Link href="/sobre" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
-                          <span className="text-lg">ℹ️</span>
-                          <span className="text-gray-700 hover:text-blue-600">Sobre</span>
-                        </Link>
+                                                 <Link href="/sobre" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                           <span className="text-lg">ℹ️</span>
+                           <span className="text-gray-700 hover:text-blue-600">Sobre</span>
+                         </Link>
+                         <Link href="/admin" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                           <span className="text-lg">⚙️</span>
+                           <span className="text-gray-700 hover:text-blue-600">Admin</span>
+                         </Link>
                       </div>
                     </div>
                   </div>
