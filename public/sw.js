@@ -1,1 +1,108 @@
-if(!self.define){let a,s={};const e=(e,i)=>(e=new URL(e+".js",i).href,s[e]||new Promise(s=>{if("document"in self){const a=document.createElement("script");a.src=e,a.onload=s,document.head.appendChild(a)}else a=e,importScripts(e),s()}).then(()=>{let a=s[e];if(!a)throw new Error(`Module ${e} didn’t register its module`);return a}));self.define=(i,c)=>{const t=a||("document"in self?document.currentScript.src:"")||location.href;if(s[t])return;let n={};const r=a=>e(a,t),o={module:{uri:t},exports:n,require:r};s[t]=Promise.all(i.map(a=>o[a]||r(a))).then(a=>(c(...a),n))}}define(["./workbox-86a8e45e"],function(a){"use strict";importScripts(),self.skipWaiting(),a.clientsClaim(),a.precacheAndRoute([{url:"/_next/app-build-manifest.json",revision:"aeb879d02004f754a4666fdf9ac7805d"},{url:"/_next/static/RW4azapZhb1C9wsYhGJdo/_buildManifest.js",revision:"6991f3b3404796dc4e4341f792b62ec0"},{url:"/_next/static/RW4azapZhb1C9wsYhGJdo/_ssgManifest.js",revision:"b6652df95db52feb4daf4eca35380933"},{url:"/_next/static/chunks/164f4fb6-a3c05d4f2d31ca8f.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/1684-129a211b1b3f37e5.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/2121.494f26a6d2d0c3c9.js",revision:"494f26a6d2d0c3c9"},{url:"/_next/static/chunks/2676-2f93986df4c14798.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/2916-29e2acce4031ac4f.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/3063-584cf02ed4612f68.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/472.2c08b965bd9148e2.js",revision:"2c08b965bd9148e2"},{url:"/_next/static/chunks/4bd1b696-d76dff6c2241f3f1.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/535-216ec8ca6515f12f.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/6874-7100c8dea2d384a6.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/7520-aba2858979dfb3b1.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/822.d1eebe7df2d8fc0a.js",revision:"d1eebe7df2d8fc0a"},{url:"/_next/static/chunks/8e1d74a4-852c6c47bd8a0c2a.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/9341.3ca6eb08eac1d97b.js",revision:"3ca6eb08eac1d97b"},{url:"/_next/static/chunks/ad2866b8.1fc071285e350c45.js",revision:"1fc071285e350c45"},{url:"/_next/static/chunks/app/_not-found/page-b2aa2c0eabe5134b.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/admin/page-f8b62e5504760450.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/api/admin/aprovar-avaliacao/route-ad11bff451607b60.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/api/admin/aprovar-profissional/route-a918f320def64346.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/api/admin/avaliacoes/route-1bb951fa87e9755c.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/api/admin/cadastros/route-364759118de2feed.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/api/admin/desaprovar-profissional/route-eee8a7f32709ea85.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/api/admin/excluir-avaliacao/route-4550d084f64c6e4a.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/api/admin/excluir-profissional/route-50dd2568fd74fef8.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/api/admin/recarregar-dados/route-d324cebe781ff896.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/api/admin/rejeitar-avaliacao/route-b034e563102d314d.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/api/admin/tornar-invisivel/route-500db22c2870c288.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/api/admin/tornar-visivel/route-d6e68bb07cf4c78a.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/api/avaliacoes/media/route-a93105fbed084159.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/api/avaliacoes/route-7e51ea948932ef91.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/api/cadastro/adicionar-fotos/route-e2b2bfb639539756.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/api/cadastro/route-8d712b0e50bb65f4.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/api/profissionais/route-a0afb5255a5e49d6.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/blog/como-surgiu-a-conectapro/page-2e2e570d35116ede.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/blog/o-que-e-tabela-sinapi/page-79040ca85324e811.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/blog/page-c565ab21298ee538.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/buscar-profissional/page-5daad0a7cf5abab6.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/cadastro-profissional/page-d5119e9028fb1388.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/calculadora-orcamento/page-d8cfb9ee44ea22bc.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/calculadoras/concreto/fundacao/page-4efdf0ba410dc904.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/calculadoras/concreto/page-1818aa2a438f6ddb.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/calculadoras/concreto/pilar/page-1c420df9a1bf6f22.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/calculadoras/concreto/piso/page-0aa1dff6006b8e4a.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/calculadoras/concreto/viga/page-df6db40f5ef63219.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/calculadoras/contra-piso/page-c9123d2142d88490.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/calculadoras/forro-gesso/page-4189e9d62523dcb3.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/calculadoras/instalacoes/page-5efceeaa6675dcd2.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/calculadoras/page-734b17a7768d3ed8.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/calculadoras/parede/alvenaria/page-a1ec9e07dd66ad2d.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/calculadoras/parede/page-06d344ee624188fb.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/calculadoras/pintura/page-bf712cd78214831f.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/calculadoras/piso/page-fc92a9e6ee2a552b.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/gerador-contrato/page-bd40c8ac855dce90.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/layout-06139cd11880f5ba.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/page-6df2f92cd81228f3.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/robots.txt/route-3c4a1a9c64dbe552.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/sitemap.xml/route-8bfeb0222adacda4.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/app/sobre/page-3b648e1578eebda8.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/bc98253f.a20b3a3cf1b114d6.js",revision:"a20b3a3cf1b114d6"},{url:"/_next/static/chunks/framework-82b67a6346ddd02b.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/main-a9db077e7a8b6411.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/main-app-4f622c37c1255362.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/pages/_app-0b0b6e26a728d49c.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/pages/_error-f94192b14105bd76.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/chunks/polyfills-42372ed130431b0a.js",revision:"846118c33b2c0e922d7b3a7676f81f6f"},{url:"/_next/static/chunks/webpack-c776268ebaad07d6.js",revision:"RW4azapZhb1C9wsYhGJdo"},{url:"/_next/static/css/cd541481e032c422.css",revision:"cd541481e032c422"},{url:"/_next/static/media/569ce4b8f30dc480-s.p.woff2",revision:"ef6cefb32024deac234e82f932a95cbd"},{url:"/_next/static/media/747892c23ea88013-s.woff2",revision:"a0761690ccf4441ace5cec893b82d4ab"},{url:"/_next/static/media/8d697b304b401681-s.woff2",revision:"cc728f6c0adb04da0dfcb0fc436a8ae5"},{url:"/_next/static/media/93f479601ee12b01-s.p.woff2",revision:"da83d5f06d825c5ae65b7cca706cb312"},{url:"/_next/static/media/9610d9e46709d722-s.woff2",revision:"7b7c0ef93df188a852344fc272fc096b"},{url:"/_next/static/media/ba015fad6dcf6784-s.woff2",revision:"8ea4f719af3312a055caf09f34c89a77"},{url:"/_next/static/media/layers-2x.9859cd12.png",revision:"9859cd12"},{url:"/_next/static/media/layers.ef6db872.png",revision:"ef6db872"},{url:"/_next/static/media/marker-icon.d577052a.png",revision:"d577052a"},{url:"/conectapro.png",revision:"45970d3a6c13ed9fe116a74dcd0c1703"},{url:"/conectapro_apresentacao.html",revision:"398a7467c07e726e2614553dd49a087b"},{url:"/file.svg",revision:"d09f95206c3fa0bb9bd9fefabfd0ea71"},{url:"/globe.svg",revision:"2aaafa6a49b6563925fe440891e32717"},{url:"/icon-192x192.png",revision:"45970d3a6c13ed9fe116a74dcd0c1703"},{url:"/icon-512x512.png",revision:"45970d3a6c13ed9fe116a74dcd0c1703"},{url:"/manifest.json",revision:"b712c0ca67db46b7dcf2a1df3bc8d1ab"},{url:"/next.svg",revision:"8e061864f388b47f33a1c3780831193e"},{url:"/plano_marketing_trimestre.html",revision:"5b4c842868862e7ce2b7b457c3d9b1ec"},{url:"/vercel.svg",revision:"c0af2f507b369b085b35ef4bbe3bcf1e"},{url:"/window.svg",revision:"a2760511c65806022ad20adf74370ff3"}],{ignoreURLParametersMatching:[]}),a.cleanupOutdatedCaches(),a.registerRoute("/",new a.NetworkFirst({cacheName:"start-url",plugins:[{cacheWillUpdate:async({request:a,response:s,event:e,state:i})=>s&&"opaqueredirect"===s.type?new Response(s.body,{status:200,statusText:"OK",headers:s.headers}):s}]}),"GET")});
+// Service Worker atualizado para cache menos agressivo
+const CACHE_NAME = 'conectapro-v' + Date.now(); // Cache dinâmico
+const urlsToCache = [
+  '/',
+  '/conectapro.png',
+  '/icon-192x192.png',
+  '/icon-512x512.png',
+  '/manifest.json'
+];
+
+// Instalar service worker
+self.addEventListener('install', function(event) {
+  // Pular espera e ativar imediatamente
+  self.skipWaiting();
+  
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(function(cache) {
+        return cache.addAll(urlsToCache);
+      })
+  );
+});
+
+// Ativar service worker
+self.addEventListener('activate', function(event) {
+  // Tomar controle imediatamente
+  self.clients.claim();
+  
+  event.waitUntil(
+    caches.keys().then(function(cacheNames) {
+      return Promise.all(
+        cacheNames.map(function(cacheName) {
+          // Deletar caches antigos
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
+
+// Interceptar requisições - estratégia Network First para HTML
+self.addEventListener('fetch', function(event) {
+  const url = new URL(event.request.url);
+  
+  // Para arquivos HTML, sempre tentar rede primeiro
+  if (event.request.destination === 'document' || 
+      url.pathname.endsWith('.html') || 
+      url.pathname === '/') {
+    
+    event.respondWith(
+      fetch(event.request)
+        .then(function(response) {
+          // Se a rede responder, usar e cachear
+          if (response.status === 200) {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then(function(cache) {
+              cache.put(event.request, responseClone);
+            });
+          }
+          return response;
+        })
+        .catch(function() {
+          // Se falhar, tentar cache
+          return caches.match(event.request);
+        })
+    );
+  }
+  // Para outros recursos, usar cache primeiro
+  else {
+    event.respondWith(
+      caches.match(event.request)
+        .then(function(response) {
+          // Se estiver no cache, retornar
+          if (response) {
+            return response;
+          }
+          
+          // Se não, buscar na rede
+          return fetch(event.request).then(function(response) {
+            // Cachear apenas se for sucesso
+            if (response.status === 200) {
+              const responseClone = response.clone();
+              caches.open(CACHE_NAME).then(function(cache) {
+                cache.put(event.request, responseClone);
+              });
+            }
+            return response;
+          });
+        })
+    );
+  }
+});
+
+// Mensagem para forçar atualização
+self.addEventListener('message', function(event) {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+  if (event.data && event.data.type === 'CLEAR_CACHE') {
+    caches.keys().then(function(cacheNames) {
+      cacheNames.forEach(function(cacheName) {
+        caches.delete(cacheName);
+      });
+    });
+  }
+});

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Meta tags para prevenir cache -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="cache-control" content="no-cache">
+    <meta name="expires" content="0">
+    <meta name="pragma" content="no-cache">
+    
+    <title>Calculadora CUB Comercial - Sinduscon RO | ConectaPro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Script para limpar cache e forçar reload -->
+    <script>
+        // Função para limpar cache e forçar reload
+        function forceReload() {
+            // Limpar cache do localStorage
+            if (typeof(Storage) !== "undefined") {
+                localStorage.clear();
+                sessionStorage.clear();
+            }
+            
+            // Desregistrar service worker se existir
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    for(let registration of registrations) {
+                        registration.unregister();
+                    }
+                });
+            }
+            
+            // Limpar cache do aplicativo
+            if ('caches' in window) {
+                caches.keys().then(function(names) {
+                    for (let name of names) {
+                        caches.delete(name);
+                    }
+                });
+            }
+        }
+        
+        // Adicionar timestamp para evitar cache
+        window.pageLoadTime = Date.now();
+        
+        // Verificar se é mobile e aplicar reload forçado se necessário
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        
+        // Se for mobile e não houver timestamp recente, força reload
+        if (isMobile()) {
+            const lastUpdate = localStorage.getItem('lastCubUpdate');
+            const currentTime = Date.now();
+            if (!lastUpdate || (currentTime - parseInt(lastUpdate)) > 300000) { // 5 minutos
+                localStorage.setItem('lastCubUpdate', currentTime.toString());
+                forceReload();
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .gradient-commercial { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        
+        /* Indicador visual de atualização */
+        .update-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #10b981;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            z-index: 1000;
+            display: none;
+        }
+        
+        /* Botão de reload manual */
+        .reload-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .reload-btn {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Indicador de atualização -->
+    <div class="update-indicator" id="updateIndicator">
+        ✅ Página atualizada
+    </div>
+    
+    <!-- Botão de reload manual para mobile -->
+    <button class="reload-btn" onclick="reloadPage()" title="Atualizar página">
+        🔄
+    </button>
+
+    <!-- Header -->
+    <header class="gradient-commercial text-white py-6 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                        <span class="text-2xl">🏢</span>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold">🏢 CUB Comercial - Sinduscon RO</h1>
+                        <p class="text-pink-100">Calculadora especializada para edifícios comerciais</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-pink-100">Última atualização</p>
+                    <p class="font-semibold">Maio/2025</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navegação -->
+    <div class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center gap-4">
+                <button onclick="window.location.href='cub-sinduscon.html'" class="flex items-center gap-2 text-gray-600 hover:text-pink-600 transition-colors">
+                    ← Voltar ao Menu
+                </button>
+                <div class="h-4 w-px bg-gray-300"></div>
+                <a href="dashboard-cub-prototipo.html" class="text-gray-600 hover:text-blue-600 transition-colors">
+                    🏠 CUB Residencial
+                </a>
+                <span class="text-pink-600 font-semibold">🏢 CUB Comercial</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros e Controles -->
+    <div class="max-w-7xl mx-auto px-4 py-6">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Edifício</label>
+                    <select id="tipoComercial" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-pink-500">
+                        <option value="csl">CSL - Lojas e Salas</option>
+                        <option value="cal">CAL - Andares Livres</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Número de Pavimentos</label>
+                    <select id="pavimentos" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-pink-500">
+                        <option value="8">8 Pavimentos</option>
+                        <option value="16">16 Pavimentos</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Valor</label>
+                    <select id="tipoValor" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-pink-500">
+                        <option value="desonerado">Desonerado</option>
+                        <option value="onerado">Onerado</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Área Total (m²)</label>
+                    <input type="number" id="area" value="500" min="1" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-pink-500">
+                </div>
+                <div class="flex items-end">
+                    <button onclick="calcularComercial()" class="w-full bg-pink-600 text-white py-2 px-4 rounded-lg hover:bg-pink-700 transition-colors font-medium">
+                        🧮 Calcular
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cards de Preços Principais -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">CUB Comercial</h3>
+                    <span class="text-2xl">🏢</span>
+                </div>
+                <div class="text-3xl font-bold text-pink-600" id="cubComercial">R$ 2.150,00</div>
+                <p class="text-sm text-gray-500" id="tipoDescricao">CSL-8 - Desonerado</p>
+                <div class="mt-4 text-xs text-gray-400">
+                    Base: Sinduscon RO - Mai/2025
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Custo Total</h3>
+                    <span class="text-2xl">💰</span>
+                </div>
+                <div class="text-3xl font-bold text-green-600" id="custoTotalComercial">R$ 1.075.000</div>
+                <p class="text-sm text-gray-500">para <span id="areaDisplayComercial">500</span> m²</p>
+                <div class="mt-4 text-xs text-gray-400">
+                    Estimativa base CUB
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Custo por Sala</h3>
+                    <span class="text-2xl">🏪</span>
+                </div>
+                <div class="text-3xl font-bold text-blue-600" id="custoPorSala">R$ 107.500</div>
+                <p class="text-sm text-gray-500" id="areaPorSala">50 m² por unidade</p>
+                <div class="mt-4 text-xs text-gray-400">
+                    Estimativa por unidade
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Diferença CSL/CAL</h3>
+                    <span class="text-2xl">📊</span>
+                </div>
+                <div class="text-3xl font-bold text-orange-600" id="diferencaTipo">+8%</div>
+                <p class="text-sm text-gray-500">CAL vs CSL</p>
+                <div class="mt-4 text-xs text-gray-400">
+                    Andares livres mais caros
+                </div>
+            </div>
+        </div>
+
+        <!-- Informações sobre os Tipos -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-blue-800 mb-3">🏪 CSL - Comercial Salas e Lojas</h3>
+                <ul class="text-sm text-blue-700 space-y-2">
+                    <li>• <strong>Estrutura:</strong> Garagem + Térreo + Pavimentos-tipo</li>
+                    <li>• <strong>Layout:</strong> Divisões internas para salas e lojas</li>
+                    <li>• <strong>Uso típico:</strong> Escritórios, consultórios, lojas</li>
+                    <li>• <strong>Flexibilidade:</strong> Média (divisórias fixas)</li>
+                    <li>• <strong>Custo:</strong> Menor que CAL</li>
+                </ul>
+            </div>
+
+            <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-green-800 mb-3">🏢 CAL - Comercial Andares Livres</h3>
+                <ul class="text-sm text-green-700 space-y-2">
+                    <li>• <strong>Estrutura:</strong> Garagem + Térreo + Pavimentos-tipo</li>
+                    <li>• <strong>Layout:</strong> Plantas livres sem divisões</li>
+                    <li>• <strong>Uso típico:</strong> Corporativo, coworking, grandes escritórios</li>
+                    <li>• <strong>Flexibilidade:</strong> Alta (layout customizável)</li>
+                    <li>• <strong>Custo:</strong> Maior que CSL</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Tabela Comparativa -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+            <div class="bg-gray-50 px-6 py-4 border-b">
+                <h2 class="text-xl font-semibold text-gray-800">📋 Comparativo de Preços Comerciais</h2>
+                <p class="text-sm text-gray-600">Valores CUB por tipo de edifício comercial</p>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pavimentos</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Desonerado (R$/m²)</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Onerado (R$/m²)</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diferença</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" id="tabelaComparativa">
+                        <!-- Será preenchido via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Calculadora de Unidades -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">🧮 Calculadora de Unidades Comerciais</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Área por Unidade (m²)</label>
+                    <input type="number" id="areaPorUnidade" value="50" min="1" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Número de Unidades</label>
+                    <input type="number" id="numeroUnidades" value="10" min="1" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Área Comum (%)</label>
+                    <input type="number" id="areaComum" value="30" min="0" max="50" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                </div>
+                <div class="flex items-end">
+                    <button onclick="calcularUnidades()" class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors font-medium">
+                        Calcular Unidades
+                    </button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="resultadosUnidades">
+                <!-- Será preenchido via JavaScript -->
+            </div>
+        </div>
+
+        <!-- Serviços Adicionais Comerciais -->
+        <div class="bg-orange-50 border border-orange-200 rounded-lg p-6 mb-6">
+            <h3 class="text-lg font-semibold text-orange-800 mb-3">🏗️ Serviços Adicionais para Obras Comerciais</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-orange-700 mb-2">Sistemas Especiais:</h4>
+                    <ul class="text-sm text-orange-700 space-y-1 ml-4">
+                        <li>• Sistema de combate a incêndio</li>
+                        <li>• Ar-condicionado central</li>
+                        <li>• Sistema de automação predial</li>
+                        <li>• Elevadores (passageiros e carga)</li>
+                        <li>• Gerador de emergência</li>
+                        <li>• Sistema de segurança (CFTV, alarme)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-orange-700 mb-2">Acabamentos Comerciais:</h4>
+                    <ul class="text-sm text-orange-700 space-y-1 ml-4">
+                        <li>• Fachada em ACM ou vidro</li>
+                        <li>• Piso elevado para cabeamento</li>
+                        <li>• Forro modular removível</li>
+                        <li>• Divisórias drywall ou eucatex</li>
+                        <li>• Sinalização e comunicação visual</li>
+                        <li>• Paisagismo e área externa</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bg-orange-100 border border-orange-300 rounded-lg p-4 mt-4">
+                <p class="text-sm text-orange-800">
+                    <strong>💡 Dica ConectaPro:</strong> Estes serviços podem representar 30-50% do custo adicional 
+                    sobre o CUB base. Consulte nossos profissionais especializados em obras comerciais para 
+                    orçamentos detalhados incluindo estes sistemas.
+                </p>
+            </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-yellow-800 mb-2">⚠️ Importante - Obras Comerciais</h3>
+            <ul class="text-sm text-yellow-700 space-y-1">
+                <li>• Valores baseados no CUB Sinduscon-RO para edifícios comerciais</li>
+                <li>• Obras comerciais têm complexidade maior que residenciais</li>
+                <li>• Exigem projetos especializados (incêndio, acessibilidade, etc.)</li>
+                <li>• Necessitam aprovações específicas na Prefeitura e Corpo de Bombeiros</li>
+                <li>• ConectaPro conecta você com profissionais especializados em obras comerciais</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Dados CUB Comercial (estimados baseados no padrão residencial com acréscimo comercial)
+        const dadosCUBComercial = {
+            csl: { // Comercial Salas e Lojas
+                8: {
+                    desonerado: 2050.00,
+                    onerado: 2125.00
+                },
+                16: {
+                    desonerado: 2150.00,
+                    onerado: 2230.00
+                }
+            },
+            cal: { // Comercial Andares Livres
+                8: {
+                    desonerado: 2200.00,
+                    onerado: 2285.00
+                },
+                16: {
+                    desonerado: 2320.00,
+                    onerado: 2410.00
+                }
+            }
+        };
+
+        function calcularComercial() {
+            const tipo = document.getElementById('tipoComercial').value;
+            const pavimentos = parseInt(document.getElementById('pavimentos').value);
+            const tipoValor = document.getElementById('tipoValor').value;
+            const area = parseFloat(document.getElementById('area').value);
+            
+            const cubM2 = dadosCUBComercial[tipo][pavimentos][tipoValor];
+            const custoTotal = cubM2 * area;
+            
+            // Atualizar displays
+            document.getElementById('cubComercial').textContent = `R$ ${cubM2.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('custoTotalComercial').textContent = `R$ ${custoTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('areaDisplayComercial').textContent = area;
+            
+            // Descrição do tipo
+            const tipoNome = tipo === 'csl' ? 'CSL' : 'CAL';
+            const tipoDescricao = tipo === 'csl' ? 'Salas e Lojas' : 'Andares Livres';
+            document.getElementById('tipoDescricao').textContent = `${tipoNome}-${pavimentos} - ${tipoDescricao} - ${tipoValor.charAt(0).toUpperCase() + tipoValor.slice(1)}`;
+            
+            // Custo por sala (estimativa)
+            const areaPorSala = tipo === 'csl' ? 50 : 100; // CSL salas menores, CAL andares maiores
+            const custoPorSala = cubM2 * areaPorSala;
+            document.getElementById('custoPorSala').textContent = `R$ ${custoPorSala.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('areaPorSala').textContent = `${areaPorSala} m² por unidade`;
+            
+            // Diferença CAL vs CSL
+            const cubCSL = dadosCUBComercial.csl[pavimentos][tipoValor];
+            const cubCAL = dadosCUBComercial.cal[pavimentos][tipoValor];
+            const diferenca = ((cubCAL - cubCSL) / cubCSL * 100).toFixed(1);
+            document.getElementById('diferencaTipo').textContent = `+${diferenca}%`;
+            
+            atualizarTabelaComparativa();
+        }
+
+        function atualizarTabelaComparativa() {
+            const tbody = document.getElementById('tabelaComparativa');
+            tbody.innerHTML = '';
+            
+            const tipos = [
+                { key: 'csl', nome: 'CSL - Salas e Lojas' },
+                { key: 'cal', nome: 'CAL - Andares Livres' }
+            ];
+            
+            tipos.forEach(tipo => {
+                [8, 16].forEach(pav => {
+                    const desonerado = dadosCUBComercial[tipo.key][pav].desonerado;
+                    const onerado = dadosCUBComercial[tipo.key][pav].onerado;
+                    const diferenca = ((onerado - desonerado) / desonerado * 100).toFixed(1);
+                    
+                    tbody.innerHTML += `
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="px-6 py-4 font-medium">${tipo.nome}</td>
+                            <td class="px-6 py-4">${pav} pavimentos</td>
+                            <td class="px-6 py-4 font-bold text-blue-600">R$ ${desonerado.toFixed(2)}</td>
+                            <td class="px-6 py-4 font-bold text-green-600">R$ ${onerado.toFixed(2)}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">+${diferenca}%</td>
+                        </tr>
+                    `;
+                });
+            });
+        }
+
+        function calcularUnidades() {
+            const areaPorUnidade = parseFloat(document.getElementById('areaPorUnidade').value);
+            const numeroUnidades = parseInt(document.getElementById('numeroUnidades').value);
+            const percentualComum = parseFloat(document.getElementById('areaComum').value);
+            
+            const areaPrivativa = areaPorUnidade * numeroUnidades;
+            const areaComumTotal = areaPrivativa * (percentualComum / 100);
+            const areaTotal = areaPrivativa + areaComumTotal;
+            
+            // Pegar valores atuais
+            const tipo = document.getElementById('tipoComercial').value;
+            const pavimentos = parseInt(document.getElementById('pavimentos').value);
+            const tipoValor = document.getElementById('tipoValor').value;
+            const cubM2 = dadosCUBComercial[tipo][pavimentos][tipoValor];
+            
+            const custoTotal = areaTotal * cubM2;
+            const custoPorUnidade = custoTotal / numeroUnidades;
+            
+            document.getElementById('resultadosUnidades').innerHTML = `
+                <div class="bg-blue-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-blue-800">Área Total</h4>
+                    <p class="text-2xl font-bold text-blue-600">${areaTotal.toFixed(0)} m²</p>
+                    <p class="text-sm text-blue-600">${areaPrivativa}m² privativa + ${areaComumTotal.toFixed(0)}m² comum</p>
+                </div>
+                <div class="bg-green-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-green-800">Custo Total</h4>
+                    <p class="text-2xl font-bold text-green-600">R$ ${custoTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</p>
+                    <p class="text-sm text-green-600">Para ${numeroUnidades} unidades</p>
+                </div>
+                <div class="bg-purple-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-purple-800">Custo por Unidade</h4>
+                    <p class="text-2xl font-bold text-purple-600">R$ ${custoPorUnidade.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</p>
+                    <p class="text-sm text-purple-600">Incluindo área comum</p>
+                </div>
+            `;
+        }
+
+        // Event Listeners
+        document.getElementById('tipoComercial').addEventListener('change', calcularComercial);
+        document.getElementById('pavimentos').addEventListener('change', calcularComercial);
+        document.getElementById('tipoValor').addEventListener('change', calcularComercial);
+        document.getElementById('area').addEventListener('input', calcularComercial);
+        
+        document.getElementById('areaPorUnidade').addEventListener('input', calcularUnidades);
+        document.getElementById('numeroUnidades').addEventListener('input', calcularUnidades);
+        document.getElementById('areaComum').addEventListener('input', calcularUnidades);
+
+        // Inicializar
+        calcularComercial();
+        calcularUnidades();
+        
+        // Função para reload manual
+        function reloadPage() {
+            // Limpar todos os caches
+            forceReload();
+            
+            // Mostrar indicador
+            document.getElementById('updateIndicator').style.display = 'block';
+            
+            // Reload com cache bypass
+            window.location.reload(true);
+        }
+        
+        // Mostrar indicador de atualização por 3 segundos ao carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            const indicator = document.getElementById('updateIndicator');
+            indicator.style.display = 'block';
+            setTimeout(function() {
+                indicator.style.display = 'none';
+            }, 3000);
+        });
+        
+        // Verificar se há atualizações a cada 30 segundos (apenas para mobile)
+        if (isMobile()) {
+            setInterval(function() {
+                // Força um pequeno reload de recursos críticos
+                const links = document.querySelectorAll('link[rel="stylesheet"]');
+                links.forEach(function(link) {
+                    const href = link.href;
+                    link.href = href + (href.includes('?') ? '&' : '?') + 't=' + Date.now();
+                });
+            }, 30000);
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUB Sinduscon-RO - Calculadoras de Preços | ConectaPro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-hover { 
+            transition: all 0.3s ease; 
+            cursor: pointer;
+        }
+        .card-hover:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 25px 50px -5px rgba(0, 0, 0, 0.15); 
+        }
+        .gradient-residential { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .gradient-commercial { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .stats-grid { 
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-8 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center">
+                <div class="flex items-center justify-center gap-4 mb-4">
+                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center">
+                        <span class="text-3xl">🏗️</span>
+                    </div>
+                    <div>
+                        <h1 class="text-4xl font-bold">CUB Sinduscon-RO</h1>
+                        <p class="text-xl text-blue-100">Custos Unitários Básicos de Construção</p>
+                    </div>
+                </div>
+                <p class="text-lg text-blue-100 max-w-3xl mx-auto">
+                    Calculadoras baseadas nos dados oficiais do Sinduscon-RO para orientar profissionais 
+                    e clientes sobre preços de construção em Porto Velho
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Informações Rápidas -->
+    <div class="relative -mt-8 mb-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="bg-white rounded-2xl shadow-lg p-8">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">📊 Dados Atuais do CUB</h2>
+                    <p class="text-gray-600">Valores oficiais do Sinduscon-RO - Maio/2025</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Residencial -->
+                    <div class="text-center p-6 bg-blue-50 rounded-xl border border-blue-200">
+                        <div class="text-4xl mb-3">🏠</div>
+                        <div class="text-2xl font-bold text-blue-600">R$ 1.568 - R$ 2.235</div>
+                        <div class="text-sm text-blue-700 font-medium">CUB Residencial</div>
+                        <div class="text-xs text-blue-600 mt-1">Popular a Alto Padrão</div>
+                    </div>
+                    
+                    <!-- Comercial -->
+                    <div class="text-center p-6 bg-pink-50 rounded-xl border border-pink-200">
+                        <div class="text-4xl mb-3">🏢</div>
+                        <div class="text-2xl font-bold text-pink-600">R$ 2.050 - R$ 2.350</div>
+                        <div class="text-sm text-pink-700 font-medium">CUB Comercial</div>
+                        <div class="text-xs text-pink-600 mt-1">CSL a CAL</div>
+                    </div>
+                    
+                    <!-- Variação -->
+                    <div class="text-center p-6 bg-green-50 rounded-xl border border-green-200">
+                        <div class="text-4xl mb-3">📈</div>
+                        <div class="text-2xl font-bold text-green-600">+2,3%</div>
+                        <div class="text-sm text-green-700 font-medium">Variação Mensal</div>
+                        <div class="text-xs text-green-600 mt-1">vs. Abril/2025</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cards Principais -->
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Botão Preços Detalhados -->
+        <div class="text-center mb-8">
+            <button onclick="window.location.href='precos-detalhados.html'" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-purple-700 hover:to-pink-700 transition-all transform hover:scale-105 shadow-lg">
+                💰 Ver Preços Detalhados por Serviço (Material + Mão de Obra)
+            </button>
+            <p class="text-sm text-gray-500 mt-2">Valores separados para facilitar orçamentos e negociações</p>
+        </div>
+
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Escolha o Tipo de Obra</h2>
+            <p class="text-lg text-gray-600">Selecione a calculadora adequada para seu projeto</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <!-- Card Residencial -->
+            <div class="card-hover bg-white rounded-2xl shadow-lg overflow-hidden" onclick="window.location.href='dashboard-cub-prototipo.html'">
+                <div class="gradient-residential p-8 text-white">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold">Obras Residenciais</h3>
+                            <p class="text-blue-100">Casas, apartamentos e condomínios</p>
+                        </div>
+                        <div class="text-5xl">🏠</div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div>
+                            <div class="text-xl font-bold">R$ 1.568</div>
+                            <div class="text-xs text-blue-100">Popular</div>
+                        </div>
+                        <div>
+                            <div class="text-xl font-bold">R$ 1.847</div>
+                            <div class="text-xs text-blue-100">Normal</div>
+                        </div>
+                        <div>
+                            <div class="text-xl font-bold">R$ 2.235</div>
+                            <div class="text-xs text-blue-100">Alto Padrão</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h4 class="font-semibold text-gray-800 mb-3">Tipos Incluídos:</h4>
+                    <ul class="text-sm text-gray-600 space-y-2">
+                        <li class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                            <strong>R1-N/A:</strong> Residência unifamiliar (1 pavimento)
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                            <strong>RP1Q:</strong> Residência popular
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                            <strong>PP-B/N:</strong> Prédio popular (térreo + 3/4 pavimentos)
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                            <strong>R8/R16:</strong> Edifícios residenciais (8/16 pavimentos)
+                        </li>
+                    </ul>
+                    <div class="mt-6 flex items-center justify-between">
+                        <span class="text-sm text-gray-500">Clique para acessar</span>
+                        <div class="bg-blue-100 text-blue-600 px-4 py-2 rounded-lg font-medium">
+                            Calcular →
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Comercial -->
+            <div class="card-hover bg-white rounded-2xl shadow-lg overflow-hidden" onclick="window.location.href='dashboard-cub-comercial.html'">
+                <div class="gradient-commercial p-8 text-white">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold">Obras Comerciais</h3>
+                            <p class="text-pink-100">Escritórios, lojas e edifícios corporativos</p>
+                        </div>
+                        <div class="text-5xl">🏢</div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                        <div>
+                            <div class="text-xl font-bold">R$ 2.050</div>
+                            <div class="text-xs text-pink-100">CSL - Salas/Lojas</div>
+                        </div>
+                        <div>
+                            <div class="text-xl font-bold">R$ 2.200</div>
+                            <div class="text-xs text-pink-100">CAL - Andares Livres</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h4 class="font-semibold text-gray-800 mb-3">Tipos Incluídos:</h4>
+                    <ul class="text-sm text-gray-600 space-y-2">
+                        <li class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-pink-500 rounded-full"></span>
+                            <strong>CSL-8/16:</strong> Comercial com salas e lojas
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-pink-500 rounded-full"></span>
+                            <strong>CAL-8/16:</strong> Comercial andares livres
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-pink-500 rounded-full"></span>
+                            <strong>Flexibilidade:</strong> Layout customizável
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-pink-500 rounded-full"></span>
+                            <strong>Sistemas:</strong> Ar-condicionado, elevadores
+                        </li>
+                    </ul>
+                    <div class="mt-6 flex items-center justify-between">
+                        <span class="text-sm text-gray-500">Clique para acessar</span>
+                        <div class="bg-pink-100 text-pink-600 px-4 py-2 rounded-lg font-medium">
+                            Calcular →
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informações Importantes -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <!-- O que é CUB -->
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
+                <h3 class="text-xl font-semibold text-blue-800 mb-4">📊 O que é o CUB?</h3>
+                <p class="text-blue-700 mb-4">
+                    O Custo Unitário Básico (CUB) é um indicador do custo por metro quadrado de construção, 
+                    calculado mensalmente pelos Sindicatos da Construção Civil conforme a NBR 12.721:2006.
+                </p>
+                <ul class="text-sm text-blue-700 space-y-2">
+                    <li>• Base legal: Lei Federal nº 4.591/64</li>
+                    <li>• Atualização: Mensal pelo Sinduscon-RO</li>
+                    <li>• Finalidade: Orientação de preços e financiamentos</li>
+                    <li>• Abrangência: Todo o estado de Rondônia</li>
+                </ul>
+            </div>
+
+            <!-- Como Usar -->
+            <div class="bg-green-50 border border-green-200 rounded-xl p-6">
+                <h3 class="text-xl font-semibold text-green-800 mb-4">🎯 Como Usar as Calculadoras</h3>
+                <ol class="text-green-700 space-y-2">
+                    <li class="flex items-start gap-2">
+                        <span class="bg-green-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">1</span>
+                        <span>Escolha o tipo de obra (residencial ou comercial)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="bg-green-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">2</span>
+                        <span>Selecione o padrão construtivo adequado</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="bg-green-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">3</span>
+                        <span>Informe a área total do projeto</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="bg-green-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">4</span>
+                        <span>Obtenha estimativas detalhadas por serviço</span>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+            <h3 class="text-lg font-semibold text-yellow-800 mb-3">⚠️ Informações Importantes</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-yellow-700 mb-2">O CUB INCLUI:</h4>
+                    <ul class="text-sm text-yellow-700 space-y-1">
+                        <li>• Materiais básicos de construção</li>
+                        <li>• Mão de obra fundamental</li>
+                        <li>• Serviços básicos (alvenaria, pintura, etc.)</li>
+                        <li>• Instalações hidráulicas e elétricas básicas</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-yellow-700 mb-2">O CUB NÃO INCLUI:</h4>
+                    <ul class="text-sm text-yellow-700 space-y-1">
+                        <li>• Fundações especiais</li>
+                        <li>• Elevadores e ar-condicionado</li>
+                        <li>• Projetos e aprovações</li>
+                        <li>• Lucro do construtor/incorporador</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bg-yellow-100 border border-yellow-300 rounded-lg p-4 mt-4">
+                <p class="text-sm text-yellow-800">
+                    <strong>💡 ConectaPro:</strong> Para orçamentos completos e detalhados, consulte nossos 
+                    profissionais qualificados. As calculadoras fornecem estimativas baseadas no CUB oficial, 
+                    mas cada projeto tem suas particularidades.
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer da Página -->
+        <div class="text-center mt-12 pt-8 border-t border-gray-200">
+            <div class="flex items-center justify-center gap-4 mb-4">
+                <img src="conectapro.png" alt="ConectaPro" class="h-8">
+                <span class="text-gray-400">×</span>
+                <div class="text-lg font-semibold text-gray-700">Sinduscon-RO</div>
+            </div>
+            <p class="text-gray-600">
+                Dados oficiais do Sindicato da Indústria da Construção Civil de Rondônia
+            </p>
+            <p class="text-sm text-gray-500 mt-2">
+                Rua José Camacho, 2574 - Liberdade - Porto Velho/RO - (069) 3223-2718
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Adicionar efeitos de hover e animações
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animação suave ao carregar a página
+            const cards = document.querySelectorAll('.card-hover');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+
+        // Adicionar analytics de cliques (opcional)
+        function trackClick(type) {
+            console.log(`Usuário clicou em: ${type}`);
+            // Aqui você pode adicionar código de analytics
+        }
+    </script>
+</body>
+</html> 

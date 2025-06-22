@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Meta tags para prevenir cache -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="cache-control" content="no-cache">
+    <meta name="expires" content="0">
+    <meta name="pragma" content="no-cache">
+    
+    <title>Dashboard CUB - Preços por m² | ConectaPro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Script para limpar cache e forçar reload -->
+    <script>
+        // Função para limpar cache e forçar reload
+        function forceReload() {
+            // Limpar cache do localStorage
+            if (typeof(Storage) !== "undefined") {
+                localStorage.clear();
+                sessionStorage.clear();
+            }
+            
+            // Desregistrar service worker se existir
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    for(let registration of registrations) {
+                        registration.unregister();
+                    }
+                });
+            }
+            
+            // Limpar cache do aplicativo
+            if ('caches' in window) {
+                caches.keys().then(function(names) {
+                    for (let name of names) {
+                        caches.delete(name);
+                    }
+                });
+            }
+        }
+        
+        // Adicionar timestamp para evitar cache
+        window.pageLoadTime = Date.now();
+        
+        // Verificar se é mobile e aplicar reload forçado se necessário
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        
+        // Se for mobile e não houver timestamp recente, força reload
+        if (isMobile()) {
+            const lastUpdate = localStorage.getItem('lastCubUpdate');
+            const currentTime = Date.now();
+            if (!lastUpdate || (currentTime - parseInt(lastUpdate)) > 300000) { // 5 minutos
+                localStorage.setItem('lastCubUpdate', currentTime.toString());
+                forceReload();
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-6 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                        <span class="text-2xl">💰</span>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold">💰 Dashboard CUB - Sinduscon RO</h1>
+                        <p class="text-blue-100">Preços por m² para orientar profissionais e clientes</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-blue-100">Última atualização</p>
+                    <p class="font-semibold">Maio/2025</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navegação -->
+    <div class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center gap-4">
+                <button onclick="window.location.href='cub-sinduscon.html'" class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
+                    ← Voltar ao Menu
+                </button>
+                <div class="h-4 w-px bg-gray-300"></div>
+                <span class="text-blue-600 font-semibold">🏠 CUB Residencial</span>
+                <a href="dashboard-cub-comercial.html" class="text-gray-600 hover:text-pink-600 transition-colors">
+                    🏢 CUB Comercial
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros e Controles -->
+    <div class="max-w-7xl mx-auto px-4 py-6">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Valor</label>
+                    <select id="tipoValor" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500">
+                        <option value="desonerado">Desonerado</option>
+                        <option value="onerado">Onerado</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Padrão Construtivo</label>
+                    <select id="padrao" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500">
+                        <option value="popular">Popular</option>
+                        <option value="normal">Normal</option>
+                        <option value="alto">Alto Padrão</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Área (m²)</label>
+                    <input type="number" id="area" value="100" min="1" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="flex items-end">
+                    <button onclick="calcular()" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                        💡 Calcular
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cards de Preços Principais -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">CUB Global</h3>
+                    <span class="text-2xl">🏠</span>
+                </div>
+                <div class="text-3xl font-bold text-blue-600" id="cubGlobal">R$ 1.847,25</div>
+                <p class="text-sm text-gray-500">por m² - Padrão Normal</p>
+                <div class="mt-4 text-xs text-gray-400">
+                    Base: Sinduscon RO - Mai/2025
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Custo Total</h3>
+                    <span class="text-2xl">📊</span>
+                </div>
+                <div class="text-3xl font-bold text-green-600" id="custoTotal">R$ 184.725</div>
+                <p class="text-sm text-gray-500">para <span id="areaDisplay">100</span> m²</p>
+                <div class="mt-4 text-xs text-gray-400">
+                    Incluindo todos os serviços
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Variação Mensal</h3>
+                    <span class="text-2xl">📈</span>
+                </div>
+                <div class="text-3xl font-bold text-orange-600">+2,3%</div>
+                <p class="text-sm text-gray-500">vs. Abril/2025</p>
+                <div class="mt-4 text-xs text-gray-400">
+                    Tendência de alta
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela Detalhada por Serviço -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+            <div class="bg-gray-50 px-6 py-4 border-b">
+                <h2 class="text-xl font-semibold text-gray-800">📋 Preços por Serviço</h2>
+                <p class="text-sm text-gray-600">Valores baseados no CUB e composições SINAPI</p>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Serviço</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">% do CUB</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Preço/m²</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor Total</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Faixa de Preço</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" id="tabelaServicos">
+                        <!-- Será preenchido via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Observações -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+            <h3 class="text-lg font-semibold text-blue-800 mb-2">📋 Como usar este Dashboard</h3>
+            <ul class="text-sm text-blue-700 space-y-1">
+                <li>• Selecione o tipo de valor (onerado/desonerado) conforme sua situação fiscal</li>
+                <li>• Escolha o padrão construtivo que melhor representa seu projeto</li>
+                <li>• Informe a área total para calcular o custo estimado</li>
+                <li>• Os percentuais por serviço são baseados em composições SINAPI</li>
+                <li>• Use as faixas de preço para negociação com profissionais</li>
+            </ul>
+        </div>
+
+        <!-- Observações e Disclaimer -->
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-yellow-800 mb-2">⚠️ Importante</h3>
+            <ul class="text-sm text-yellow-700 space-y-1">
+                <li>• Valores baseados no CUB Sinduscon-RO e composições SINAPI</li>
+                <li>• Preços podem variar conforme localização, fornecedores e especificações</li>
+                <li>• Para orçamentos precisos, consulte profissionais qualificados</li>
+                <li>• ConectaPro conecta você com profissionais certificados em Porto Velho</li>
+            </ul>
+        </div>
+
+        <!-- Nova Seção: Informações sobre Obras Comerciais e Serviços Não Incluídos -->
+        <div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
+            <h3 class="text-lg font-semibold text-red-800 mb-3">🏢 Obras Comerciais e Serviços Não Incluídos no CUB</h3>
+            
+            <div class="mb-4">
+                <h4 class="font-semibold text-red-700 mb-2">📋 Tipos de Obras Comerciais (Sinduscon-RO):</h4>
+                <ul class="text-sm text-red-700 space-y-1 ml-4">
+                    <li>• <strong>CSL-8:</strong> Edifício comercial com lojas e salas (8 pavimentos)</li>
+                    <li>• <strong>CSL-16:</strong> Edifício comercial com lojas e salas (16 pavimentos)</li>
+                    <li>• <strong>CAL-8:</strong> Edifício comercial andares-livres (8 pavimentos)</li>
+                    <li>• <strong>CAL-16:</strong> Edifício comercial andares-livres (16 pavimentos)</li>
+                </ul>
+            </div>
+
+            <div class="mb-4">
+                <h4 class="font-semibold text-red-700 mb-2">🚫 Serviços NÃO INCLUÍDOS no CUB (conforme NBR 12.721:2006):</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h5 class="font-medium text-red-600 mb-1">Estrutura e Fundações:</h5>
+                        <ul class="text-sm text-red-700 space-y-1 ml-4">
+                            <li>• Fundações especiais</li>
+                            <li>• Submuramentos</li>
+                            <li>• Paredes-diafragma</li>
+                            <li>• Tirantes</li>
+                            <li>• Rebaixamento de lençol freático</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5 class="font-medium text-red-600 mb-1">Equipamentos e Instalações:</h5>
+                        <ul class="text-sm text-red-700 space-y-1 ml-4">
+                            <li>• Elevadores</li>
+                            <li>• Ar-condicionado</li>
+                            <li>• Aquecedores</li>
+                            <li>• Bombas de recalque</li>
+                            <li>• Ventilação e exaustão</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <h4 class="font-semibold text-red-700 mb-2">🏗️ Outros Serviços Não Incluídos:</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <ul class="text-sm text-red-700 space-y-1 ml-4">
+                            <li>• Playground</li>
+                            <li>• Urbanização</li>
+                            <li>• Piscinas e campos de esporte</li>
+                            <li>• Ajardinamento</li>
+                            <li>• Regulamentação do condomínio</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <ul class="text-sm text-red-700 space-y-1 ml-4">
+                            <li>• Projetos (arquitetônico, estrutural, instalações)</li>
+                            <li>• Impostos e taxas cartoriais</li>
+                            <li>• Remuneração do construtor</li>
+                            <li>• Remuneração do incorporador</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-red-100 border border-red-300 rounded-lg p-4">
+                <p class="text-sm text-red-800">
+                    <strong>💡 Dica ConectaPro:</strong> Para orçamentos completos incluindo estes serviços especiais, 
+                    consulte nossos profissionais especializados. Eles podem calcular custos específicos para 
+                    fundações, estruturas de concreto armado, instalações especiais e projetos complementares.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados baseados no CUB Sinduscon
+        const dadosCUB = {
+            desonerado: {
+                popular: 1567.80,
+                normal: 1847.25,
+                alto: 2234.60
+            },
+            onerado: {
+                popular: 1623.45,
+                normal: 1912.30,
+                alto: 2315.85
+            }
+        };
+
+        const servicos = {
+            alvenaria: { nome: "Alvenaria", percentual: 15, emoji: "🧱" },
+            pintura: { nome: "Pintura", percentual: 8, emoji: "🎨" },
+            eletrica: { nome: "Elétrica", percentual: 12, emoji: "⚡" },
+            hidraulica: { nome: "Hidráulica", percentual: 10, emoji: "🚿" },
+            cobertura: { nome: "Cobertura", percentual: 18, emoji: "🏠" },
+            piso: { nome: "Piso", percentual: 14, emoji: "🔲" }
+        };
+
+        function calcular() {
+            const tipo = document.getElementById('tipoValor').value;
+            const padrao = document.getElementById('padrao').value;
+            const area = parseFloat(document.getElementById('area').value);
+            
+            const cubM2 = dadosCUB[tipo][padrao];
+            const custoTotal = cubM2 * area;
+            
+            document.getElementById('cubGlobal').textContent = `R$ ${cubM2.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('custoTotal').textContent = `R$ ${custoTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('areaDisplay').textContent = area;
+            
+            atualizarTabela(cubM2);
+            calcularServicoRapido();
+        }
+
+        function atualizarTabela(cubM2) {
+            const tbody = document.getElementById('tabelaServicos');
+            const area = parseFloat(document.getElementById('area').value);
+            tbody.innerHTML = '';
+            
+            Object.entries(servicos).forEach(([key, servico]) => {
+                const precoM2 = cubM2 * servico.percentual / 100;
+                const valorTotal = precoM2 * area;
+                const min = precoM2 * 0.8;
+                const max = precoM2 * 1.2;
+                
+                tbody.innerHTML += `
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-6 py-4 font-medium">${servico.emoji} ${servico.nome}</td>
+                        <td class="px-6 py-4">${servico.percentual}%</td>
+                        <td class="px-6 py-4 font-bold text-blue-600">R$ ${precoM2.toFixed(2)}</td>
+                        <td class="px-6 py-4 font-bold text-green-600">R$ ${valorTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600">R$ ${min.toFixed(2)} - R$ ${max.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Event Listeners
+        document.getElementById('tipoValor').addEventListener('change', calcular);
+        document.getElementById('padrao').addEventListener('change', calcular);
+        document.getElementById('area').addEventListener('input', calcular);
+
+        // Inicializar
+        calcular();
+    </script>
+</body>
+</html> 

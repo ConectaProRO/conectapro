@@ -132,6 +132,18 @@ export default function Home() {
             description="Estime custos de materiais e mão de obra antes de contratar. Planeje seu projeto com precisão."
             link="/calculadora-orcamento"
           />
+          <BenefitCard 
+            icon="📊"
+            title="Preços CUB Oficial"
+            description="Consulte preços por m² baseados no CUB do Sinduscon-RO. Dados oficiais atualizados mensalmente."
+            link="/precos-cub"
+          />
+          <BenefitCard 
+            icon="🚀"
+            title="Orçamento Inteligente 3D"
+            description="Revolucionário! Faça upload de modelos 3D ou plantas e receba orçamento automático com IA + SINAPI."
+            link="/orcamento-3d"
+          />
         </div>
       </section>
 

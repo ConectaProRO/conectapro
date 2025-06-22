@@ -84,8 +84,8 @@ export default function Sobre() {
             </p>
             
             <div className="max-w-2xl mx-auto fade-in-element">
-              <div className="bg-white bg-opacity-20 rounded-2xl p-6 backdrop-blur-sm">
-                <p className="text-lg">
+              <div className="bg-gray-800 bg-opacity-90 rounded-2xl p-6 backdrop-blur-sm border-2 border-white border-opacity-50">
+                <p className="text-lg text-white font-medium">
                   Uma plataforma gratuita criada para facilitar o encontro entre profissionais da construção e clientes que precisam de serviços de qualidade.
                 </p>
               </div>
@@ -236,16 +236,16 @@ export default function Sobre() {
             {/* Como se cadastrar */}
             <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl shadow-xl p-8 text-white mb-12 fade-in-element">
               <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold mb-4">Como se Cadastrar?</h2>
-                <p className="text-xl opacity-90">É fácil e rápido! Escolha a melhor forma para você:</p>
+                <h2 className="text-3xl font-bold mb-4 text-white">Como se Cadastrar?</h2>
+                <p className="text-xl text-white">É fácil e rápido! Escolha a melhor forma para você:</p>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="bg-white bg-opacity-10 rounded-2xl p-6 backdrop-blur-sm">
-                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <div className="bg-white bg-opacity-20 rounded-2xl p-6 backdrop-blur-sm border border-white border-opacity-30">
+                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-white">
                     🌐 Online
                   </h3>
-                  <p className="mb-4 opacity-90">
+                  <p className="mb-4 text-white text-opacity-95">
                     Acesse nosso site e faça seu cadastro de forma autônoma
                   </p>
                   <Link 
@@ -256,15 +256,15 @@ export default function Sobre() {
                   </Link>
                 </div>
                 
-                <div className="bg-white bg-opacity-10 rounded-2xl p-6 backdrop-blur-sm">
-                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <div className="bg-white bg-opacity-20 rounded-2xl p-6 backdrop-blur-sm border border-white border-opacity-30">
+                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-white">
                     📞 Com Ajuda
                   </h3>
-                  <p className="mb-4 opacity-90">
+                  <p className="mb-4 text-white text-opacity-95">
                     Nossa equipe te ajuda no cadastro via WhatsApp ou telefone
                   </p>
                   <a 
-                    href="https://wa.me/5569999999999"
+                    href="https://wa.me/5569992561830"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="bg-green-600 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 inline-flex items-center gap-2"

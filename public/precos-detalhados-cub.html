@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preços Detalhados por Serviço - Material + Mão de Obra | ConectaPro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .material-bg { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .mao-obra-bg { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .total-bg { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-8 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center">
+                <div class="flex items-center justify-center gap-4 mb-4">
+                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center">
+                        <span class="text-3xl">💰</span>
+                    </div>
+                    <div>
+                        <h1 class="text-4xl font-bold">Preços Detalhados por Serviço</h1>
+                        <p class="text-xl text-blue-100">Material + Mão de Obra Separados</p>
+                    </div>
+                </div>
+                <p class="text-lg text-blue-100 max-w-3xl mx-auto">
+                    Baseado no CUB Sinduscon-RO com separação detalhada para facilitar orçamentos e negociações
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navegação -->
+    <div class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center gap-4">
+                <button onclick="window.location.href='cub-sinduscon.html'" class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
+                    ← Voltar ao CUB
+                </button>
+                <div class="h-4 w-px bg-gray-300"></div>
+                <span class="text-blue-600 font-semibold">💰 Preços Detalhados</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Seletor de Padrão -->
+    <div class="max-w-7xl mx-auto px-4 py-6">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-semibold text-gray-800">🎯 Selecione o Padrão Construtivo</h2>
+                <div class="text-sm text-gray-500">Maio/2025 - Sinduscon RO</div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button onclick="selecionarPadrao('popular')" id="btn-popular" class="p-4 border-2 border-blue-200 rounded-lg hover:border-blue-400 transition-colors">
+                    <div class="text-center">
+                        <div class="text-2xl mb-2">🏠</div>
+                        <div class="font-semibold text-blue-600">Popular</div>
+                        <div class="text-sm text-gray-600">R$ 1.568 - R$ 1.623/m²</div>
+                    </div>
+                </button>
+                <button onclick="selecionarPadrao('normal')" id="btn-normal" class="p-4 border-2 border-green-400 bg-green-50 rounded-lg">
+                    <div class="text-center">
+                        <div class="text-2xl mb-2">🏡</div>
+                        <div class="font-semibold text-green-600">Normal</div>
+                        <div class="text-sm text-gray-600">R$ 1.847 - R$ 1.912/m²</div>
+                    </div>
+                </button>
+                <button onclick="selecionarPadrao('alto')" id="btn-alto" class="p-4 border-2 border-purple-200 rounded-lg hover:border-purple-400 transition-colors">
+                    <div class="text-center">
+                        <div class="text-2xl mb-2">🏘️</div>
+                        <div class="font-semibold text-purple-600">Alto Padrão</div>
+                        <div class="text-sm text-gray-600">R$ 2.235 - R$ 2.316/m²</div>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Cards de Serviços -->
+        <div id="servicos-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Será preenchido via JavaScript -->
+        </div>
+
+        <!-- Legenda -->
+        <div class="bg-white rounded-lg shadow-md p-6 mt-8">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">📋 Como Interpretar os Valores</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-4 h-4 material-bg rounded"></div>
+                    <div>
+                        <div class="font-medium text-gray-800">Material</div>
+                        <div class="text-sm text-gray-600">Custo dos insumos (60% do total)</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-4 h-4 mao-obra-bg rounded"></div>
+                    <div>
+                        <div class="font-medium text-gray-800">Mão de Obra</div>
+                        <div class="text-sm text-gray-600">Custo da execução (40% do total)</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-4 h-4 total-bg rounded"></div>
+                    <div>
+                        <div class="font-medium text-gray-800">Total</div>
+                        <div class="text-sm text-gray-600">Material + Mão de Obra</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Observações -->
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mt-6">
+            <h3 class="text-lg font-semibold text-yellow-800 mb-3">⚠️ Observações Importantes</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-yellow-700 mb-2">Sobre os Percentuais:</h4>
+                    <ul class="text-sm text-yellow-700 space-y-1">
+                        <li>• Material: 60% do valor total (padrão mercado)</li>
+                        <li>• Mão de obra: 40% do valor total</li>
+                        <li>• Percentuais podem variar por região e fornecedor</li>
+                        <li>• Valores incluem impostos e margens</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-yellow-700 mb-2">Como Usar:</h4>
+                    <ul class="text-sm text-yellow-700 space-y-1">
+                        <li>• Compare com preços locais para validação</li>
+                        <li>• Use para negociar com fornecedores</li>
+                        <li>• Considere variações de qualidade</li>
+                        <li>• Adicione margem de segurança (10-15%)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados dos serviços baseados no CUB
+        const servicosData = {
+            popular: {
+                'Alvenaria': { total: 239.34, material: 143.60, maoObra: 95.74, emoji: '🧱' },
+                'Pintura': { total: 127.65, material: 76.59, maoObra: 51.06, emoji: '🎨' },
+                'Piso/Revestimento': { total: 223.39, material: 134.03, maoObra: 89.36, emoji: '🔲' },
+                'Instalação Elétrica': { total: 191.47, material: 114.88, maoObra: 76.59, emoji: '⚡' },
+                'Instalação Hidráulica': { total: 159.56, material: 95.74, maoObra: 63.82, emoji: '🚿' },
+                'Cobertura/Telhado': { total: 287.21, material: 172.33, maoObra: 114.88, emoji: '🏠' },
+                'Estrutura/Concreto': { total: 399.17, material: 239.50, maoObra: 159.67, emoji: '🏗️' },
+                'Fundação': { total: 127.65, material: 76.59, maoObra: 51.06, emoji: '🏛️' },
+                'Esquadrias': { total: 191.47, material: 114.88, maoObra: 76.59, emoji: '🚪' },
+                'Acabamentos': { total: 159.56, material: 95.74, maoObra: 63.82, emoji: '✨' }
+            },
+            normal: {
+                'Alvenaria': { total: 281.97, material: 169.18, maoObra: 112.79, emoji: '🧱' },
+                'Pintura': { total: 150.38, material: 90.23, maoObra: 60.15, emoji: '🎨' },
+                'Piso/Revestimento': { total: 263.17, material: 157.90, maoObra: 105.27, emoji: '🔲' },
+                'Instalação Elétrica': { total: 225.57, material: 135.34, maoObra: 90.23, emoji: '⚡' },
+                'Instalação Hidráulica': { total: 187.98, material: 112.79, maoObra: 75.19, emoji: '🚿' },
+                'Cobertura/Telhado': { total: 338.36, material: 203.02, maoObra: 135.34, emoji: '🏠' },
+                'Estrutura/Concreto': { total: 469.94, material: 281.96, maoObra: 187.98, emoji: '🏗️' },
+                'Fundação': { total: 150.38, material: 90.23, maoObra: 60.15, emoji: '🏛️' },
+                'Esquadrias': { total: 225.57, material: 135.34, maoObra: 90.23, emoji: '🚪' },
+                'Acabamentos': { total: 187.98, material: 112.79, maoObra: 75.19, emoji: '✨' }
+            },
+            alto: {
+                'Alvenaria': { total: 341.28, material: 204.77, maoObra: 136.51, emoji: '🧱' },
+                'Pintura': { total: 182.02, material: 109.21, maoObra: 72.81, emoji: '🎨' },
+                'Piso/Revestimento': { total: 318.53, material: 191.12, maoObra: 127.41, emoji: '🔲' },
+                'Instalação Elétrica': { total: 273.03, material: 163.82, maoObra: 109.21, emoji: '⚡' },
+                'Instalação Hidráulica': { total: 227.52, material: 136.51, maoObra: 91.01, emoji: '🚿' },
+                'Cobertura/Telhado': { total: 409.54, material: 245.72, maoObra: 163.82, emoji: '🏠' },
+                'Estrutura/Concreto': { total: 568.82, material: 341.29, maoObra: 227.53, emoji: '🏗️' },
+                'Fundação': { total: 182.02, material: 109.21, maoObra: 72.81, emoji: '🏛️' },
+                'Esquadrias': { total: 273.03, material: 163.82, maoObra: 109.21, emoji: '🚪' },
+                'Acabamentos': { total: 227.52, material: 136.51, maoObra: 91.01, emoji: '✨' }
+            }
+        };
+
+        let padraoAtual = 'normal';
+
+        function selecionarPadrao(padrao) {
+            padraoAtual = padrao;
+            
+            // Atualizar botões
+            document.querySelectorAll('[id^="btn-"]').forEach(btn => {
+                btn.className = 'p-4 border-2 border-gray-200 rounded-lg hover:border-gray-400 transition-colors';
+            });
+            
+            const btnSelecionado = document.getElementById(`btn-${padrao}`);
+            if (padrao === 'popular') {
+                btnSelecionado.className = 'p-4 border-2 border-blue-400 bg-blue-50 rounded-lg';
+            } else if (padrao === 'normal') {
+                btnSelecionado.className = 'p-4 border-2 border-green-400 bg-green-50 rounded-lg';
+            } else {
+                btnSelecionado.className = 'p-4 border-2 border-purple-400 bg-purple-50 rounded-lg';
+            }
+            
+            renderizarServicos();
+        }
+
+        function renderizarServicos() {
+            const container = document.getElementById('servicos-container');
+            const dados = servicosData[padraoAtual];
+            
+            let html = '';
+            
+            Object.entries(dados).forEach(([servico, valores]) => {
+                html += `
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-3xl">${valores.emoji}</span>
+                                    <h3 class="text-lg font-semibold text-gray-800">${servico}</h3>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-3">
+                                <!-- Material -->
+                                <div class="flex items-center justify-between p-3 material-bg rounded-lg text-white">
+                                    <span class="font-medium">💎 Material</span>
+                                    <span class="text-lg font-bold">R$ ${valores.material.toFixed(2)}</span>
+                                </div>
+                                
+                                <!-- Mão de Obra -->
+                                <div class="flex items-center justify-between p-3 mao-obra-bg rounded-lg text-white">
+                                    <span class="font-medium">👷 Mão de Obra</span>
+                                    <span class="text-lg font-bold">R$ ${valores.maoObra.toFixed(2)}</span>
+                                </div>
+                                
+                                <!-- Total -->
+                                <div class="flex items-center justify-between p-3 total-bg rounded-lg text-white">
+                                    <span class="font-bold">💰 TOTAL</span>
+                                    <span class="text-xl font-bold">R$ ${valores.total.toFixed(2)}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 pt-3 border-t border-gray-200">
+                                <div class="text-xs text-gray-500 text-center">
+                                    Por m² - Padrão ${padraoAtual.charAt(0).toUpperCase() + padraoAtual.slice(1)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Inicializar página
+        document.addEventListener('DOMContentLoaded', function() {
+            renderizarServicos();
+        });
+    </script>
+</body>
+</html> 

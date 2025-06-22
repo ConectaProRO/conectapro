@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 
 import CalculadoraHeader from "../../components/CalculadoraHeader";
 
@@ -22,18 +23,20 @@ export default function ParedeHubPage() {
 
           <div className="grid md:grid-cols-3 gap-6">
             {/* Alvenaria - Ativo */}
-            <div className="group bg-gradient-to-br from-green-100 to-green-50 border-2 border-green-300 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <div className="text-center">
-                <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">🧱</div>
-                <h3 className="text-xl font-bold text-green-700 mb-2">Alvenaria</h3>
-                <p className="text-sm text-green-600 mb-3">
-                  Construção de paredes com tijolos
-                </p>
-                <div className="inline-block bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                  Disponível
+            <Link href="/calculadoras/parede/alvenaria" className="block">
+              <div className="group bg-gradient-to-br from-green-100 to-green-50 border-2 border-green-300 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer">
+                <div className="text-center">
+                  <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">🧱</div>
+                  <h3 className="text-xl font-bold text-green-700 mb-2">Alvenaria</h3>
+                  <p className="text-sm text-green-600 mb-3">
+                    Construção de paredes com tijolos
+                  </p>
+                  <div className="inline-block bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                    Disponível
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
 
             {/* Bloco Estrutural - Em Breve */}
             <div className="bg-gradient-to-br from-gray-100 to-gray-50 border-2 border-gray-300 rounded-2xl p-6 opacity-75">
