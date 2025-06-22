@@ -1,278 +1,198 @@
-"use client";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
 
 export default function Home() {
-  const observerRef = useRef<IntersectionObserver | null>(null);
-
-  useEffect(() => {
-    // Configuração do observer para animações
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-
-    observerRef.current = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-fadeInUp');
-        }
-      });
-    }, observerOptions);
-
-    // Observar todos os elementos com a classe de animação
-    const elements = document.querySelectorAll('.fade-in-element');
-    elements.forEach(el => {
-      observerRef.current?.observe(el);
-    });
-
-    return () => {
-      observerRef.current?.disconnect();
-    };
-  }, []);
-
   return (
     <>
-      {/* CSS personalizado para animações */}
-      <style jsx global>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-blue-800"></div>
         
-        .animate-fadeInUp {
-          animation: fadeInUp 0.8s ease forwards;
-        }
-        
-        .fade-in-element {
-          opacity: 0;
-          transform: translateY(30px);
-        }
-        
-        html {
-          scroll-behavior: smooth;
-        }
-      `}</style>
-
-      {/* Header Hero */}
-      <header className="bg-gradient-to-br from-blue-600 to-blue-700 py-16 px-5 text-center text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-blue-600 opacity-10 animate-pulse"></div>
-        <div className="max-w-6xl mx-auto relative z-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 fade-in-element">
-            Encontre Mão de Obra Rápido e Sem Complicação
+        <div className="relative z-10 max-w-7xl mx-auto px-6 text-center text-white">
+          <div>
+            <span className="inline-block px-6 py-2 bg-white bg-opacity-30 rounded-full text-sm font-bold mb-8 backdrop-blur-sm text-blue-900 border border-white border-opacity-40">
+              🏗️ A maior plataforma de profissionais em Porto Velho
+            </span>
+          </div>
+          
+          <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
+            <span className="text-white drop-shadow-2xl">Conecte-se com os</span>
+            <br />
+            <span className="text-yellow-300 drop-shadow-2xl">
+              Melhores Profissionais
+            </span>
           </h1>
-          <p className="text-xl md:text-2xl mb-10 font-light max-w-3xl mx-auto fade-in-element">
-            Conectamos você aos melhores profissionais da construção civil em <strong>Porto Velho - RO</strong> de forma simples, direta e sem burocracia.
+          
+          <p className="text-xl md:text-2xl mb-12 max-w-3xl mx-auto leading-relaxed text-white drop-shadow-md">
+            Plataforma 100% gratuita que conecta profissionais qualificados da construção civil 
+            com clientes em <strong className="text-yellow-300">Porto Velho - RO</strong>
           </p>
-          <div className="flex flex-col sm:flex-row gap-5 justify-center fade-in-element">
-            <Link 
-              href="/cadastro-profissional"
-              className="bg-white text-blue-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-100 transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300 inline-flex items-center justify-center gap-2"
-            >
-              👷 Sou Profissional
-            </Link>
+
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <Link 
               href="/buscar-profissional"
-              className="bg-white text-blue-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-100 transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300 inline-flex items-center justify-center gap-2"
+              className="group relative px-10 py-4 bg-white rounded-2xl font-semibold text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-2xl min-w-[280px] text-blue-600"
             >
-              🔍 Preciso de um Profissional
+              <span className="flex items-center justify-center gap-3">
+                🔍 Encontrar Profissional
+                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </span>
+            </Link>
+            
+            <Link 
+              href="/cadastro-profissional"
+              className="group px-10 py-4 border-2 border-white text-white rounded-2xl font-semibold text-lg transition-all duration-300 hover:bg-white hover:text-blue-600 hover:scale-105 min-w-[280px]"
+            >
+              <span className="flex items-center justify-center gap-3">
+                👷 Sou Profissional
+                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </span>
+            </Link>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
+            <div className="text-center">
+              <div className="text-4xl font-bold mb-2">500+</div>
+              <div className="text-lg opacity-80">Profissionais Cadastrados</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold mb-2">1000+</div>
+              <div className="text-lg opacity-80">Conexões Realizadas</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold mb-2">100%</div>
+              <div className="text-lg opacity-80">Gratuito Sempre</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-32 px-6 bg-gradient-to-b from-gray-50 to-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              Por que escolher a ConectaPro?
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              A plataforma mais completa para conectar profissionais e clientes da construção civil
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 h-full border border-gray-100">
+              <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-lg">
+                ⚡
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Conexão Instantânea</h3>
+              <p className="text-gray-600 leading-relaxed mb-6">Encontre profissionais qualificados em segundos. Nossa busca inteligente conecta você rapidamente.</p>
+            </div>
+
+            <div className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 h-full border border-gray-100">
+              <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-lg">
+                💬
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Contato Direto WhatsApp</h3>
+              <p className="text-gray-600 leading-relaxed mb-6">Converse diretamente com profissionais via WhatsApp. Sem intermediários, sem burocracia.</p>
+            </div>
+
+            <div className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 h-full border border-gray-100">
+              <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-lg">
+                🛡️
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Profissionais Verificados</h3>
+              <p className="text-gray-600 leading-relaxed mb-6">Todos os profissionais passam por verificação. Qualidade e confiança garantidas.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Tools Section */}
+      <section className="py-32 px-6 bg-gradient-to-br from-blue-600 to-blue-800 text-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Ferramentas Profissionais
+            </h2>
+            <p className="text-xl opacity-90 max-w-3xl mx-auto">
+              Mais que uma plataforma de conexão. Tenha acesso a ferramentas que vão revolucionar seu trabalho
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <Link href="/calculadoras" className="group">
+              <div className="bg-white bg-opacity-15 backdrop-blur-md rounded-3xl p-10 transition-all duration-300 hover:bg-opacity-25 hover:-translate-y-2 h-full border border-white border-opacity-20 text-center">
+                <div className="text-8xl mb-8 group-hover:scale-110 transition-transform duration-300">
+                  🧮
+                </div>
+                <h3 className="text-4xl font-black mb-6 text-white leading-tight tracking-wide">
+                  CALCULADORA DE SERVIÇOS
+                </h3>
+                <p className="text-white text-2xl font-semibold mb-8 leading-relaxed opacity-90">
+                  Calcule materiais para sua obra
+                </p>
+                <div className="bg-yellow-400 text-blue-900 px-10 py-5 rounded-2xl font-black text-xl group-hover:bg-yellow-300 transition-colors duration-300 flex items-center justify-center gap-3 shadow-xl">
+                  ACESSAR
+                  <svg className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+            </Link>
+
+            <Link href="/precos-cub" className="group">
+              <div className="bg-white bg-opacity-15 backdrop-blur-md rounded-3xl p-10 transition-all duration-300 hover:bg-opacity-25 hover:-translate-y-2 h-full border border-white border-opacity-20 text-center">
+                <div className="text-8xl mb-8 group-hover:scale-110 transition-transform duration-300">
+                  📊
+                </div>
+                <h3 className="text-4xl font-black mb-6 text-white leading-tight tracking-wide">
+                  CUB / SINDUSCON
+                </h3>
+                <p className="text-white text-2xl font-semibold mb-8 leading-relaxed opacity-90">
+                  Preços oficiais por metro quadrado
+                </p>
+                <div className="bg-yellow-400 text-blue-900 px-10 py-5 rounded-2xl font-black text-xl group-hover:bg-yellow-300 transition-colors duration-300 flex items-center justify-center gap-3 shadow-xl">
+                  ACESSAR
+                  <svg className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
             </Link>
           </div>
         </div>
-      </header>
-
-      {/* Por que usar o ConectaPro */}
-      <section className="py-20 px-5 max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-8 text-center fade-in-element">
-          Por que usar o ConectaPro?
-        </h2>
-        <p className="text-center text-xl text-gray-600 mb-12 max-w-3xl mx-auto fade-in-element">
-          A plataforma que conecta quem faz com quem precisa, de forma direta e sem intermediários em Porto Velho.
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-          <BenefitCard 
-            icon="⚡"
-            title="Fácil de Usar"
-            description="Encontre ou ofereça serviços em poucos cliques. Interface simples e intuitiva para todos."
-          />
-          <BenefitCard 
-            icon="💬"
-            title="Contato Direto"
-            description="Fale diretamente com o profissional ou cliente via WhatsApp. Sem intermediários, sem complicação."
-          />
-          <BenefitCard 
-            icon="✅"
-            title="Profissionais Verificados"
-            description="Trabalhamos para oferecer qualidade e confiança. Profissionais avaliados pela comunidade."
-          />
-          <BenefitCard 
-            icon="💰"
-            title="Sem Taxas Ocultas"
-            description="100% gratuito para usar. Sem comissão, sem taxas, sem pegadinhas. Economia real para você."
-          />
-          <BenefitCard 
-            icon="📍"
-            title="Atendimento Local"
-            description="Conectamos você com profissionais da sua região em Porto Velho. Rapidez e proximidade."
-          />
-          <BenefitCard 
-            icon="🚀"
-            title="Resultados Rápidos"
-            description="Encontre ou seja encontrado em minutos. Nossa plataforma conecta você na hora certa."
-          />
-          <BenefitCard 
-            icon="🧮"
-            title="Calculadora de Orçamento"
-            description="Estime custos de materiais e mão de obra antes de contratar. Planeje seu projeto com precisão."
-            link="/calculadora-orcamento"
-          />
-          <BenefitCard 
-            icon="📊"
-            title="Preços CUB Oficial"
-            description="Consulte preços por m² baseados no CUB do Sinduscon-RO. Dados oficiais atualizados mensalmente."
-            link="/precos-cub"
-          />
-          <BenefitCard 
-            icon="🚀"
-            title="Orçamento Inteligente 3D"
-            description="Revolucionário! Faça upload de modelos 3D ou plantas e receba orçamento automático com IA + SINAPI."
-            link="/orcamento-3d"
-          />
-        </div>
       </section>
 
-      {/* Como Funciona */}
-      <section className="bg-gray-50 py-20 px-5">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-8 text-center fade-in-element">
-            Como Funciona
-          </h2>
-          <p className="text-center text-xl text-gray-600 mb-12 max-w-3xl mx-auto fade-in-element">
-            Em apenas 3 passos simples, você encontra o profissional ideal ou oferece seus serviços.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-            <StepCard 
-              number="1"
-              title="Escolha sua Opção"
-              description="Cadastre-se como profissional para oferecer seus serviços ou como cliente para encontrar quem precisa."
-            />
-            <StepCard 
-              number="2"
-              title="Conecte-se"
-              description="Faça seu pedido ou ofereça seu serviço. Nossa plataforma conecta você automaticamente com a pessoa certa."
-            />
-            <StepCard 
-              number="3"
-              title="Feche Negócio"
-              description="Converse diretamente pelo WhatsApp, acerte os detalhes e feche o negócio. Simples assim!"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-20 px-5 max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-8 text-center fade-in-element">
-          Quem Usa, Recomenda
-        </h2>
-        <p className="text-center text-xl text-gray-600 mb-12 max-w-3xl mx-auto fade-in-element">
-          Veja o que nossos usuários estão falando sobre o ConectaPro em Porto Velho.
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-          <TestimonialCard 
-            text="Encontrei um pedreiro excelente em menos de uma hora. O trabalho ficou perfeito e o preço justo. Muito fácil de usar!"
-            author="Marcos Silva, Vila Tupi"
-          />
-          <TestimonialCard 
-            text="Graças ao ConectaPro, fechei três reformas esse mês. A plataforma é sensacional para quem é profissional sério."
-            author="Juliana Rodrigues, Pedreiro"
-          />
-          <TestimonialCard 
-            text="Precisava de um eletricista urgente e encontrei na mesma hora. Profissional pontual e competente. Recomendo!"
-            author="Roberto Santos, Centro"
-          />
-        </div>
-      </section>
-
-      {/* Call to Action */}
-      <section className="bg-gradient-to-br from-blue-50 to-white py-20 px-5 mx-5 rounded-3xl shadow-lg my-20">
+      {/* CTA Section */}
+      <section className="py-32 px-6 bg-gradient-to-br from-blue-600 to-blue-800 text-white">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-6 fade-in-element">
-            Pronto para Começar?
+          <h2 className="text-4xl md:text-5xl font-bold mb-8">
+            Pronto para começar?
           </h2>
-          <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto fade-in-element">
-            Cadastre-se agora como profissional e receba mais serviços, ou encontre um profissional qualificado para sua obra ou reforma em Porto Velho.
+          <p className="text-xl mb-12 opacity-90">
+            Junte-se a centenas de profissionais e clientes que já descobriram a forma mais fácil de conectar
           </p>
-          <div className="flex flex-col sm:flex-row gap-5 justify-center fade-in-element">
+          
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Link 
               href="/cadastro-profissional"
-              className="bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-blue-700 transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300 inline-flex items-center justify-center gap-2"
+              className="px-10 py-4 bg-white text-blue-600 rounded-2xl font-semibold text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-2xl"
             >
-              👷 Cadastrar como Profissional
+              Cadastrar como Profissional
             </Link>
             <Link 
               href="/buscar-profissional"
-              className="bg-white text-blue-600 border-2 border-blue-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-blue-600 hover:text-white transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300 inline-flex items-center justify-center gap-2"
+              className="px-10 py-4 border-2 border-white text-white rounded-2xl font-semibold text-lg transition-all duration-300 hover:bg-white hover:text-blue-600 hover:scale-105"
             >
-              🔍 Buscar Profissional
+              Buscar Profissionais
             </Link>
           </div>
         </div>
       </section>
     </>
-  );
-}
-
-// Componente para os cards de benefícios
-function BenefitCard({ icon, title, description, link }: { icon: string; title: string; description: string; link?: string }) {
-  const content = (
-    <div className="bg-white p-8 rounded-2xl text-center shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-blue-100 fade-in-element">
-      <div className="text-4xl mb-5">{icon}</div>
-      <h3 className="text-xl font-semibold text-blue-600 mb-4">{title}</h3>
-      <p className="text-gray-600 leading-relaxed">{description}</p>
-      {link && (
-        <div className="mt-4">
-          <span className="text-blue-600 font-semibold hover:text-blue-700">
-            Experimentar →
-          </span>
-        </div>
-      )}
-    </div>
-  );
-
-  return link ? (
-    <Link href={link} className="block">
-      {content}
-    </Link>
-  ) : content;
-}
-
-// Componente para os steps
-function StepCard({ number, title, description }: { number: string; title: string; description: string }) {
-  return (
-    <div className="bg-white p-8 rounded-2xl text-center shadow-lg border-l-4 border-blue-600 fade-in-element">
-      <div className="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-5">
-        {number}
-      </div>
-      <h3 className="text-xl font-semibold text-blue-600 mb-4">{title}</h3>
-      <p className="text-gray-600 leading-relaxed">{description}</p>
-    </div>
-  );
-}
-
-// Componente para testimonials
-function TestimonialCard({ text, author }: { text: string; author: string }) {
-  return (
-    <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-8 rounded-2xl text-white text-center shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 relative fade-in-element">
-      <div className="text-6xl opacity-30 absolute top-4 left-6">&ldquo;</div>
-      <p className="text-lg leading-relaxed mb-6 relative z-10">{text}</p>
-      <p className="font-semibold text-blue-100">— {author}</p>
-    </div>
   );
 }

@@ -1,6 +1,8 @@
 "use client";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import PageLayout, { PageCard, PageButton } from "../../components/PageLayout";
 
 const postsBlog = [
   {
@@ -10,166 +12,177 @@ const postsBlog = [
     data: "22 de Janeiro, 2025",
     categoria: "História",
     imagem: "/conectapro.png",
-    cta: "Conhece nossa história? Agora faça parte dela! Encontre profissionais qualificados ou cadastre-se como profissional."
+    slug: "como-surgiu-a-conectapro",
+    tempo: "5 min de leitura"
   },
   {
     id: 2,
-    titulo: "Tabela SINAPI Porto Velho 2025: Preços Oficiais vs Mercado Local",
-    resumo: "Entenda a tabela SINAPI 2025, compare preços oficiais com mercado local de Porto Velho e descubra quanto custa contratar pedreiro, pintor, eletricista e encanador em Rondônia.",
-    data: "22 de Janeiro, 2025",
-    categoria: "Preços",
+    titulo: "O que é a Tabela SINAPI e Como Usar nos Seus Orçamentos",
+    resumo: "Guia completo sobre a Tabela SINAPI: o que é, como funciona e como usar para criar orçamentos precisos e competitivos na construção civil.",
+    data: "20 de Janeiro, 2025",
+    categoria: "Orçamentos",
     imagem: "/conectapro.png",
-    cta: "Domine os preços da construção civil! Use nossas calculadoras SINAPI gratuitas."
+    slug: "o-que-e-tabela-sinapi",
+    tempo: "8 min de leitura"
+  },
+  {
+    id: 3,
+    titulo: "5 Dicas para Profissionais da Construção Conseguirem Mais Clientes",
+    resumo: "Estratégias práticas para aumentar sua carteira de clientes: desde o marketing pessoal até a qualidade no atendimento.",
+    data: "18 de Janeiro, 2025",
+    categoria: "Dicas",
+    imagem: "/conectapro.png",
+    slug: "dicas-conseguir-mais-clientes",
+    tempo: "6 min de leitura"
+  },
+  {
+    id: 4,
+    titulo: "CUB Sinduscon: Entenda os Custos da Construção em 2025",
+    resumo: "Análise completa do CUB (Custo Unitário Básico) e como ele impacta os preços da construção civil em Porto Velho e região.",
+    data: "15 de Janeiro, 2025",
+    categoria: "Mercado",
+    imagem: "/conectapro.png",
+    slug: "cub-sinduscon-2025",
+    tempo: "10 min de leitura"
   }
 ];
 
-export default function Blog() {
+const categorias = ["Todos", "História", "Orçamentos", "Dicas", "Mercado"];
+
+export default function BlogConectaProPage() {
+  const [categoriaAtiva, setCategoriaAtiva] = React.useState("Todos");
+
+  const postsFiltrados = categoriaAtiva === "Todos" 
+    ? postsBlog 
+    : postsBlog.filter(post => post.categoria === categoriaAtiva);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-gray-100 py-10 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header da página */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">Blog ConectaPro</h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Dicas práticas para construção e reforma em <strong>Porto Velho - RO</strong>. 
-            Orientações para contratar profissionais qualificados, sem taxa e sem intermediário.
+    <PageLayout 
+      title="📝 Blog ConectaPro"
+      subtitle="Dicas, novidades e conhecimento para profissionais da construção"
+    >
+      {/* Filtros de Categoria */}
+      <PageCard>
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-bold cp-text-gradient mb-4">
+            Explore Nossos Artigos
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Conteúdo especializado para profissionais da construção civil
           </p>
-          <div className="mt-4 text-sm text-blue-600 font-medium">
-            📍 Serviço direto, sem taxa, sem atravessador. 100% gratuito em Porto Velho - RO.
+          
+          {/* Filtros */}
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
+            {categorias.map((categoria) => (
+              <button
+                key={categoria}
+                onClick={() => setCategoriaAtiva(categoria)}
+                className={`px-4 py-2 rounded-full font-medium transition-all duration-300 ${
+                  categoriaAtiva === categoria
+                    ? 'cp-button-primary'
+                    : 'cp-button-secondary'
+                }`}
+              >
+                {categoria}
+              </button>
+            ))}
           </div>
         </div>
+      </PageCard>
 
-        {/* Grid de posts */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-          {postsBlog.map((post) => (
-            <article key={post.id} className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300">
-              <div className="relative h-48">
-                <Image 
-                  src={post.imagem} 
-                  alt={post.titulo}
-                  fill
-                  className="object-cover"
-                />
-                <div className="absolute top-4 left-4">
-                  <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                    {post.categoria}
-                  </span>
-                </div>
+      {/* Grid de Posts */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        {postsFiltrados.map((post) => (
+          <PageCard key={post.id} className="hover:scale-105 transition-transform duration-300">
+            <div className="relative mb-4">
+              <Image
+                src={post.imagem}
+                alt={post.titulo}
+                width={400}
+                height={200}
+                className="w-full h-48 object-cover rounded-lg"
+              />
+              <div className="absolute top-3 left-3">
+                <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                  {post.categoria}
+                </span>
+              </div>
+            </div>
+            
+            <div className="space-y-3">
+              <h3 className="text-xl font-bold text-gray-900 line-clamp-2">
+                {post.titulo}
+              </h3>
+              
+              <p className="text-gray-600 line-clamp-3">
+                {post.resumo}
+              </p>
+              
+              <div className="flex items-center justify-between text-sm text-gray-500">
+                <span>{post.data}</span>
+                <span>{post.tempo}</span>
               </div>
               
-              <div className="p-6">
-                <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
-                  <span>📅</span>
-                  <span>{post.data}</span>
-                </div>
-                
-                <h2 className="text-xl font-bold text-gray-800 mb-3 leading-tight">
-                  {post.titulo}
-                </h2>
-                
-                <p className="text-gray-600 mb-4 leading-relaxed">
-                  {post.resumo}
-                </p>
-                
-                <Link 
-                  href={
-                    post.id === 1 ? "/blog/como-surgiu-a-conectapro" : 
-                    post.id === 2 ? "/blog/o-que-e-tabela-sinapi" : 
-                    "/buscar-profissional"
-                  }
-                  className="text-blue-600 font-semibold hover:text-blue-800 transition-colors inline-block"
-                >
-                  {post.id === 1 ? "Leia a história completa →" : 
-                   post.id === 2 ? "Entenda a tabela SINAPI →" : 
-                   post.cta}
+              <div className="pt-4">
+                <Link href={`/blog/${post.slug}`}>
+                  <PageButton variant="primary" className="w-full justify-center">
+                    Ler Artigo Completo
+                  </PageButton>
                 </Link>
               </div>
-            </article>
-                      ))}
-        </div>
-
-        {/* Call to action principal */}
-        <div className="mt-16 text-center bg-blue-50 rounded-2xl p-8 border border-blue-100">
-          <h2 className="text-2xl font-bold text-blue-900 mb-4">
-            🏗️ Precisa de um Profissional em Porto Velho?
-          </h2>
-          <p className="text-blue-700 mb-6 max-w-2xl mx-auto">
-            <strong>Quem faz, quem precisa.</strong> Encontre pedreiros, pintores, eletricistas e encanadores qualificados. 
-            Serviço direto, sem taxa e sem intermediário. 100% gratuito em Porto Velho - RO.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
-            <Link 
-              href="/buscar-profissional"
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-            >
-              🔍 Buscar Profissional
-            </Link>
-            <Link 
-              href="/cadastro-profissional"
-              className="bg-white text-blue-600 px-6 py-3 rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition-colors font-medium"
-            >
-              👷 Sou Profissional
-            </Link>
-          </div>
-          
-          {/* CTAs específicos */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-            <div className="bg-white p-4 rounded-lg border border-blue-200">
-              <p className="text-blue-800 font-medium">
-                💬 Converse direto pelo WhatsApp e encontre o profissional ideal para seu projeto!
-              </p>
             </div>
-            <div className="bg-white p-4 rounded-lg border border-blue-200">
-              <p className="text-blue-800 font-medium">
-                🤝 Tem dúvidas técnicas? Nossa equipe está pronta para te orientar!
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Newsletter e relacionamento */}
-        <div className="mt-12 bg-gray-800 rounded-2xl p-8 text-center text-white">
-          <h3 className="text-xl font-bold mb-4">📧 Newsletter ConectaPro - Porto Velho</h3>
-          <p className="text-gray-300 mb-6">
-            Receba dicas exclusivas sobre construção civil, preços atualizados de Porto Velho e novidades sobre profissionais qualificados.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto mb-8">
-            <input 
-              type="email" 
-              placeholder="Seu melhor email"
-              className="flex-1 px-4 py-3 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-600"
-            />
-            <button className="bg-blue-600 px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium">
-              Inscrever
-            </button>
-          </div>
-          
-          {/* Estratégia de relacionamento */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-            <div className="bg-gray-700 p-4 rounded-lg">
-              <div className="text-lg mb-2">📱</div>
-              <p className="text-gray-300">
-                <strong>WhatsApp Business</strong><br/>
-                Atendimento direto e grupos organizados por categoria
-              </p>
-            </div>
-            <div className="bg-gray-700 p-4 rounded-lg">
-              <div className="text-lg mb-2">⭐</div>
-              <p className="text-gray-300">
-                <strong>Pós-Serviço</strong><br/>
-                Acompanhamento e coleta de feedback para melhoria contínua
-              </p>
-            </div>
-            <div className="bg-gray-700 p-4 rounded-lg">
-              <div className="text-lg mb-2">🤝</div>
-              <p className="text-gray-300">
-                <strong>Parcerias Locais</strong><br/>
-                Conexões com depósitos e lojas de materiais em Porto Velho
-              </p>
-            </div>
-          </div>
-        </div>
+          </PageCard>
+        ))}
       </div>
-    </div>
+
+      {/* Seção de Newsletter */}
+      <PageCard className="text-center bg-gradient-to-r from-blue-50 to-blue-100">
+        <h3 className="text-2xl font-bold cp-text-gradient mb-4">
+          📧 Receba Novidades do Blog
+        </h3>
+        <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+          Cadastre-se para receber os melhores artigos sobre construção civil, 
+          dicas profissionais e novidades do mercado diretamente no seu WhatsApp.
+        </p>
+        
+        <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+          <input
+            type="email"
+            placeholder="Seu melhor e-mail"
+            className="flex-1 px-4 py-3 border-2 border-blue-200 rounded-lg focus:outline-none focus:border-blue-500 transition-colors"
+          />
+          <PageButton variant="primary">
+            Inscrever-se
+          </PageButton>
+        </div>
+        
+        <p className="text-xs text-gray-500 mt-3">
+          📱 Também enviamos pelo WhatsApp • 🔒 Seus dados estão seguros
+        </p>
+      </PageCard>
+
+      {/* Call to Action Final */}
+      <PageCard className="text-center">
+        <h3 className="text-2xl font-bold cp-text-gradient mb-4">
+          👷 Você é Profissional da Construção?
+        </h3>
+        <p className="text-gray-600 mb-6">
+          Cadastre-se gratuitamente na ConectaPro e comece a receber mais clientes hoje mesmo!
+        </p>
+        
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link href="/cadastro-profissional">
+            <PageButton variant="primary">
+              Cadastrar-se Gratuitamente
+            </PageButton>
+          </Link>
+          <Link href="/buscar-profissional">
+            <PageButton variant="secondary">
+              Encontrar Profissionais
+            </PageButton>
+          </Link>
+        </div>
+      </PageCard>
+    </PageLayout>
   );
-} 
+}

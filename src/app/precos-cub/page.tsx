@@ -1,194 +1,256 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import CalculadoraHeader from "../components/CalculadoraHeader";
+import { FaBuilding, FaHome, FaChartLine, FaDownload, FaCalculator, FaInfoCircle } from "react-icons/fa";
+import PageLayout, { PageCard, PageButton } from "../../components/PageLayout";
 
-export default function PrecosCUBPage() {
+// Dados simulados do CUB (baseados em valores reais aproximados)
+const dadosCUB = {
+  residencial: {
+    r1: { valor: 1850.45, descricao: "Casa popular (1 pavimento)" },
+    r8: { valor: 2156.78, descricao: "Residência unifamiliar padrão" },
+    r16: { valor: 2489.32, descricao: "Residência multifamiliar" }
+  },
+  comercial: {
+    cs8: { valor: 2234.67, descricao: "Salas/Conjuntos comerciais" },
+    cs16: { valor: 2567.89, descricao: "Lojas e sobrelojas" },
+    galpao: { valor: 1678.23, descricao: "Galpões industriais" }
+  }
+};
+
+export default function PreosCUBSindusconPage() {
+  const [tipoSelecionado, setTipoSelecionado] = useState<'residencial' | 'comercial'>('residencial');
+  const [metragem, setMetragem] = useState<string>('');
+  const [resultado, setResultado] = useState<number | null>(null);
+
+  const calcularCusto = (valorCUB: number) => {
+    if (!metragem || parseFloat(metragem) <= 0) return null;
+    return valorCUB * parseFloat(metragem);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <CalculadoraHeader title="Preços CUB - Sinduscon RO" bgColor="bg-blue-600/90" />
-      
-      {/* Espaço para header fixo */}
-      <div className="h-20" />
-
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Header Principal */}
-        <div className="text-center mb-12">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-2xl p-8 shadow-xl">
-            <h1 className="text-4xl font-bold mb-4">📊 Preços CUB - Sinduscon RO</h1>
-            <p className="text-xl opacity-90 mb-2">Custo Unitário Básico - Maio 2025</p>
-            <p className="text-lg opacity-80">Dados oficiais do Sinduscon de Rondônia</p>
+    <PageLayout 
+      title="💰 Preços CUB Sinduscon"
+      subtitle="Custos Unitários Básicos atualizados para sua obra em Porto Velho-RO"
+    >
+      {/* Card de Informações */}
+      <PageCard>
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+            <FaInfoCircle className="text-blue-600 text-xl" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold cp-text-gradient">
+              O que é o CUB?
+            </h2>
+            <p className="text-gray-600">
+              Custo Unitário Básico - Referência oficial para construção civil
+            </p>
           </div>
         </div>
-
-        {/* Cards Principais */}
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
-          {/* Card Residencial */}
-          <Link href="/precos-cub/residencial" className="block group">
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-8 border-2 border-green-200 hover:border-green-400 transform hover:scale-105">
-              <div className="text-center">
-                <div className="text-6xl mb-6 group-hover:scale-110 transition-transform">🏠</div>
-                <h2 className="text-2xl font-bold text-green-700 mb-4">Obras Residenciais</h2>
-                <p className="text-gray-600 mb-6">
-                  Calculadora para residências unifamiliares com diferentes padrões construtivos
-                </p>
-                <div className="space-y-2 text-sm text-green-600">
-                  <div className="flex justify-between">
-                    <span>Popular:</span>
-                    <span className="font-bold">R$ 1.567,80/m²</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Normal:</span>
-                    <span className="font-bold">R$ 1.847,25/m²</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Alto Padrão:</span>
-                    <span className="font-bold">R$ 2.234,60/m²</span>
-                  </div>
-                </div>
-                <div className="mt-6 bg-green-500 text-white px-6 py-3 rounded-full font-bold group-hover:bg-green-600 transition-colors">
-                  Acessar Calculadora →
-                </div>
-              </div>
-            </div>
-          </Link>
-
-          {/* Card Comercial */}
-          <Link href="/precos-cub/comercial" className="block group">
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-8 border-2 border-blue-200 hover:border-blue-400 transform hover:scale-105">
-              <div className="text-center">
-                <div className="text-6xl mb-6 group-hover:scale-110 transition-transform">🏢</div>
-                <h2 className="text-2xl font-bold text-blue-700 mb-4">Obras Comerciais</h2>
-                <p className="text-gray-600 mb-6">
-                  Calculadora para edifícios comerciais com salas, lojas e andares livres
-                </p>
-                <div className="space-y-2 text-sm text-blue-600">
-                  <div className="flex justify-between">
-                    <span>CSL-8:</span>
-                    <span className="font-bold">R$ 1.892,45/m²</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>CSL-16:</span>
-                    <span className="font-bold">R$ 2.156,78/m²</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>CAL-8/16:</span>
-                    <span className="font-bold">R$ 2.034,12/m²</span>
-                  </div>
-                </div>
-                <div className="mt-6 bg-blue-500 text-white px-6 py-3 rounded-full font-bold group-hover:bg-blue-600 transition-colors">
-                  Acessar Calculadora →
-                </div>
-              </div>
-            </div>
-          </Link>
-        </div>
-
-        {/* Seção de Dados Atuais */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-          <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">📈 Dados Atuais - Maio 2025</h3>
+        
+        <div className="grid md:grid-cols-2 gap-6">
+          <div>
+            <h3 className="font-semibold text-lg mb-3 text-gray-800">📋 Definição:</h3>
+            <p className="text-gray-600 leading-relaxed">
+              O CUB é calculado mensalmente pelos Sinduscons e representa o custo 
+              por metro quadrado de construção, incluindo materiais e mão de obra.
+            </p>
+          </div>
           
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Valores Desonerados */}
-            <div className="bg-green-50 rounded-xl p-6">
-              <h4 className="text-xl font-bold text-green-700 mb-4 flex items-center">
-                <span className="mr-2">✅</span> Valores Desonerados
-              </h4>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-700">R1 Popular:</span>
-                  <span className="font-bold text-green-600">R$ 1.567,80</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-700">R1 Normal:</span>
-                  <span className="font-bold text-green-600">R$ 1.847,25</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-700">R1 Alto Padrão:</span>
-                  <span className="font-bold text-green-600">R$ 2.234,60</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Valores Onerados */}
-            <div className="bg-blue-50 rounded-xl p-6">
-              <h4 className="text-xl font-bold text-blue-700 mb-4 flex items-center">
-                <span className="mr-2">📊</span> Valores Onerados
-              </h4>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-700">R1 Popular:</span>
-                  <span className="font-bold text-blue-600">R$ 1.623,45</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-700">R1 Normal:</span>
-                  <span className="font-bold text-blue-600">R$ 1.912,30</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-700">R1 Alto Padrão:</span>
-                  <span className="font-bold text-blue-600">R$ 2.315,85</span>
-                </div>
-              </div>
-            </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-3 text-gray-800">⚖️ Base Legal:</h3>
+            <p className="text-gray-600 leading-relaxed">
+              Estabelecido pela Lei 4.591/64 e NBR 12.721, é usado como referência 
+              para financiamentos, contratos e avaliações imobiliárias.
+            </p>
           </div>
         </div>
+      </PageCard>
 
-        {/* Link para Preços Detalhados */}
-        <div className="text-center mb-8">
-          <Link href="/precos-cub/detalhados" className="inline-block">
-            <div className="bg-gradient-to-r from-purple-500 to-purple-700 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:from-purple-600 hover:to-purple-800 transition-all duration-300 transform hover:scale-105 shadow-lg">
-              📋 Ver Preços Detalhados por Serviço
-            </div>
+      {/* Seletor de Tipo */}
+      <PageCard>
+        <h2 className="text-2xl font-bold cp-text-gradient mb-6 text-center">
+          Selecione o Tipo de Construção
+        </h2>
+        
+        <div className="grid md:grid-cols-2 gap-4 mb-8">
+          <button
+            onClick={() => setTipoSelecionado('residencial')}
+            className={`p-6 rounded-2xl border-2 transition-all duration-300 ${
+              tipoSelecionado === 'residencial'
+                ? 'border-blue-500 bg-blue-50 shadow-lg'
+                : 'border-gray-200 hover:border-blue-300'
+            }`}
+          >
+            <FaHome className={`text-3xl mb-3 mx-auto ${
+              tipoSelecionado === 'residencial' ? 'text-blue-600' : 'text-gray-400'
+            }`} />
+            <h3 className="font-bold text-lg mb-2">Residencial</h3>
+            <p className="text-gray-600 text-sm">
+              Casas, apartamentos e residências
+            </p>
+          </button>
+
+          <button
+            onClick={() => setTipoSelecionado('comercial')}
+            className={`p-6 rounded-2xl border-2 transition-all duration-300 ${
+              tipoSelecionado === 'comercial'
+                ? 'border-blue-500 bg-blue-50 shadow-lg'
+                : 'border-gray-200 hover:border-blue-300'
+            }`}
+          >
+            <FaBuilding className={`text-3xl mb-3 mx-auto ${
+              tipoSelecionado === 'comercial' ? 'text-blue-600' : 'text-gray-400'
+            }`} />
+            <h3 className="font-bold text-lg mb-2">Comercial</h3>
+            <p className="text-gray-600 text-sm">
+              Lojas, escritórios e galpões
+            </p>
+          </button>
+        </div>
+      </PageCard>
+
+      {/* Tabela de Preços */}
+      <PageCard>
+        <h2 className="text-2xl font-bold cp-text-gradient mb-6">
+          Valores CUB - {tipoSelecionado === 'residencial' ? 'Residencial' : 'Comercial'}
+        </h2>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="cp-bg-figma-light">
+                <th className="border border-gray-300 p-4 text-left font-semibold">Tipo</th>
+                <th className="border border-gray-300 p-4 text-left font-semibold">Descrição</th>
+                <th className="border border-gray-300 p-4 text-right font-semibold">Valor/m²</th>
+                <th className="border border-gray-300 p-4 text-center font-semibold">Ação</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(dadosCUB[tipoSelecionado]).map(([tipo, dados]) => (
+                <tr key={tipo} className="hover:bg-gray-50">
+                  <td className="border border-gray-300 p-4 font-semibold text-blue-600">
+                    {tipo.toUpperCase()}
+                  </td>
+                  <td className="border border-gray-300 p-4">
+                    {dados.descricao}
+                  </td>
+                  <td className="border border-gray-300 p-4 text-right font-bold text-lg">
+                    R$ {dados.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </td>
+                  <td className="border border-gray-300 p-4 text-center">
+                    <Link 
+                      href={`/precos-cub/${tipoSelecionado}?tipo=${tipo}`}
+                      className="cp-button-primary text-sm"
+                    >
+                      Ver Detalhes
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        
+        <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
+          <p className="text-sm text-yellow-800">
+            <strong>📅 Referência:</strong> Dezembro 2024 | 
+            <strong> 📍 Região:</strong> Porto Velho-RO | 
+            <strong> 🏛️ Fonte:</strong> Sinduscon-RO
+          </p>
+        </div>
+      </PageCard>
+
+      {/* Calculadora Rápida */}
+      <PageCard>
+        <h2 className="text-2xl font-bold cp-text-gradient mb-6 flex items-center gap-3">
+          <FaCalculator />
+          Calculadora Rápida
+        </h2>
+        
+        <div className="grid md:grid-cols-2 gap-8">
+          <div>
+            <label className="block text-lg font-semibold text-gray-700 mb-3">
+              Metragem da construção (m²):
+            </label>
+            <input
+              type="number"
+              value={metragem}
+              onChange={(e) => setMetragem(e.target.value)}
+              placeholder="Ex: 120"
+              className="w-full p-4 border-2 cp-border-figma rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          
+          <div>
+            <h3 className="text-lg font-semibold text-gray-700 mb-3">
+              Estimativa de Custo:
+            </h3>
+            {metragem && parseFloat(metragem) > 0 ? (
+              <div className="space-y-3">
+                {Object.entries(dadosCUB[tipoSelecionado]).map(([tipo, dados]) => {
+                  const custo = calcularCusto(dados.valor);
+                  return (
+                    <div key={tipo} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="font-medium">{tipo.toUpperCase()}:</span>
+                      <span className="font-bold text-lg text-green-600">
+                        R$ {custo?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="text-gray-500 italic">
+                Digite a metragem para ver as estimativas
+              </p>
+            )}
+          </div>
+        </div>
+      </PageCard>
+
+      {/* Links para Subpáginas */}
+      <PageCard>
+        <h2 className="text-2xl font-bold cp-text-gradient mb-6 text-center">
+          Explore Mais Detalhes
+        </h2>
+        
+        <div className="grid md:grid-cols-3 gap-6">
+          <Link 
+            href="/precos-cub/residencial"
+            className="group p-6 border-2 border-gray-200 rounded-2xl hover:border-blue-500 hover:shadow-lg transition-all duration-300"
+          >
+            <FaHome className="text-3xl text-blue-600 mb-4 group-hover:scale-110 transition-transform" />
+            <h3 className="font-bold text-lg mb-2">CUB Residencial</h3>
+            <p className="text-gray-600 text-sm">
+              Valores detalhados para construções residenciais
+            </p>
+          </Link>
+
+          <Link 
+            href="/precos-cub/comercial"
+            className="group p-6 border-2 border-gray-200 rounded-2xl hover:border-blue-500 hover:shadow-lg transition-all duration-300"
+          >
+            <FaBuilding className="text-3xl text-green-600 mb-4 group-hover:scale-110 transition-transform" />
+            <h3 className="font-bold text-lg mb-2">CUB Comercial</h3>
+            <p className="text-gray-600 text-sm">
+              Valores para estabelecimentos comerciais
+            </p>
+          </Link>
+
+          <Link 
+            href="/precos-cub/detalhados"
+            className="group p-6 border-2 border-gray-200 rounded-2xl hover:border-blue-500 hover:shadow-lg transition-all duration-300"
+          >
+            <FaChartLine className="text-3xl text-purple-600 mb-4 group-hover:scale-110 transition-transform" />
+            <h3 className="font-bold text-lg mb-2">Análise Detalhada</h3>
+            <p className="text-gray-600 text-sm">
+              Histórico e comparativos de preços
+            </p>
           </Link>
         </div>
-
-        {/* Seção Educativa */}
-        <div className="bg-gradient-to-r from-gray-100 to-gray-50 rounded-2xl p-8">
-          <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">💡 O que é o CUB?</h3>
-          
-          <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <h4 className="text-lg font-bold text-gray-700 mb-3">📖 Definição</h4>
-              <p className="text-gray-600 mb-4">
-                O CUB (Custo Unitário Básico) é um índice que representa o custo por metro quadrado 
-                de construção, calculado mensalmente pelos Sinduscons de cada estado.
-              </p>
-              
-              <h4 className="text-lg font-bold text-gray-700 mb-3">🎯 Como Usar</h4>
-              <p className="text-gray-600">
-                Multiplique o CUB pela área da construção para ter uma estimativa do custo total. 
-                Use como base para orçamentos e financiamentos.
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="text-lg font-bold text-gray-700 mb-3">⚠️ O que NÃO inclui</h4>
-              <ul className="text-gray-600 space-y-2">
-                <li>• Fundações especiais</li>
-                <li>• Elevadores e ar-condicionado</li>
-                <li>• Projetos e aprovações</li>
-                <li>• Lucro do construtor</li>
-                <li>• Terreno e paisagismo</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* Disclaimer */}
-        <div className="mt-8 bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg">
-          <div className="flex items-start">
-            <div className="text-yellow-400 mr-3 text-xl">⚠️</div>
-            <div>
-              <h4 className="text-lg font-bold text-yellow-800 mb-2">Importante</h4>
-              <p className="text-yellow-700 text-sm">
-                Os valores apresentados são baseados nos dados oficiais do Sinduscon-RO para maio de 2025. 
-                Estes valores representam custos básicos e podem variar conforme especificações do projeto, 
-                localização e condições de mercado. Sempre consulte um profissional para orçamentos precisos.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      </PageCard>
+    </PageLayout>
   );
-} 
+}

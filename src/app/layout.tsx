@@ -276,7 +276,7 @@ export default function RootLayout({
               </Link>
               
               {/* Navegação Desktop */}
-              <nav className="hidden md:flex items-center gap-6">
+              <nav className="hidden md:flex items-center gap-6 ml-12">
                 <Link 
                   href="/" 
                   className="text-white hover:text-blue-100 font-medium px-4 py-2 rounded-full transition-all duration-300 hover:bg-white hover:bg-opacity-20"

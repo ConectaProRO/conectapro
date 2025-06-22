@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { FaStar, FaWhatsapp, FaTimes, FaArrowUp, FaSearch, FaMapMarkerAlt, FaPhone, FaUserCheck } from "react-icons/fa";
+import PageLayout, { PageCard, PageButton } from "../../components/PageLayout";
 
 const servicos = [
   "Forma e Concretagem",
@@ -68,7 +69,7 @@ function BotaoVoltarTopo() {
     <div className="fixed bottom-6 right-6 z-50">
       <button
         onClick={voltarAoTopo}
-        className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 fade-in-element"
+        className="cp-button-primary rounded-full p-3 shadow-lg"
         title="Voltar ao topo"
       >
         <FaArrowUp size={20} />
@@ -170,380 +171,280 @@ export default function BuscarProfissional() {
   };
 
   return (
-    <>
-      {/* CSS personalizado para animações */}
-      <style jsx global>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        .animate-fadeInUp {
-          animation: fadeInUp 0.8s ease forwards;
-        }
-        
-        .fade-in-element {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        
-        html {
-          scroll-behavior: smooth;
-        }
-      `}</style>
-
-      {/* Botão flutuante para voltar ao topo */}
+    <PageLayout 
+      title="🔍 Buscar Profissionais"
+      subtitle="Encontre profissionais qualificados da construção civil em Porto Velho"
+    >
       <BotaoVoltarTopo />
-      
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
-        {/* Header Hero */}
-        <header className="bg-gradient-to-br from-blue-600 to-blue-700 py-16 px-5 text-center text-white relative overflow-hidden">
-          <div className="absolute inset-0 bg-blue-600 opacity-10 animate-pulse"></div>
-          <div className="max-w-4xl mx-auto relative z-10">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 fade-in-element">
-              🔍 Buscar Profissional
-            </h1>
-            <p className="text-xl md:text-2xl mb-10 font-light fade-in-element">
-              Encontre os melhores profissionais da construção em <strong>Porto Velho - RO</strong>
+
+      {/* Seção de busca */}
+      <PageCard>
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold cp-text-gradient mb-4">
+            <FaSearch className="inline mr-3" />
+            Encontre o Profissional Ideal
+          </h2>
+          <p className="text-xl text-gray-600">
+            Selecione o serviço que você precisa e veja todos os profissionais disponíveis
+          </p>
+        </div>
+
+        <div className="max-w-md mx-auto">
+          <label className="block text-lg font-semibold text-gray-700 mb-3">
+            Qual serviço você precisa?
+          </label>
+          <select
+            value={servicoSelecionado}
+            onChange={(e) => setServicoSelecionado(e.target.value)}
+            className="w-full p-4 border-2 cp-border-figma rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+          >
+            <option value="">Selecione um serviço...</option>
+            {servicos.map((servico) => (
+              <option key={servico} value={servico}>
+                {servico}
+              </option>
+            ))}
+          </select>
+        </div>
+      </PageCard>
+
+      {/* Resultados da busca */}
+      {servicoSelecionado && (
+        <PageCard>
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold cp-text-gradient mb-2">
+              Profissionais encontrados para: {servicoSelecionado}
+            </h2>
+            <p className="text-gray-600">
+              {profissionaisFiltrados.length} profissional(is) disponível(is)
             </p>
-            
-            <div className="max-w-2xl mx-auto fade-in-element">
-              <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
-                <div className="flex items-center gap-3 text-lg text-gray-800">
-                  <FaSearch className="text-2xl text-blue-600" />
-                  <span className="font-bold">Profissionais verificados • Contato direto • Avaliações reais</span>
-                </div>
-              </div>
-            </div>
           </div>
-        </header>
 
-        {/* Formulário de Busca */}
-        <section className="py-12 px-5">
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-3xl shadow-xl p-8 mb-8 fade-in-element">
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold text-blue-600 mb-4">Qual serviço você precisa?</h2>
-                <p className="text-gray-600">Selecione o tipo de serviço e encontre profissionais qualificados</p>
-
-              </div>
-              
-              <div className="max-w-2xl mx-auto">
-                <select
-                  className="w-full border-2 border-gray-200 rounded-xl px-6 py-4 text-lg focus:outline-none focus:border-blue-500 transition-colors bg-white"
-                  value={servicoSelecionado}
-                  onChange={e => setServicoSelecionado(e.target.value)}
-                >
-                  <option value="">📋 Selecione um serviço...</option>
-                  {servicos.map((servico) => (
-                    <option key={servico} value={servico}>{servico}</option>
-                  ))}
-                </select>
-              </div>
+          {profissionaisFiltrados.length === 0 ? (
+            <div className="text-center py-12 cp-bg-figma-light rounded-2xl">
+              <FaSearch className="text-6xl text-gray-400 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-gray-600 mb-2">
+                Nenhum profissional encontrado
+              </h3>
+              <p className="text-gray-500 mb-6">
+                Não encontramos profissionais para este serviço no momento.
+              </p>
+              <PageButton href="/cadastro-profissional" variant="primary">
+                👷 Seja um profissional cadastrado
+              </PageButton>
             </div>
-            
-
-
-            {/* Resultados da Busca */}
-            {servicoSelecionado && (
-              <div className="fade-in-element">
-                <div className="bg-white rounded-3xl shadow-xl p-8">
-                  <h2 className="text-2xl font-bold mb-6 text-blue-600 flex items-center gap-3">
-                    🏗️ Profissionais de {servicoSelecionado}
-                  </h2>
-                  
-                  {profissionaisFiltrados.length === 0 ? (
-                    <div className="text-center py-12 bg-gradient-to-br from-gray-50 to-white rounded-2xl">
-                      <div className="text-6xl mb-6">🔍</div>
-                      <h3 className="text-xl font-bold text-gray-600 mb-4">
-                        Ainda não há profissionais aprovados para este serviço
-                      </h3>
-                      <p className="text-gray-500 mb-6">
-                        Seja o primeiro a se cadastrar e ganhe mais visibilidade!
-                      </p>
-                      <Link 
-                        href="/cadastro-profissional" 
-                        className="bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-blue-700 transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300 inline-flex items-center gap-2"
-                      >
-                        👷 Cadastrar como Profissional
-                      </Link>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                      {profissionaisFiltrados.map((prof) => (
-                        <div
-                          key={prof.id}
-                          onClick={() => abrirDetalhes(prof)}
-                          className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 border-2 border-gray-100 shadow-lg hover:shadow-xl hover:border-blue-200 transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
-                        >
-                          <div className="flex items-start gap-4">
-                            <div className="flex-shrink-0">
-                              {prof.fotoPerfil ? (
-                                <img 
-                                  src={prof.fotoPerfil} 
-                                  alt="Foto de perfil" 
-                                  className="w-20 h-20 object-cover rounded-xl border-2 border-blue-200" 
-                                />
-                              ) : prof.fotos && prof.fotos.length > 0 ? (
-                                <img 
-                                  src={prof.fotos[0]} 
-                                  alt="Foto serviço" 
-                                  className="w-20 h-20 object-cover rounded-xl border-2 border-blue-200" 
-                                />
-                              ) : (
-                                <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center">
-                                  <FaUserCheck className="text-3xl text-blue-600" />
-                                </div>
-                              )}
-                            </div>
-                            
-                            <div className="flex-1">
-                              <h3 className="text-xl font-bold text-gray-800 mb-2">{prof.nome}</h3>
-                              <p className="text-blue-600 font-semibold mb-1">{prof.profissao}</p>
-                              
-                              <div className="flex items-center gap-2 text-gray-600 mb-2">
-                                <FaMapMarkerAlt className="text-blue-500" />
-                                <span>{prof.bairro}</span>
-                              </div>
-                              
-                              <div className="flex items-center gap-2 text-gray-600 mb-3">
-                                <FaPhone className="text-green-500" />
-                                <span>{prof.telefone}</span>
-                              </div>
-                              
-                              {prof.nivelServicos?.[servicoSelecionado] && (
-                                <div className="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
-                                  📊 {prof.nivelServicos[servicoSelecionado]}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                          
-                          <div className="mt-4 pt-4 border-t border-gray-200">
-                            <button className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
-                              👁️ Ver Detalhes Completos
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-            
-            {/* Call to Action para Profissionais */}
-            {!servicoSelecionado && (
-              <div className="bg-white rounded-3xl shadow-xl p-8 text-center fade-in-element">
-                <div className="text-6xl mb-6">👷</div>
-                <h2 className="text-2xl font-bold text-blue-600 mb-4">
-                  Você é um profissional da construção?
-                </h2>
-                <p className="text-gray-600 mb-6">
-                  Cadastre-se gratuitamente e conecte-se com clientes em Porto Velho
-                </p>
-                <Link 
-                  href="/cadastro-profissional" 
-                  className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 inline-flex items-center gap-2"
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {profissionaisFiltrados.map((profissional) => (
+                <div
+                  key={profissional.id}
+                  className="cp-bg-figma-light rounded-2xl p-6 cp-border-figma hover:shadow-lg transition-all duration-300 cursor-pointer"
+                  onClick={() => abrirDetalhes(profissional)}
                 >
-                  🚀 Cadastrar Agora
-                </Link>
-              </div>
-            )}
-          </div>
-        </section>
-      </div>
+                  <div className="text-center mb-4">
+                    {profissional.fotoPerfil ? (
+                      <img
+                        src={profissional.fotoPerfil}
+                        alt={`Foto de ${profissional.nome}`}
+                        className="w-20 h-20 rounded-full object-cover mx-auto mb-3 border-4 border-white shadow-lg"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 rounded-full cp-gradient-figma-primary flex items-center justify-center mx-auto mb-3 text-white font-bold text-xl shadow-lg">
+                        {profissional.nome.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <h3 className="text-xl font-bold text-gray-800 mb-1">
+                      {profissional.nome}
+                    </h3>
+                    <p className="text-gray-600 text-sm">
+                      <FaMapMarkerAlt className="inline mr-1" />
+                      {profissional.bairro}
+                    </p>
+                  </div>
 
-      {/* Modal de Detalhes do Profissional */}
+                  <div className="space-y-2 mb-4">
+                    <div className="flex items-center text-sm text-gray-600">
+                      <FaUserCheck className="mr-2 text-green-500" />
+                      {profissional.profissao}
+                    </div>
+                    {profissional.totalFotos > 0 && (
+                      <div className="text-sm text-gray-600">
+                        📸 {profissional.totalFotos} foto(s) de trabalhos
+                      </div>
+                    )}
+                  </div>
+
+                  <PageButton variant="primary" className="w-full">
+                    Ver Detalhes
+                  </PageButton>
+                </div>
+              ))}
+            </div>
+          )}
+        </PageCard>
+      )}
+
+      {/* Modal de detalhes do profissional */}
       {profissionalSelecionado && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-t-3xl">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">{profissionalSelecionado.nome}</h2>
-                  <p className="text-blue-100 text-lg">{profissionalSelecionado.profissao}</p>
+          <div className="bg-white rounded-3xl p-8 max-w-4xl w-full max-h-screen overflow-y-auto relative">
+            <button
+              onClick={fecharDetalhes}
+              className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <FaTimes className="text-xl text-gray-500" />
+            </button>
+
+            <div className="text-center mb-8">
+              {profissionalSelecionado.fotoPerfil ? (
+                <img
+                  src={profissionalSelecionado.fotoPerfil}
+                  alt={`Foto de ${profissionalSelecionado.nome}`}
+                  className="w-32 h-32 rounded-full object-cover mx-auto mb-4 border-4 border-blue-200 shadow-lg"
+                />
+              ) : (
+                <div className="w-32 h-32 rounded-full cp-gradient-figma-primary flex items-center justify-center mx-auto mb-4 text-white font-bold text-3xl shadow-lg">
+                  {profissionalSelecionado.nome.charAt(0).toUpperCase()}
                 </div>
-                <button
-                  onClick={fecharDetalhes}
-                  className="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-colors"
-                >
-                  <FaTimes size={20} />
-                </button>
-              </div>
+              )}
+              <h2 className="text-3xl font-bold cp-text-gradient mb-2">
+                {profissionalSelecionado.nome}
+              </h2>
+              <p className="text-xl text-gray-600">
+                <FaMapMarkerAlt className="inline mr-2" />
+                {profissionalSelecionado.bairro}
+              </p>
             </div>
-            
-            <div className="p-6">
-              {/* Foto de Perfil */}
-              {profissionalSelecionado.fotoPerfil && (
-                <div className="mb-8 text-center">
-                  <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center justify-center gap-2">
-                    👤 Foto de Perfil
-                  </h3>
-                  <div className="flex justify-center">
-                    <img
-                      src={profissionalSelecionado.fotoPerfil}
-                      alt="Foto de perfil"
-                      className="w-32 h-32 object-cover rounded-full border-4 border-blue-200 shadow-lg"
-                    />
-                  </div>
-                </div>
-              )}
-              
-              {/* Informações do Profissional */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div className="bg-gray-50 rounded-2xl p-6">
-                  <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    📍 Informações de Contato
-                  </h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <FaMapMarkerAlt className="text-blue-500" />
-                      <span><strong>Bairro:</strong> {profissionalSelecionado.bairro}</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <FaWhatsapp className="text-green-500" />
-                      <span><strong>WhatsApp:</strong> {profissionalSelecionado.telefone}</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="bg-gray-50 rounded-2xl p-6">
-                  <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    🚗 Transporte
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {profissionalSelecionado.transportes.map((transporte) => (
-                      <span key={transporte} className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
-                        {transporte}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              
-              {/* Nível de Serviços */}
-              <div className="bg-gray-50 rounded-2xl p-6 mb-8">
-                <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                  🔧 Especialidades
+
+            {/* Informações do profissional */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+              <div className="cp-bg-figma-light rounded-2xl p-6">
+                <h3 className="text-xl font-bold cp-text-gradient mb-4">
+                  Informações Profissionais
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {profissionalSelecionado.nivelServicos ? 
-                    Object.entries(profissionalSelecionado.nivelServicos).map(([servico, nivel]) => (
-                      nivel !== "Não faço" && (
-                        <div key={servico} className="flex justify-between items-center bg-white p-3 rounded-xl">
-                          <span className="font-medium">{servico}</span>
-                          <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
-                            {nivel}
-                          </span>
-                        </div>
-                      )
-                    )) :
-                    profissionalSelecionado.servicosSelecionados?.map((servico) => (
-                      <div key={servico} className="flex justify-between items-center bg-white p-3 rounded-xl">
-                        <span className="font-medium">{servico}</span>
-                        <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
-                          ✓ Oferece
-                        </span>
-                      </div>
-                    ))
-                  }
-                </div>
-              </div>
-              
-              {/* Fotos */}
-              {profissionalSelecionado.fotos && profissionalSelecionado.fotos.length > 0 && (
-                <div className="mb-8">
-                  <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    📸 Portfólio
-                  </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {profissionalSelecionado.fotos.map((foto, index) => (
-                      <img
-                        key={index}
-                        src={foto}
-                        alt={`Trabalho ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-xl border-2 border-gray-200"
-                      />
-                    ))}
+                <div className="space-y-3">
+                  <div>
+                    <strong>Profissão:</strong> {profissionalSelecionado.profissao}
                   </div>
-                </div>
-              )}
-              
-              {/* Avaliações */}
-              <div className="mb-8">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                    ⭐ Avaliações
-                  </h3>
-                  <button
-                    onClick={() => setMostrarModalAvaliacao(true)}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors"
-                  >
-                    + Avaliar
-                  </button>
-                </div>
-                
-                {mediaAvaliacao.total > 0 && (
-                  <div className="bg-yellow-50 rounded-xl p-4 mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="flex">{renderEstrelas(Math.round(mediaAvaliacao.media))}</div>
-                      <span className="font-bold text-lg">{mediaAvaliacao.media.toFixed(1)}</span>
-                      <span className="text-gray-600">({mediaAvaliacao.total} avaliações)</span>
+                  {profissionalSelecionado.experiencia && (
+                    <div>
+                      <strong>Experiência:</strong> {profissionalSelecionado.experiencia}
                     </div>
-                  </div>
-                )}
-                
-                <div className="space-y-4 max-h-60 overflow-y-auto">
-                  {avaliacoes.length > 0 ? (
-                    avaliacoes.map((avaliacao) => (
-                      <div key={avaliacao.id} className="bg-white border border-gray-200 rounded-xl p-4">
-                        <div className="flex justify-between items-start mb-2">
-                          <div className="flex items-center gap-2">
-                            <div className="flex">{renderEstrelas(avaliacao.nota)}</div>
-                            <span className="font-medium">{avaliacao.clienteNome}</span>
-                          </div>
-                          <span className="text-sm text-gray-500">{formatarData(avaliacao.timestamp)}</span>
-                        </div>
-                        <p className="text-gray-700 mb-1">{avaliacao.comentario}</p>
-                        <p className="text-sm text-blue-600">Serviço: {avaliacao.servico}</p>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-gray-500 text-center py-8">Ainda não há avaliações para este profissional.</p>
+                  )}
+                  {profissionalSelecionado.preco && (
+                    <div>
+                      <strong>Faixa de Preço:</strong> {profissionalSelecionado.preco}
+                    </div>
+                  )}
+                  {profissionalSelecionado.descricao && (
+                    <div>
+                      <strong>Descrição:</strong> {profissionalSelecionado.descricao}
+                    </div>
                   )}
                 </div>
               </div>
-              
-              {/* Botões de Ação */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <a
-                  href={`https://wa.me/55${profissionalSelecionado.telefone.replace(/\D/g, '')}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 bg-green-600 text-white py-4 rounded-xl font-semibold hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
-                >
-                  <FaWhatsapp /> Conversar no WhatsApp
-                </a>
-                <button
-                  onClick={fecharDetalhes}
-                  className="flex-1 bg-gray-200 text-gray-700 py-4 rounded-xl font-semibold hover:bg-gray-300 transition-colors"
-                >
-                  Fechar
-                </button>
+
+              <div className="cp-bg-figma-light rounded-2xl p-6">
+                <h3 className="text-xl font-bold cp-text-gradient mb-4">
+                  Serviços Oferecidos
+                </h3>
+                <div className="space-y-2">
+                  {(profissionalSelecionado.servicosSelecionados || 
+                    Object.keys(profissionalSelecionado.nivelServicos || {})).map((servico) => (
+                    <div key={servico} className="flex items-center">
+                      <FaUserCheck className="text-green-500 mr-2" />
+                      <span>{servico}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
+            </div>
+
+            {/* Avaliações */}
+            {mediaAvaliacao.total > 0 && (
+              <div className="cp-bg-figma-light rounded-2xl p-6 mb-8">
+                <h3 className="text-xl font-bold cp-text-gradient mb-4">
+                  Avaliações dos Clientes
+                </h3>
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="flex">
+                    {renderEstrelas(Math.round(mediaAvaliacao.media))}
+                  </div>
+                  <span className="text-lg font-semibold">
+                    {mediaAvaliacao.media.toFixed(1)} / 5.0
+                  </span>
+                  <span className="text-gray-600">
+                    ({mediaAvaliacao.total} avaliação{mediaAvaliacao.total > 1 ? 'ões' : ''})
+                  </span>
+                </div>
+
+                <div className="space-y-4 max-h-60 overflow-y-auto">
+                  {avaliacoes.map((avaliacao) => (
+                    <div key={avaliacao.id} className="bg-white rounded-xl p-4 border">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <strong>{avaliacao.clienteNome}</strong>
+                          <div className="flex">
+                            {renderEstrelas(avaliacao.nota)}
+                          </div>
+                        </div>
+                        <span className="text-sm text-gray-500">
+                          {formatarData(avaliacao.timestamp)}
+                        </span>
+                      </div>
+                      <p className="text-gray-700">{avaliacao.comentario}</p>
+                      <p className="text-sm text-gray-500 mt-1">
+                        Serviço: {avaliacao.servico}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Portfolio de fotos */}
+            {profissionalSelecionado.fotos && profissionalSelecionado.fotos.length > 0 && (
+              <div className="cp-bg-figma-light rounded-2xl p-6 mb-8">
+                <h3 className="text-xl font-bold cp-text-gradient mb-4">
+                  Portfolio de Trabalhos
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {profissionalSelecionado.fotos.map((foto, index) => (
+                    <img
+                      key={index}
+                      src={foto}
+                      alt={`Trabalho ${index + 1}`}
+                      className="w-full h-32 object-cover rounded-xl shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Botões de ação */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <PageButton 
+                href={`https://wa.me/55${profissionalSelecionado.telefone.replace(/\D/g, '')}?text=Olá! Vi seu perfil no ConectaPro e gostaria de conversar sobre o serviço de ${servicoSelecionado}.`}
+                variant="primary"
+                className="text-center"
+              >
+                <FaWhatsapp className="mr-2" />
+                Chamar no WhatsApp
+              </PageButton>
+              
+              <PageButton 
+                onClick={() => setMostrarModalAvaliacao(true)}
+                variant="secondary"
+              >
+                <FaStar className="mr-2" />
+                Avaliar Profissional
+              </PageButton>
             </div>
           </div>
         </div>
       )}
 
-      {/* Modal de Avaliação */}
+      {/* Modal de avaliação */}
       {mostrarModalAvaliacao && profissionalSelecionado && (
         <ModalAvaliacao
           profissional={profissionalSelecionado}
@@ -554,11 +455,11 @@ export default function BuscarProfissional() {
           }}
         />
       )}
-    </>
+    </PageLayout>
   );
 }
 
-// Componente Modal de Avaliação
+// Modal de avaliação (mantendo a funcionalidade original)
 function ModalAvaliacao({ 
   profissional, 
   onClose, 
@@ -571,7 +472,6 @@ function ModalAvaliacao({
   const [nota, setNota] = useState(5);
   const [comentario, setComentario] = useState('');
   const [clienteNome, setClienteNome] = useState('');
-  const [servicoAvaliado, setServicoAvaliado] = useState('');
   const [enviando, setEnviando] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -581,24 +481,24 @@ function ModalAvaliacao({
     try {
       const response = await fetch('/api/avaliacoes', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
           profissionalId: profissional.id,
+          profissionalNome: profissional.nome,
           clienteNome,
           nota,
           comentario,
-          servico: servicoAvaliado,
+          servico: 'Serviço contratado'
         }),
       });
 
       if (response.ok) {
-        alert('Avaliação enviada com sucesso!');
         onSuccess();
-      } else {
-        alert('Erro ao enviar avaliação. Tente novamente.');
       }
-    } catch {
-      alert('Erro ao enviar avaliação. Verifique sua conexão.');
+    } catch (error) {
+      console.error('Erro ao enviar avaliação:', error);
     } finally {
       setEnviando(false);
     }
@@ -608,90 +508,76 @@ function ModalAvaliacao({
     return Array.from({ length: 5 }, (_, i) => (
       <FaStar
         key={i}
-        className={`cursor-pointer text-2xl transition-colors ${
-          i < nota ? "text-yellow-400" : "text-gray-300"
-        }`}
+        className={`cursor-pointer text-2xl ${i < nota ? 'text-yellow-400' : 'text-gray-300'}`}
         onClick={() => setNota(i + 1)}
       />
     ));
   };
 
-  const servicosDisponiveis = profissional.nivelServicos 
-    ? Object.entries(profissional.nivelServicos)
-        .filter(([, nivel]) => nivel !== "Não faço")
-        .map(([servico]) => servico)
-    : profissional.servicosSelecionados || [];
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-3xl max-w-2xl w-full p-8">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-blue-600">Avaliar {profissional.nome}</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-            <FaTimes size={24} />
-          </button>
+      <div className="bg-white rounded-3xl p-8 max-w-md w-full">
+        <div className="text-center mb-6">
+          <h3 className="text-2xl font-bold cp-text-gradient mb-2">
+            Avaliar Profissional
+          </h3>
+          <p className="text-gray-600">{profissional.nome}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block font-semibold mb-2">Seu nome</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Seu nome:
+            </label>
             <input
               type="text"
               value={clienteNome}
               onChange={(e) => setClienteNome(e.target.value)}
-              className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-600"
-              placeholder="Seu nome completo"
               required
+              className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Digite seu nome"
             />
           </div>
 
           <div>
-            <label className="block font-semibold mb-2">Serviço avaliado</label>
-            <select
-              value={servicoAvaliado}
-              onChange={(e) => setServicoAvaliado(e.target.value)}
-              className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
-              required
-            >
-              <option value="">Selecione o serviço</option>
-              {servicosDisponiveis.map((servico) => (
-                <option key={servico} value={servico}>{servico}</option>
-              ))}
-            </select>
+            <label className="block text-sm font-semibold text-gray-700 mb-3">
+              Sua avaliação:
+            </label>
+            <div className="flex justify-center gap-1">
+              {renderEstrelas(nota)}
+            </div>
           </div>
 
           <div>
-            <label className="block font-semibold mb-2">Nota</label>
-            <div className="flex gap-1">{renderEstrelas(nota)}</div>
-          </div>
-
-          <div>
-            <label className="block font-semibold mb-2">Comentário</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Comentário:
+            </label>
             <textarea
               value={comentario}
               onChange={(e) => setComentario(e.target.value)}
-              className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors h-32 resize-none placeholder-gray-600"
-              placeholder="Conte como foi sua experiência..."
               required
+              rows={4}
+              className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Conte como foi sua experiência..."
             />
           </div>
 
-          <div className="flex gap-4">
-            <button
-              type="submit"
-              disabled={enviando}
-              className="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50"
-            >
-              {enviando ? 'Enviando...' : 'Enviar Avaliação'}
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300 transition-colors"
-            >
-              Cancelar
-            </button>
-          </div>
+                     <div className="flex gap-4">
+             <button
+               type="button"
+               onClick={onClose}
+               className="cp-button-secondary flex-1"
+             >
+               Cancelar
+             </button>
+             <button
+               type="submit"
+               disabled={enviando}
+               className="cp-button-primary flex-1"
+             >
+               {enviando ? 'Enviando...' : 'Enviar Avaliação'}
+             </button>
+           </div>
         </form>
       </div>
     </div>

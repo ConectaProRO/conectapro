@@ -1,217 +1,227 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import CalculadoraHeader from "../../components/CalculadoraHeader";
+import { FaHome, FaCalculator, FaArrowLeft, FaInfoCircle } from "react-icons/fa";
+import PageLayout, { PageCard, PageButton } from "../../../components/PageLayout";
+
+// Dados detalhados do CUB Residencial
+const dadosCUBResidencial = {
+  r1: { 
+    valor: 1850.45, 
+    descricao: "Casa popular (1 pavimento)",
+    detalhes: "Padrão popular com acabamento simples, sem garagem",
+    area_minima: 39.88,
+    area_maxima: 76.00
+  },
+  r8: { 
+    valor: 2156.78, 
+    descricao: "Residência unifamiliar padrão",
+    detalhes: "Padrão normal com acabamento médio, garagem para 1 carro",
+    area_minima: 117.53,
+    area_maxima: 176.84
+  },
+  r16: { 
+    valor: 2489.32, 
+    descricao: "Residência multifamiliar",
+    detalhes: "Padrão alto com acabamento superior, garagem para 2 carros",
+    area_minima: 182.17,
+    area_maxima: 307.44
+  }
+};
 
 export default function CUBResidencialPage() {
-  const [tipoValor, setTipoValor] = useState("desonerado");
-  const [padrao, setPadrao] = useState("normal");
-  const [area, setArea] = useState(100);
+  const [metragem, setMetragem] = useState<string>('');
+  const [tipoSelecionado, setTipoSelecionado] = useState<string>('');
 
-  // Valores CUB (R$/m²)
-  const valores = {
-    desonerado: {
-      popular: 1567.80,
-      normal: 1847.25,
-      alto: 2234.60
-    },
-    onerado: {
-      popular: 1623.45,
-      normal: 1912.30,
-      alto: 2315.85
-    }
-  };
-
-  // Percentuais por serviço
-  const servicos = [
-    { nome: "Alvenaria", emoji: "🧱", percentual: 15 },
-    { nome: "Pintura", emoji: "🎨", percentual: 8 },
-    { nome: "Elétrica", emoji: "⚡", percentual: 12 },
-    { nome: "Hidráulica", emoji: "🚿", percentual: 10 },
-    { nome: "Cobertura", emoji: "🏠", percentual: 18 },
-    { nome: "Piso", emoji: "🔲", percentual: 14 }
-  ];
-
-  const cubAtual = valores[tipoValor as keyof typeof valores][padrao as keyof typeof valores.desonerado];
-  const custoTotal = cubAtual * area;
-
-  const formatarMoeda = (valor: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(valor);
+  const calcularCusto = (valorCUB: number) => {
+    if (!metragem || parseFloat(metragem) <= 0) return null;
+    return valorCUB * parseFloat(metragem);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <CalculadoraHeader title="CUB Residencial - Sinduscon RO" bgColor="bg-green-600/90" />
-      
-      {/* Espaço para header fixo */}
-      <div className="h-20" />
+    <PageLayout 
+      title="🏠 CUB Residencial"
+      subtitle="Custos unitários básicos para construção residencial em Porto Velho-RO"
+    >
+      {/* Botão Voltar */}
+      <div className="mb-6">
+        <Link 
+          href="/precos-cub"
+          className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium"
+        >
+          <FaArrowLeft />
+          Voltar para Preços CUB
+        </Link>
+      </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Botão Voltar */}
-        <div className="mb-6">
-          <Link href="/precos-cub" className="inline-flex items-center text-green-600 hover:text-green-800 font-medium">
-            ← Voltar ao Menu CUB
+      {/* Informações Gerais */}
+      <PageCard>
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+            <FaInfoCircle className="text-blue-600 text-xl" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold cp-text-gradient">
+              CUB Residencial - Detalhado
+            </h2>
+            <p className="text-gray-600">
+              Valores específicos para construções residenciais
+            </p>
+          </div>
+        </div>
+        
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+          <h3 className="font-semibold text-lg mb-3 text-blue-800">📋 Sobre o CUB Residencial:</h3>
+          <p className="text-blue-700 leading-relaxed">
+            O CUB Residencial é calculado com base em projetos-padrão que representam 
+            diferentes níveis de acabamento e área construída. Os valores incluem 
+            materiais, mão de obra e são atualizados mensalmente pelo Sinduscon-RO.
+          </p>
+        </div>
+      </PageCard>
+
+      {/* Tabela Detalhada */}
+      <PageCard>
+        <h2 className="text-2xl font-bold cp-text-gradient mb-6">
+          Tabela de Valores CUB Residencial
+        </h2>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="cp-bg-figma-light">
+                <th className="border border-gray-300 p-4 text-left font-semibold">Tipo</th>
+                <th className="border border-gray-300 p-4 text-left font-semibold">Descrição</th>
+                <th className="border border-gray-300 p-4 text-center font-semibold">Área (m²)</th>
+                <th className="border border-gray-300 p-4 text-right font-semibold">Valor/m²</th>
+                <th className="border border-gray-300 p-4 text-center font-semibold">Selecionar</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(dadosCUBResidencial).map(([tipo, dados]) => (
+                <tr key={tipo} className="hover:bg-gray-50">
+                  <td className="border border-gray-300 p-4 font-bold text-blue-600">
+                    {tipo.toUpperCase()}
+                  </td>
+                  <td className="border border-gray-300 p-4">
+                    <div>
+                      <div className="font-semibold">{dados.descricao}</div>
+                      <div className="text-sm text-gray-600 mt-1">{dados.detalhes}</div>
+                    </div>
+                  </td>
+                  <td className="border border-gray-300 p-4 text-center">
+                    <div className="text-sm">
+                      <div>{dados.area_minima}m² a {dados.area_maxima}m²</div>
+                    </div>
+                  </td>
+                  <td className="border border-gray-300 p-4 text-right font-bold text-lg text-green-600">
+                    R$ {dados.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </td>
+                  <td className="border border-gray-300 p-4 text-center">
+                    <button
+                      onClick={() => setTipoSelecionado(tipo)}
+                      className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                        tipoSelecionado === tipo
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-200 text-gray-700 hover:bg-blue-100'
+                      }`}
+                    >
+                      {tipoSelecionado === tipo ? 'Selecionado' : 'Selecionar'}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        
+        <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
+          <p className="text-sm text-yellow-800">
+            <strong>📅 Referência:</strong> Dezembro 2024 | 
+            <strong> 📍 Região:</strong> Porto Velho-RO | 
+            <strong> 🏛️ Fonte:</strong> Sinduscon-RO
+          </p>
+        </div>
+      </PageCard>
+
+      {/* Calculadora */}
+      {tipoSelecionado && (
+        <PageCard>
+          <h2 className="text-2xl font-bold cp-text-gradient mb-6 flex items-center gap-3">
+            <FaCalculator />
+            Calculadora - {dadosCUBResidencial[tipoSelecionado as keyof typeof dadosCUBResidencial].descricao}
+          </h2>
+          
+          <div className="grid md:grid-cols-2 gap-8">
+            <div>
+              <label className="block text-lg font-semibold text-gray-700 mb-3">
+                Área da construção (m²):
+              </label>
+              <input
+                type="number"
+                value={metragem}
+                onChange={(e) => setMetragem(e.target.value)}
+                placeholder="Ex: 120"
+                className="w-full p-4 border-2 cp-border-figma rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <p className="text-sm text-gray-500 mt-2">
+                Área recomendada: {dadosCUBResidencial[tipoSelecionado as keyof typeof dadosCUBResidencial].area_minima}m² a {dadosCUBResidencial[tipoSelecionado as keyof typeof dadosCUBResidencial].area_maxima}m²
+              </p>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-semibold text-gray-700 mb-3">
+                Estimativa de Custo Total:
+              </h3>
+              {metragem && parseFloat(metragem) > 0 ? (
+                <div className="p-6 bg-green-50 border border-green-200 rounded-xl">
+                  <div className="text-3xl font-bold text-green-600 mb-2">
+                    R$ {calcularCusto(dadosCUBResidencial[tipoSelecionado as keyof typeof dadosCUBResidencial].valor)?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </div>
+                  <div className="text-sm text-green-700">
+                    {metragem}m² × R$ {dadosCUBResidencial[tipoSelecionado as keyof typeof dadosCUBResidencial].valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}/m²
+                  </div>
+                </div>
+              ) : (
+                <p className="text-gray-500 italic">
+                  Digite a área para ver a estimativa
+                </p>
+              )}
+            </div>
+          </div>
+        </PageCard>
+      )}
+
+      {/* Links Relacionados */}
+      <PageCard>
+        <h2 className="text-2xl font-bold cp-text-gradient mb-6 text-center">
+          Explore Outros Tipos
+        </h2>
+        
+        <div className="grid md:grid-cols-2 gap-6">
+          <Link 
+            href="/precos-cub/comercial"
+            className="group p-6 border-2 border-gray-200 rounded-2xl hover:border-blue-500 hover:shadow-lg transition-all duration-300"
+          >
+            <FaHome className="text-3xl text-green-600 mb-4 group-hover:scale-110 transition-transform" />
+            <h3 className="font-bold text-lg mb-2">CUB Comercial</h3>
+            <p className="text-gray-600 text-sm">
+              Valores para estabelecimentos comerciais
+            </p>
+          </Link>
+
+          <Link 
+            href="/precos-cub/detalhados"
+            className="group p-6 border-2 border-gray-200 rounded-2xl hover:border-blue-500 hover:shadow-lg transition-all duration-300"
+          >
+            <FaInfoCircle className="text-3xl text-purple-600 mb-4 group-hover:scale-110 transition-transform" />
+            <h3 className="font-bold text-lg mb-2">Análise Detalhada</h3>
+            <p className="text-gray-600 text-sm">
+              Histórico e comparativos de preços
+            </p>
           </Link>
         </div>
-
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-green-700 mb-2">🏠 Calculadora CUB Residencial</h1>
-          <p className="text-gray-600">Calcule o custo de construção baseado no CUB oficial do Sinduscon-RO</p>
-        </div>
-
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Controles */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-24">
-              <h3 className="text-xl font-bold text-green-700 mb-6">⚙️ Configurações</h3>
-              
-              {/* Tipo de Valor */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de Valor</label>
-                <select 
-                  value={tipoValor} 
-                  onChange={(e) => setTipoValor(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                >
-                  <option value="desonerado">Desonerado</option>
-                  <option value="onerado">Onerado</option>
-                </select>
-              </div>
-
-              {/* Padrão Construtivo */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Padrão Construtivo</label>
-                <select 
-                  value={padrao} 
-                  onChange={(e) => setPadrao(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                >
-                  <option value="popular">Popular</option>
-                  <option value="normal">Normal</option>
-                  <option value="alto">Alto Padrão</option>
-                </select>
-              </div>
-
-              {/* Área */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Área (m²)</label>
-                <input 
-                  type="number" 
-                  value={area} 
-                  onChange={(e) => setArea(Number(e.target.value))}
-                  min="1"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Resultados */}
-          <div className="lg:col-span-2">
-            {/* Cards Resumo */}
-            <div className="grid md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-                <div className="text-2xl mb-2">📊</div>
-                <div className="text-sm text-gray-600 mb-1">CUB Global</div>
-                <div className="text-2xl font-bold text-green-600">{formatarMoeda(cubAtual)}</div>
-                <div className="text-xs text-gray-500">por m²</div>
-              </div>
-
-              <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-                <div className="text-2xl mb-2">💰</div>
-                <div className="text-sm text-gray-600 mb-1">Custo Total</div>
-                <div className="text-2xl font-bold text-blue-600">{formatarMoeda(custoTotal)}</div>
-                <div className="text-xs text-gray-500">{area}m²</div>
-              </div>
-
-              <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-                <div className="text-2xl mb-2">📈</div>
-                <div className="text-sm text-gray-600 mb-1">Variação</div>
-                <div className="text-2xl font-bold text-green-500">+2,3%</div>
-                <div className="text-xs text-gray-500">vs mês anterior</div>
-              </div>
-            </div>
-
-            {/* Tabela Detalhada */}
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h3 className="text-xl font-bold text-gray-800 mb-6">📋 Detalhamento por Serviço</h3>
-              
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="text-left py-3 px-4 font-medium text-gray-700">Serviço</th>
-                      <th className="text-center py-3 px-4 font-medium text-gray-700">%</th>
-                      <th className="text-right py-3 px-4 font-medium text-gray-700">Valor/m²</th>
-                      <th className="text-right py-3 px-4 font-medium text-gray-700">Total ({area}m²)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {servicos.map((servico, index) => {
-                      const valorM2 = (cubAtual * servico.percentual) / 100;
-                      const valorTotal = valorM2 * area;
-                      
-                      return (
-                        <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
-                          <td className="py-4 px-4">
-                            <div className="flex items-center">
-                              <span className="text-2xl mr-3">{servico.emoji}</span>
-                              <span className="font-medium">{servico.nome}</span>
-                            </div>
-                          </td>
-                          <td className="py-4 px-4 text-center">
-                            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm font-medium">
-                              {servico.percentual}%
-                            </span>
-                          </td>
-                          <td className="py-4 px-4 text-right font-medium text-gray-800">
-                            {formatarMoeda(valorM2)}
-                          </td>
-                          <td className="py-4 px-4 text-right font-bold text-green-600">
-                            {formatarMoeda(valorTotal)}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                  <tfoot>
-                    <tr className="border-t-2 border-gray-300 bg-gray-50">
-                      <td className="py-4 px-4 font-bold text-gray-800">TOTAL GERAL</td>
-                      <td className="py-4 px-4 text-center font-bold">77%*</td>
-                      <td className="py-4 px-4 text-right font-bold text-gray-800">{formatarMoeda(cubAtual)}</td>
-                      <td className="py-4 px-4 text-right font-bold text-green-600">{formatarMoeda(custoTotal)}</td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-              
-              <div className="mt-4 text-xs text-gray-500">
-                * Os 23% restantes incluem estrutura, fundação e outros serviços não detalhados individualmente.
-              </div>
-            </div>
-
-            {/* Informações Importantes */}
-            <div className="mt-8 bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg">
-              <div className="flex items-start">
-                <div className="text-yellow-400 mr-3 text-xl">⚠️</div>
-                <div>
-                  <h4 className="text-lg font-bold text-yellow-800 mb-2">Importante</h4>
-                  <ul className="text-yellow-700 text-sm space-y-1">
-                    <li>• Valores baseados no CUB oficial do Sinduscon-RO (Maio 2025)</li>
-                    <li>• Não inclui: fundações especiais, elevadores, projetos, lucro do construtor</li>
-                    <li>• Percentuais são estimativas baseadas em composições típicas</li>
-                    <li>• Para orçamentos precisos, consulte um profissional qualificado</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      </PageCard>
+    </PageLayout>
   );
-} 
+}
