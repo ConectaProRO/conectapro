@@ -365,10 +365,7 @@ export default function RootLayout({
                           <span className="text-lg">📄</span>
                           <span className="text-gray-700 hover:text-blue-600">Gerador de Contrato</span>
                         </Link>
-                        <Link href="/orcamento-3d" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
-                          <span className="text-lg">🎯</span>
-                          <span className="text-gray-700 hover:text-blue-600">Orçamento 3D</span>
-                        </Link>
+                        
                         <Link href="/blog" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
                           <span className="text-lg">📝</span>
                           <span className="text-gray-700 hover:text-blue-600">Blog</span>
