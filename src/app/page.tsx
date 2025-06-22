@@ -129,10 +129,10 @@ export default function Home() {
                 <div className="text-8xl mb-8 group-hover:scale-110 transition-transform duration-300">
                   🧮
                 </div>
-                <h3 className="text-4xl font-black mb-6 text-white leading-tight tracking-wide">
+                <h3 className="text-4xl font-black mb-6 text-white leading-tight tracking-wide drop-shadow-lg">
                   CALCULADORA DE SERVIÇOS
                 </h3>
-                <p className="text-white text-2xl font-semibold mb-8 leading-relaxed opacity-90">
+                <p className="text-white text-2xl font-semibold mb-8 leading-relaxed opacity-95 drop-shadow-md">
                   Calcule materiais para sua obra
                 </p>
                 <div className="bg-yellow-400 text-blue-900 px-10 py-5 rounded-2xl font-black text-xl group-hover:bg-yellow-300 transition-colors duration-300 flex items-center justify-center gap-3 shadow-xl">
@@ -149,10 +149,10 @@ export default function Home() {
                 <div className="text-8xl mb-8 group-hover:scale-110 transition-transform duration-300">
                   📊
                 </div>
-                <h3 className="text-4xl font-black mb-6 text-white leading-tight tracking-wide">
+                <h3 className="text-4xl font-black mb-6 text-white leading-tight tracking-wide drop-shadow-lg">
                   CUB / SINDUSCON
                 </h3>
-                <p className="text-white text-2xl font-semibold mb-8 leading-relaxed opacity-90">
+                <p className="text-white text-2xl font-semibold mb-8 leading-relaxed opacity-95 drop-shadow-md">
                   Preços oficiais por metro quadrado
                 </p>
                 <div className="bg-yellow-400 text-blue-900 px-10 py-5 rounded-2xl font-black text-xl group-hover:bg-yellow-300 transition-colors duration-300 flex items-center justify-center gap-3 shadow-xl">

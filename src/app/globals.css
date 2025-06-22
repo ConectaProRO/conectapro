@@ -388,3 +388,45 @@ textarea:focus-visible {
 }
 
 /* === FIM MELHORIAS MOBILE ===*/
+
+/* === MELHORIAS DE CONTRASTE PARA CARDS === */
+/* Garantir melhor legibilidade em cards com fundo azul */
+.bg-blue-600 h3,
+.bg-blue-700 h3,
+.bg-blue-800 h3,
+.bg-gradient-to-br h3,
+.bg-gradient-to-r h3 {
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+  font-weight: 900 !important;
+}
+
+.bg-blue-600 p,
+.bg-blue-700 p,
+.bg-blue-800 p,
+.bg-gradient-to-br p,
+.bg-gradient-to-r p {
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Cards com fundo semi-transparente */
+.bg-white.bg-opacity-15 h3,
+.bg-white.bg-opacity-20 h3 {
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
+  color: white !important;
+  font-weight: 900 !important;
+}
+
+.bg-white.bg-opacity-15 p,
+.bg-white.bg-opacity-20 p {
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) !important;
+  color: white !important;
+}
+
+/* Botões com melhor contraste */
+.bg-yellow-400 {
+  color: #1e3a8a !important; /* Azul muito escuro para máximo contraste */
+  font-weight: 900 !important;
+  text-shadow: none !important;
+}
+
+/* === FIM MELHORIAS DE CONTRASTE ===*/
