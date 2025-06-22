@@ -11,7 +11,7 @@ const postsBlog = [
     resumo: "Descubra a origem da ConectaPro: nasceu da experiência real em obras, da necessidade de profissionais e da falta de transparência no mercado da construção civil em Porto Velho.",
     data: "22 de Janeiro, 2025",
     categoria: "História",
-    imagem: "/conectapro.png",
+    imagem: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400&h=200&fit=crop&crop=center",
     slug: "como-surgiu-a-conectapro",
     tempo: "5 min de leitura"
   },
@@ -21,7 +21,7 @@ const postsBlog = [
     resumo: "Guia completo sobre a Tabela SINAPI: o que é, como funciona e como usar para criar orçamentos precisos e competitivos na construção civil.",
     data: "20 de Janeiro, 2025",
     categoria: "Orçamentos",
-    imagem: "/conectapro.png",
+    imagem: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=200&fit=crop&crop=center",
     slug: "o-que-e-tabela-sinapi",
     tempo: "8 min de leitura"
   },
@@ -31,7 +31,7 @@ const postsBlog = [
     resumo: "Estratégias práticas para aumentar sua carteira de clientes: desde o marketing pessoal até a qualidade no atendimento.",
     data: "18 de Janeiro, 2025",
     categoria: "Dicas",
-    imagem: "/conectapro.png",
+    imagem: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=200&fit=crop&crop=center",
     slug: "dicas-conseguir-mais-clientes",
     tempo: "6 min de leitura"
   },
@@ -41,7 +41,7 @@ const postsBlog = [
     resumo: "Análise completa do CUB (Custo Unitário Básico) e como ele impacta os preços da construção civil em Porto Velho e região.",
     data: "15 de Janeiro, 2025",
     categoria: "Mercado",
-    imagem: "/conectapro.png",
+    imagem: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=200&fit=crop&crop=center",
     slug: "cub-sinduscon-2025",
     tempo: "10 min de leitura"
   }
@@ -61,6 +61,27 @@ export default function BlogConectaProPage() {
       title="📝 Blog ConectaPro"
       subtitle="Dicas, novidades e conhecimento para profissionais da construção"
     >
+      {/* Navegação Rápida */}
+      <PageCard className="mb-6">
+        <div className="flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Voltar ao Início
+          </Link>
+          
+          <div className="flex items-center gap-4">
+            <Link href="/precos-cub" className="text-blue-600 hover:text-blue-800 transition-colors">
+              📊 Preços CUB
+            </Link>
+            <Link href="/calculadoras" className="text-blue-600 hover:text-blue-800 transition-colors">
+              🧮 Calculadoras
+            </Link>
+          </div>
+        </div>
+      </PageCard>
+
       {/* Filtros de Categoria */}
       <PageCard>
         <div className="text-center mb-8">

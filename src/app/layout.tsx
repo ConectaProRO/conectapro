@@ -326,6 +326,63 @@ export default function RootLayout({
                 </Link>
               </nav>
 
+              {/* Botões de ação rápida - Desktop */}
+              <div className="hidden md:flex items-center gap-3">
+                {/* Ícone de navegação completa */}
+                <div className="relative group">
+                  <button className="text-white hover:text-blue-100 p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-all duration-300">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    </svg>
+                  </button>
+                  
+                  {/* Dropdown menu */}
+                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border border-gray-200">
+                    <div className="p-4">
+                      <h3 className="font-bold text-gray-900 mb-3">Todas as Páginas</h3>
+                      <div className="grid grid-cols-1 gap-2">
+                        <Link href="/" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                          <span className="text-lg">🏠</span>
+                          <span className="text-gray-700 hover:text-blue-600">Início</span>
+                        </Link>
+                        <Link href="/buscar-profissional" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                          <span className="text-lg">🔍</span>
+                          <span className="text-gray-700 hover:text-blue-600">Buscar Profissionais</span>
+                        </Link>
+                        <Link href="/cadastro-profissional" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                          <span className="text-lg">👷</span>
+                          <span className="text-gray-700 hover:text-blue-600">Cadastro Profissional</span>
+                        </Link>
+                        <Link href="/calculadoras" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                          <span className="text-lg">🧮</span>
+                          <span className="text-gray-700 hover:text-blue-600">Calculadoras</span>
+                        </Link>
+                        <Link href="/precos-cub" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                          <span className="text-lg">💰</span>
+                          <span className="text-gray-700 hover:text-blue-600">Preços CUB</span>
+                        </Link>
+                        <Link href="/gerador-contrato" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                          <span className="text-lg">📄</span>
+                          <span className="text-gray-700 hover:text-blue-600">Gerador de Contrato</span>
+                        </Link>
+                        <Link href="/orcamento-3d" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                          <span className="text-lg">🎯</span>
+                          <span className="text-gray-700 hover:text-blue-600">Orçamento 3D</span>
+                        </Link>
+                        <Link href="/blog" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                          <span className="text-lg">📝</span>
+                          <span className="text-gray-700 hover:text-blue-600">Blog</span>
+                        </Link>
+                        <Link href="/sobre" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                          <span className="text-lg">ℹ️</span>
+                          <span className="text-gray-700 hover:text-blue-600">Sobre</span>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Menu Mobile */}
               <MobileMenu />
             </div>

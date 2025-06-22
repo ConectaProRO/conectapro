@@ -10,6 +10,10 @@ export default function MobileMenu() {
     setIsOpen(!isOpen);
   };
 
+  const closeMenu = () => {
+    setIsOpen(false);
+  };
+
   // Fechar menu ao clicar fora ou pressionar ESC
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -41,6 +45,18 @@ export default function MobileMenu() {
     };
   }, [isOpen]);
 
+  const menuItems = [
+    { href: "/", icon: "🏠", title: "Início", description: "Página principal" },
+    { href: "/buscar-profissional", icon: "🔍", title: "Buscar Profissionais", description: "Encontre especialistas" },
+    { href: "/cadastro-profissional", icon: "👷", title: "Cadastrar-se", description: "Ofereça seus serviços" },
+    { href: "/calculadoras", icon: "🧮", title: "Calculadoras", description: "Ferramentas de cálculo" },
+    { href: "/precos-cub", icon: "💰", title: "Preços CUB", description: "Custos da construção" },
+    { href: "/gerador-contrato", icon: "📄", title: "Gerador de Contrato", description: "Criar contratos" },
+    { href: "/orcamento-3d", icon: "🎯", title: "Orçamento 3D", description: "Orçamentos avançados" },
+    { href: "/blog", icon: "📝", title: "Blog", description: "Artigos e dicas" },
+    { href: "/sobre", icon: "ℹ️", title: "Sobre", description: "Conheça a ConectaPro" }
+  ];
+
   return (
     <div className="md:hidden mobile-menu-container">
       {/* Botão Hamburger */}
@@ -68,140 +84,85 @@ export default function MobileMenu() {
       {isOpen && (
         <div 
           className="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300"
-          onClick={() => setIsOpen(false)}
+          onClick={closeMenu}
         />
       )}
 
-      {/* Menu Mobile Dropdown */}
+      {/* Menu Mobile Fullscreen */}
       <div className={`
-        fixed top-16 left-0 right-0 z-50 
+        fixed inset-0 z-50 
         bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 
-        shadow-2xl border-t border-blue-500 border-opacity-30
         transform transition-all duration-300 ease-in-out
-        ${isOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}
+        ${isOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}
       `}>
-        <div className="max-w-7xl mx-auto px-5 py-6">
-          {/* Título do Menu */}
-          <div className="text-center mb-6">
-            <h2 className="text-white font-bold text-lg">Navegação</h2>
-            <div className="w-16 h-0.5 bg-white bg-opacity-50 mx-auto mt-2"></div>
-          </div>
-
-          {/* Links principais */}
-          <div className="grid grid-cols-1 gap-3 mb-6">
-            <Link 
-              href="/" 
-              className="group flex items-center gap-4 text-white hover:text-blue-100 font-medium px-4 py-4 rounded-xl transition-all duration-300 hover:bg-white hover:bg-opacity-20 hover:transform hover:scale-105"
-              onClick={() => setIsOpen(false)}
-            >
-              <span className="text-2xl">🏠</span>
-              <div>
-                <div className="font-semibold">Início</div>
-                <div className="text-blue-100 text-sm opacity-80">Página principal</div>
-              </div>
-            </Link>
-
-            <Link 
-              href="/buscar-profissional" 
-              className="group flex items-center gap-4 text-white hover:text-blue-100 font-medium px-4 py-4 rounded-xl transition-all duration-300 hover:bg-white hover:bg-opacity-20 hover:transform hover:scale-105"
-              onClick={() => setIsOpen(false)}
-            >
-              <span className="text-2xl">🔍</span>
-              <div>
-                <div className="font-semibold">Buscar Profissionais</div>
-                <div className="text-blue-100 text-sm opacity-80">Encontre especialistas</div>
-              </div>
-            </Link>
-
-            <Link 
-              href="/cadastro-profissional" 
-              className="group flex items-center gap-4 text-white hover:text-blue-100 font-medium px-4 py-4 rounded-xl transition-all duration-300 hover:bg-white hover:bg-opacity-20 hover:transform hover:scale-105"
-              onClick={() => setIsOpen(false)}
-            >
-              <span className="text-2xl">👷</span>
-              <div>
-                <div className="font-semibold">Cadastrar-se</div>
-                <div className="text-blue-100 text-sm opacity-80">Ofereça seus serviços</div>
-              </div>
-            </Link>
-          </div>
-
-          {/* Divisor */}
-          <div className="border-t border-white border-opacity-20 my-6"></div>
-
-          {/* Ferramentas */}
-          <div className="mb-6">
-            <h3 className="text-white font-semibold text-sm uppercase tracking-wide mb-3 opacity-80">Ferramentas</h3>
-            <div className="grid grid-cols-1 gap-2">
-              <Link 
-                href="/calculadoras" 
-                className="flex items-center gap-3 text-white hover:text-blue-100 font-medium px-4 py-3 rounded-xl transition-all duration-300 hover:bg-white hover:bg-opacity-20"
-                onClick={() => setIsOpen(false)}
-              >
-                <span className="text-xl">🧮</span>
-                <span>Calculadoras</span>
-              </Link>
-
-              <Link 
-                href="/precos-cub" 
-                className="flex items-center gap-3 text-white hover:text-blue-100 font-medium px-4 py-3 rounded-xl transition-all duration-300 hover:bg-white hover:bg-opacity-20"
-                onClick={() => setIsOpen(false)}
-              >
-                <span className="text-xl">💰</span>
-                <span>Preços CUB</span>
-              </Link>
-
-              <Link 
-                href="/gerador-contrato" 
-                className="flex items-center gap-3 text-white hover:text-blue-100 font-medium px-4 py-3 rounded-xl transition-all duration-300 hover:bg-white hover:bg-opacity-20"
-                onClick={() => setIsOpen(false)}
-              >
-                <span className="text-xl">📄</span>
-                <span>Gerador de Contrato</span>
-              </Link>
-
-              <Link 
-                href="/orcamento-3d" 
-                className="flex items-center gap-3 text-white hover:text-blue-100 font-medium px-4 py-3 rounded-xl transition-all duration-300 hover:bg-white hover:bg-opacity-20"
-                onClick={() => setIsOpen(false)}
-              >
-                <span className="text-xl">🎯</span>
-                <span>Orçamento 3D</span>
-              </Link>
+        <div className="h-full overflow-y-auto">
+          {/* Header do Menu */}
+          <div className="flex items-center justify-between p-6 border-b border-white border-opacity-20">
+            <div className="text-white">
+              <h2 className="text-xl font-bold">ConectaPro</h2>
+              <p className="text-blue-100 text-sm">Navegação</p>
             </div>
+            <button 
+              onClick={closeMenu}
+              className="text-white hover:text-blue-100 p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-all duration-300"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
 
-          {/* Divisor */}
-          <div className="border-t border-white border-opacity-20 my-6"></div>
-
-          {/* Links secundários */}
-          <div className="grid grid-cols-2 gap-3">
-            <Link 
-              href="/blog" 
-              className="flex items-center justify-center gap-2 bg-white text-blue-600 font-semibold px-4 py-3 rounded-xl transition-all duration-300 hover:bg-blue-50 hover:transform hover:scale-105"
-              onClick={() => setIsOpen(false)}
-            >
-              <span className="text-lg">📝</span>
-              <span>Blog</span>
-            </Link>
-
-            <Link 
-              href="/sobre" 
-              className="flex items-center justify-center gap-2 text-white hover:text-blue-100 font-medium px-4 py-3 rounded-xl transition-all duration-300 hover:bg-white hover:bg-opacity-20"
-              onClick={() => setIsOpen(false)}
-            >
-              <span className="text-lg">ℹ️</span>
-              <span>Sobre</span>
-            </Link>
-          </div>
-
-          {/* Informações de contato */}
-          <div className="mt-6 pt-6 border-t border-white border-opacity-20 text-center">
-            <div className="text-white text-sm opacity-80 mb-2">
-              📍 Porto Velho - RO
+          {/* Links do Menu */}
+          <div className="p-6">
+            <div className="space-y-2">
+              {menuItems.map((item, index) => (
+                <Link 
+                  key={item.href}
+                  href={item.href} 
+                  className="group flex items-center gap-4 text-white hover:text-blue-100 font-medium p-4 rounded-xl transition-all duration-300 hover:bg-white hover:bg-opacity-20 transform hover:scale-105"
+                  onClick={closeMenu}
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <span className="text-2xl flex-shrink-0">{item.icon}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold truncate">{item.title}</div>
+                    <div className="text-blue-100 text-sm opacity-80 truncate">{item.description}</div>
+                  </div>
+                  <svg className="w-5 h-5 text-blue-100 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              ))}
             </div>
-            <div className="text-white text-sm opacity-80">
-              📞 (69) 99256-1830
+
+            {/* Seção de Contato */}
+            <div className="mt-8 pt-6 border-t border-white border-opacity-20">
+              <h3 className="text-white font-semibold mb-4">Contato</h3>
+              <div className="space-y-2 text-blue-100 text-sm">
+                <div className="flex items-center gap-2">
+                  <span>📍</span>
+                  <span>Porto Velho - RO</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span>📞</span>
+                  <span>(69) 99256-1830</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span>✉️</span>
+                  <span>conectaproro@gmail.com</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Botão de Ação */}
+            <div className="mt-6">
+              <Link 
+                href="/cadastro-profissional"
+                onClick={closeMenu}
+                className="block w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-4 px-6 rounded-xl text-center transition-all duration-300 transform hover:scale-105"
+              >
+                🚀 Cadastrar-se Gratuitamente
+              </Link>
             </div>
           </div>
         </div>
