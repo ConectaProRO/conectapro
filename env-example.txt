@@ -1,5 +1,40 @@
-NEXT_PUBLIC_SUPABASE_URL=https://yugcnpbadwmnqmixlsdc.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl1Z2NucGJhZHdtbnFtaXhsc2RjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA2MTUxNDAsImV4cCI6MjA2NjE5MTE0MH0.UY0bEcYUzy4n0De2DJmQWcHAYigs_drTq17uIo2LxZg
+# 🛡️ ConectaPro - Configuração do Supabase
+# Copie este conteúdo para .env.local e configure suas chaves
 
-# WhatsApp Bot Configuration (opcional)
-ADMIN_WHATSAPP=5569999999999 
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=https://seu-projeto.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sua-chave-anonima-aqui
+
+# WhatsApp API Configuration (opcional - para integração futura)
+WHATSAPP_API_URL=https://sua-api-whatsapp.com
+WHATSAPP_API_TOKEN=seu-token-whatsapp
+
+# Admin Configuration
+ADMIN_PASSWORD=sua-senha-admin-segura
+
+# ======================================
+# 📋 INSTRUÇÕES DE CONFIGURAÇÃO
+# ======================================
+
+# 1. SUPABASE SETUP:
+#    - Acesse: https://supabase.com
+#    - Crie uma conta gratuita
+#    - Crie um novo projeto
+#    - Vá em Settings > API
+#    - Copie a URL e a anon key
+#    - Execute o SQL do arquivo setup-database.sql
+
+# 2. WHATSAPP INTEGRATION:
+#    - Use Evolution API ou Baileys
+#    - Configure webhook para receber mensagens
+#    - Teste com profissionais que enviam áudios
+
+# 3. ADMIN ACCESS:
+#    - Acesse /admin para gerenciar profissionais
+#    - Aprove/rejeite cadastros
+#    - Envie WhatsApp automático
+
+# 4. DADOS DE TESTE:
+#    - O setup-database.sql já inclui 3 profissionais de exemplo
+#    - 1 do site, 2 do WhatsApp
+#    - Perfeito para testar o sistema 
