@@ -88,7 +88,7 @@ export default function BlogConectaProPage() {
       {/* Filtros de Categoria */}
       <PageCard>
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold cp-text-gradient mb-4">
+          <h2 className="text-2xl font-bold text-blue-600 mb-4">
             Explore Nossos Artigos
           </h2>
           <p className="text-gray-600 mb-6">
@@ -103,8 +103,8 @@ export default function BlogConectaProPage() {
                 onClick={() => setCategoriaAtiva(categoria)}
                 className={`px-4 py-2 rounded-full font-medium transition-all duration-300 ${
                   categoriaAtiva === categoria
-                    ? 'cp-button-primary'
-                    : 'cp-button-secondary'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
                 {categoria}
@@ -147,9 +147,9 @@ export default function BlogConectaProPage() {
               
               <div className="pt-4">
                 <Link href={`/blog/${post.slug}`}>
-                  <PageButton variant="primary" className="w-full justify-center">
+                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300">
                     Ler Artigo Completo
-                  </PageButton>
+                  </button>
                 </Link>
               </div>
             </div>
@@ -159,7 +159,7 @@ export default function BlogConectaProPage() {
 
       {/* Seção de Newsletter */}
       <PageCard className="text-center bg-gradient-to-r from-blue-50 to-blue-100">
-        <h3 className="text-2xl font-bold cp-text-gradient mb-4">
+        <h3 className="text-2xl font-bold text-blue-600 mb-4">
           📧 Receba Novidades do Blog
         </h3>
         <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
@@ -173,9 +173,9 @@ export default function BlogConectaProPage() {
             placeholder="Seu melhor e-mail"
             className="flex-1 px-4 py-3 border-2 border-blue-200 rounded-lg focus:outline-none focus:border-blue-500 transition-colors"
           />
-          <PageButton variant="primary">
+          <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300">
             Inscrever-se
-          </PageButton>
+          </button>
         </div>
         
         <p className="text-xs text-gray-500 mt-3">
@@ -185,7 +185,7 @@ export default function BlogConectaProPage() {
 
       {/* Call to Action Final */}
       <PageCard className="text-center">
-        <h3 className="text-2xl font-bold cp-text-gradient mb-4">
+        <h3 className="text-2xl font-bold text-blue-600 mb-4">
           👷 Você é Profissional da Construção?
         </h3>
         <p className="text-gray-600 mb-6">
@@ -194,14 +194,14 @@ export default function BlogConectaProPage() {
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="/cadastro-profissional">
-            <PageButton variant="primary">
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300">
               Cadastrar-se Gratuitamente
-            </PageButton>
+            </button>
           </Link>
           <Link href="/buscar-profissional">
-            <PageButton variant="secondary">
+            <button className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-3 rounded-xl font-semibold transition-all duration-300 border-2 border-gray-300">
               Encontrar Profissionais
-            </PageButton>
+            </button>
           </Link>
         </div>
       </PageCard>
