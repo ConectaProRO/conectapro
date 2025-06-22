@@ -14,39 +14,80 @@ export default function WhatsAppFloatingMenu() {
       icon: <FaUser className="w-5 h-5" />,
       title: "Sou Cliente",
       description: "Quero contratar um profissional",
-      message: "Ola! Sou cliente e gostaria de contratar um profissional atraves da ConectaPro."
+      message: "Olá! Sou cliente e gostaria de contratar um profissional através da ConectaPro."
     },
     {
       id: "profissional",
       icon: <FaTools className="w-5 h-5" />,
       title: "Sou Profissional",
       description: "Quero me cadastrar na plataforma",
-      message: "Ola! Sou profissional da construcao e gostaria de me cadastrar na ConectaPro para oferecer meus servicos."
+      message: "Olá! Sou profissional da construção e gostaria de me cadastrar na ConectaPro para oferecer meus serviços."
     },
     {
       id: "duvidas",
       icon: <FaQuestionCircle className="w-5 h-5" />,
-      title: "Tenho Duvidas",
-      description: "Preciso de ajuda ou informacoes",
-      message: "Ola! Tenho algumas duvidas sobre a ConectaPro e gostaria de conversar."
+      title: "Tenho Dúvidas",
+      description: "Preciso de ajuda ou informações",
+      message: "Olá! Tenho algumas dúvidas sobre a ConectaPro e gostaria de conversar."
     }
   ];
 
-  const handleOptionClick = (message: string) => {
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-    window.open(whatsappUrl, "_blank");
-    setIsOpen(false);
+  const handleOptionClick = (message: string, optionTitle?: string) => {
+    try {
+      console.log("🔍 Debug WhatsApp - Iniciando:", optionTitle || "Contato Direto");
+      console.log("📱 Número:", whatsappNumber);
+      console.log("💬 Mensagem:", message);
+      
+      const encodedMessage = encodeURIComponent(message);
+      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+      
+      console.log("🔗 URL gerada:", whatsappUrl);
+      
+      // Verifica se o navegador suporta window.open
+      if (typeof window !== 'undefined' && window.open) {
+        console.log("✅ window.open disponível, abrindo link...");
+        
+        const newWindow = window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+        
+        if (newWindow) {
+          console.log("✅ Janela aberta com sucesso!");
+        } else {
+          console.warn("⚠️ Popup bloqueado! Tentando alternativa...");
+          // Alternativa: usar location.href
+          window.location.href = whatsappUrl;
+        }
+      } else {
+        console.error("❌ window.open não disponível");
+        // Fallback para dispositivos móveis
+        window.location.href = whatsappUrl;
+      }
+      
+      setIsOpen(false);
+      
+    } catch (error) {
+      console.error("❌ Erro ao abrir WhatsApp:", error);
+      
+      // Fallback: copia o link para o clipboard
+      if (navigator.clipboard) {
+        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+        navigator.clipboard.writeText(whatsappUrl).then(() => {
+          alert("Link do WhatsApp copiado! Cole no navegador para abrir.");
+        });
+      } else {
+        alert(`Erro ao abrir WhatsApp. Tente manualmente: https://wa.me/${whatsappNumber}`);
+      }
+    }
   };
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
+      {/* Menu de opções */}
       {isOpen && (
         <div className="mb-4 space-y-2 animate-fade-in">
           {menuOptions.map((option) => (
             <div
               key={option.id}
-              onClick={() => handleOptionClick(option.message)}
+              onClick={() => handleOptionClick(option.message, option.title)}
               className="bg-white rounded-lg shadow-lg border border-gray-200 p-4 cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:scale-105 max-w-xs"
             >
               <div className="flex items-start gap-3">
@@ -65,8 +106,9 @@ export default function WhatsAppFloatingMenu() {
             </div>
           ))}
           
+          {/* Opção de contato direto */}
           <div
-            onClick={() => handleOptionClick("Ola! Entrei em contato atraves do site ConectaPro.")}
+            onClick={() => handleOptionClick("Olá! Entrei em contato através do site ConectaPro.")}
             className="bg-green-500 text-white rounded-lg shadow-lg p-4 cursor-pointer hover:bg-green-600 transition-all duration-300 transform hover:scale-105 max-w-xs"
           >
             <div className="flex items-center gap-3">
@@ -82,6 +124,7 @@ export default function WhatsAppFloatingMenu() {
         </div>
       )}
 
+      {/* Botão principal do WhatsApp */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 transform hover:scale-110 ${
@@ -98,6 +141,7 @@ export default function WhatsAppFloatingMenu() {
         )}
       </button>
 
+      {/* Pulse animation quando fechado */}
       {!isOpen && (
         <div className="absolute inset-0 w-14 h-14 rounded-full bg-green-500 animate-ping opacity-75"></div>
       )}
