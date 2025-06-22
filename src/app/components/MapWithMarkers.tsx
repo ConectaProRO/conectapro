@@ -52,6 +52,25 @@ function obterServicoPrincipal(nivelServicos: Record<string, string>): string {
   return "Serviços diversos";
 }
 
+function abrirWhatsApp(telefone: string, nome: string) {
+  try {
+    const message = `Olá ${nome}! Vi seu perfil no ConectaPro e gostaria de conversar sobre seus serviços.`;
+    const whatsappUrl = `https://wa.me/55${telefone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+    
+    console.log("🔗 Abrindo WhatsApp do mapa:", whatsappUrl);
+    
+    const newWindow = window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    
+    if (!newWindow) {
+      console.warn("⚠️ Popup bloqueado, redirecionando...");
+      window.location.href = whatsappUrl;
+    }
+  } catch (error) {
+    console.error("❌ Erro ao abrir WhatsApp:", error);
+    alert("Erro ao abrir WhatsApp. Tente novamente.");
+  }
+}
+
 export default function MapWithMarkers() {
   const [profissionais, setProfissionais] = useState<Profissional[]>([]);
   const [carregando, setCarregando] = useState(true);
@@ -128,14 +147,12 @@ export default function MapWithMarkers() {
                 <span className="text-gray-600">🔧 {prof.profissao}</span><br />
                 <span className="text-blue-600 font-medium">{obterServicoPrincipal(prof.nivelServicos)}</span>
                 <div className="mt-2">
-                  <a 
-                    href={`https://wa.me/55${prof.telefone.replace(/\D/g, '')}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-green-600 hover:text-green-800 font-medium text-xs"
+                  <button 
+                    onClick={() => abrirWhatsApp(prof.telefone, prof.nome)}
+                    className="text-green-600 hover:text-green-800 font-medium text-xs bg-green-50 px-2 py-1 rounded cursor-pointer border-none"
                   >
                     💬 Entrar em contato
-                  </a>
+                  </button>
                 </div>
               </div>
             </Popup>

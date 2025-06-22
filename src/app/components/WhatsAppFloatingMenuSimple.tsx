@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { FaWhatsapp, FaTimes, FaUser, FaTools, FaQuestionCircle } from "react-icons/fa";
 
-export default function WhatsAppFloatingMenu() {
+export default function WhatsAppFloatingMenuSimple() {
   const [isOpen, setIsOpen] = useState(false);
 
   const whatsappNumber = "5569993705343";
@@ -48,13 +48,12 @@ export default function WhatsAppFloatingMenu() {
               href={createWhatsAppLink(option.message)}
               target="_blank"
               rel="noopener noreferrer"
-              className="block bg-white rounded-lg shadow-lg border border-gray-200 p-4 hover:shadow-xl transition-all duration-300 transform hover:scale-105 max-w-xs no-underline"
+              className="block bg-white rounded-lg shadow-lg border border-gray-200 p-4 cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:scale-105 max-w-xs text-decoration-none"
               onClick={() => {
-                console.log("🔗 Link WhatsApp clicado:", option.title);
+                console.log("🔗 Link clicado:", option.title);
                 console.log("📱 URL:", createWhatsAppLink(option.message));
                 setIsOpen(false);
               }}
-              style={{ textDecoration: 'none', color: 'inherit' }}
             >
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600">
@@ -77,12 +76,11 @@ export default function WhatsAppFloatingMenu() {
             href={createWhatsAppLink("Olá! Entrei em contato através do site ConectaPro.")}
             target="_blank"
             rel="noopener noreferrer"
-            className="block bg-green-500 text-white rounded-lg shadow-lg p-4 hover:bg-green-600 transition-all duration-300 transform hover:scale-105 max-w-xs no-underline"
+            className="block bg-green-500 text-white rounded-lg shadow-lg p-4 cursor-pointer hover:bg-green-600 transition-all duration-300 transform hover:scale-105 max-w-xs text-decoration-none"
             onClick={() => {
-              console.log("🔗 Contato direto WhatsApp clicado");
+              console.log("🔗 Contato direto clicado");
               setIsOpen(false);
             }}
-            style={{ textDecoration: 'none', color: 'white' }}
           >
             <div className="flex items-center gap-3">
               <FaWhatsapp className="w-6 h-6" />
@@ -135,22 +133,14 @@ export default function WhatsAppFloatingMenu() {
           animation: fade-in 0.3s ease-out;
         }
         
-        .no-underline {
+        a {
           text-decoration: none !important;
         }
         
-        .no-underline:hover {
-          text-decoration: none !important;
-        }
-        
-        .no-underline:visited {
-          text-decoration: none !important;
-        }
-        
-        .no-underline:active {
+        a:hover {
           text-decoration: none !important;
         }
       `}</style>
     </div>
   );
-}
+} 

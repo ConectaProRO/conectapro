@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Links WhatsApp - ConectaPro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2563eb;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+        }
+        .test-button {
+            display: inline-block;
+            background-color: #25d366;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .test-button:hover {
+            background-color: #128c7e;
+        }
+        .debug-info {
+            background-color: #f3f4f6;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .error {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        .warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Teste de Links WhatsApp - ConectaPro</h1>
+        
+        <div class="test-section">
+            <h3>📱 Teste 1: Links Diretos</h3>
+            <p>Clique nos botões abaixo para testar os links diretos do WhatsApp:</p>
+            
+            <a href="https://wa.me/5569993705343?text=Olá! Sou cliente e gostaria de contratar um profissional através da ConectaPro." 
+               target="_blank" class="test-button">
+                ✅ Sou Cliente
+            </a>
+            
+            <a href="https://wa.me/5569993705343?text=Olá! Sou profissional da construção e gostaria de me cadastrar na ConectaPro." 
+               target="_blank" class="test-button">
+                🔧 Sou Profissional
+            </a>
+            
+            <a href="https://wa.me/5569993705343?text=Olá! Tenho dúvidas sobre a ConectaPro." 
+               target="_blank" class="test-button">
+                ❓ Tenho Dúvidas
+            </a>
+            
+            <div id="direct-status" class="status"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 Teste 2: JavaScript com window.open</h3>
+            <p>Teste usando JavaScript (mesmo método do site):</p>
+            
+            <button onclick="testarWhatsApp('cliente')" class="test-button">
+                JS - Sou Cliente
+            </button>
+            
+            <button onclick="testarWhatsApp('profissional')" class="test-button">
+                JS - Sou Profissional
+            </button>
+            
+            <button onclick="testarWhatsApp('duvidas')" class="test-button">
+                JS - Tenho Dúvidas
+            </button>
+            
+            <div id="js-status" class="status"></div>
+            <div id="debug-info" class="debug-info" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 Teste 3: Diagnóstico do Navegador</h3>
+            <button onclick="diagnosticar()" class="test-button">
+                🔍 Executar Diagnóstico
+            </button>
+            <div id="diagnostic-info" class="debug-info" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 Instruções de Teste</h3>
+            <ol>
+                <li><strong>Teste os links diretos</strong> - Se funcionam, o problema não é com os URLs</li>
+                <li><strong>Teste o JavaScript</strong> - Se não funciona, pode ser popup blocker</li>
+                <li><strong>Execute o diagnóstico</strong> - Para ver configurações do navegador</li>
+                <li><strong>Abra o console</strong> (F12) para ver logs detalhados</li>
+            </ol>
+            
+            <h4>✅ Se os links funcionarem aqui:</h4>
+            <p>O problema pode estar no site principal. Verifique o console para erros.</p>
+            
+            <h4>❌ Se não funcionarem:</h4>
+            <ul>
+                <li>WhatsApp não está instalado</li>
+                <li>Navegador bloqueia popups</li>
+                <li>Problema de conectividade</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function testarWhatsApp(tipo) {
+            const numero = "5569993705343";
+            const mensagens = {
+                cliente: "Olá! Sou cliente e gostaria de contratar um profissional através da ConectaPro.",
+                profissional: "Olá! Sou profissional da construção e gostaria de me cadastrar na ConectaPro.",
+                duvidas: "Olá! Tenho dúvidas sobre a ConectaPro e gostaria de conversar."
+            };
+            
+            const message = mensagens[tipo];
+            const debugDiv = document.getElementById('debug-info');
+            const statusDiv = document.getElementById('js-status');
+            
+            try {
+                console.log("🔍 Teste WhatsApp iniciado:", tipo);
+                console.log("📱 Número:", numero);
+                console.log("💬 Mensagem:", message);
+                
+                const encodedMessage = encodeURIComponent(message);
+                const whatsappUrl = `https://wa.me/${numero}?text=${encodedMessage}`;
+                
+                console.log("🔗 URL gerada:", whatsappUrl);
+                
+                debugDiv.style.display = 'block';
+                debugDiv.innerHTML = `
+                    <strong>Debug Info:</strong><br>
+                    Tipo: ${tipo}<br>
+                    Número: ${numero}<br>
+                    URL: ${whatsappUrl}<br>
+                    Timestamp: ${new Date().toLocaleTimeString()}
+                `;
+                
+                if (typeof window !== 'undefined' && window.open) {
+                    console.log("✅ window.open disponível");
+                    
+                    const newWindow = window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+                    
+                    if (newWindow) {
+                        console.log("✅ Janela aberta com sucesso!");
+                        statusDiv.className = 'status success';
+                        statusDiv.textContent = '✅ Link aberto com sucesso!';
+                    } else {
+                        console.warn("⚠️ Popup bloqueado!");
+                        statusDiv.className = 'status warning';
+                        statusDiv.textContent = '⚠️ Popup bloqueado! Redirecionando...';
+                        window.location.href = whatsappUrl;
+                    }
+                } else {
+                    console.error("❌ window.open não disponível");
+                    statusDiv.className = 'status error';
+                    statusDiv.textContent = '❌ window.open não disponível';
+                    window.location.href = whatsappUrl;
+                }
+                
+            } catch (error) {
+                console.error("❌ Erro:", error);
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ Erro: ' + error.message;
+            }
+        }
+        
+        function diagnosticar() {
+            const diagnosticDiv = document.getElementById('diagnostic-info');
+            
+            const info = {
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                cookieEnabled: navigator.cookieEnabled,
+                onLine: navigator.onLine,
+                windowOpen: typeof window.open !== 'undefined',
+                clipboard: typeof navigator.clipboard !== 'undefined',
+                popupBlocked: false
+            };
+            
+            // Teste de popup
+            try {
+                const testWindow = window.open('', '_blank', 'width=1,height=1');
+                if (testWindow) {
+                    testWindow.close();
+                    info.popupBlocked = false;
+                } else {
+                    info.popupBlocked = true;
+                }
+            } catch (e) {
+                info.popupBlocked = true;
+            }
+            
+            diagnosticDiv.style.display = 'block';
+            diagnosticDiv.innerHTML = `
+                <strong>Diagnóstico do Navegador:</strong><br>
+                User Agent: ${info.userAgent}<br>
+                Plataforma: ${info.platform}<br>
+                Idioma: ${info.language}<br>
+                Cookies: ${info.cookieEnabled ? '✅' : '❌'}<br>
+                Online: ${info.onLine ? '✅' : '❌'}<br>
+                window.open: ${info.windowOpen ? '✅' : '❌'}<br>
+                Clipboard API: ${info.clipboard ? '✅' : '❌'}<br>
+                Popup Bloqueado: ${info.popupBlocked ? '❌ Sim' : '✅ Não'}<br>
+                Timestamp: ${new Date().toLocaleString()}
+            `;
+            
+            console.log("🔍 Diagnóstico completo:", info);
+        }
+        
+        // Testa automaticamente ao carregar
+        window.addEventListener('load', function() {
+            console.log("🧪 Página de teste carregada");
+            console.log("📱 Número do WhatsApp: 5569993705343");
+            console.log("🌐 Site: ConectaPro");
+        });
+    </script>
+</body>
+</html> 
