@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import PageLayout, { PageCard, PageButton } from "../../components/PageLayout";
 
@@ -11,7 +10,8 @@ const postsBlog = [
     resumo: "Descubra a origem da ConectaPro: nasceu da experiência real em obras, da necessidade de profissionais e da falta de transparência no mercado da construção civil em Porto Velho.",
     data: "22 de Janeiro, 2025",
     categoria: "História",
-    imagem: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400&h=200&fit=crop&crop=center",
+    icone: "🏗️",
+    cor: "from-blue-500 to-blue-600",
     slug: "como-surgiu-a-conectapro",
     tempo: "5 min de leitura"
   },
@@ -21,7 +21,8 @@ const postsBlog = [
     resumo: "Guia completo sobre a Tabela SINAPI: o que é, como funciona e como usar para criar orçamentos precisos e competitivos na construção civil.",
     data: "20 de Janeiro, 2025",
     categoria: "Orçamentos",
-    imagem: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=200&fit=crop&crop=center",
+    icone: "📊",
+    cor: "from-green-500 to-green-600",
     slug: "o-que-e-tabela-sinapi",
     tempo: "8 min de leitura"
   },
@@ -31,7 +32,8 @@ const postsBlog = [
     resumo: "Estratégias práticas para aumentar sua carteira de clientes: desde o marketing pessoal até a qualidade no atendimento.",
     data: "18 de Janeiro, 2025",
     categoria: "Dicas",
-    imagem: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=200&fit=crop&crop=center",
+    icone: "💡",
+    cor: "from-orange-500 to-orange-600",
     slug: "dicas-conseguir-mais-clientes",
     tempo: "6 min de leitura"
   },
@@ -41,7 +43,8 @@ const postsBlog = [
     resumo: "Análise completa do CUB (Custo Unitário Básico) e como ele impacta os preços da construção civil em Porto Velho e região.",
     data: "15 de Janeiro, 2025",
     categoria: "Mercado",
-    imagem: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=200&fit=crop&crop=center",
+    icone: "💰",
+    cor: "from-purple-500 to-purple-600",
     slug: "cub-sinduscon-2025",
     tempo: "10 min de leitura"
   }
@@ -116,17 +119,15 @@ export default function BlogConectaProPage() {
         {postsFiltrados.map((post) => (
           <PageCard key={post.id} className="hover:scale-105 transition-transform duration-300">
             <div className="relative mb-4">
-              <Image
-                src={post.imagem}
-                alt={post.titulo}
-                width={400}
-                height={200}
-                className="w-full h-48 object-cover rounded-lg"
-              />
-              <div className="absolute top-3 left-3">
-                <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                  {post.categoria}
-                </span>
+              <div className={`w-full h-48 bg-gradient-to-br ${post.cor} rounded-lg flex items-center justify-center relative overflow-hidden`}>
+                <div className="text-8xl filter drop-shadow-lg">
+                  {post.icone}
+                </div>
+                <div className="absolute top-3 left-3">
+                  <span className="bg-white bg-opacity-90 text-gray-800 px-3 py-1 rounded-full text-sm font-bold">
+                    {post.categoria}
+                  </span>
+                </div>
               </div>
             </div>
             
