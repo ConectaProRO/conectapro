@@ -146,7 +146,7 @@ export default function MobileMenu() {
                 </div>
                 <div className="flex items-center gap-2">
                   <span>📞</span>
-                  <span>(69) 99256-1830</span>
+                  <span>(69) 99370-5343</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span>✉️</span>

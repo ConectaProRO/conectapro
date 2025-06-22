@@ -211,7 +211,7 @@ export default function Sobre() {
               📍 Atendemos toda a região metropolitana de Porto Velho-RO
             </p>
             <p className="text-gray-500 text-sm mt-2">
-              📞 Dúvidas? Entre em contato: (69) 99256-1830
+              📞 Dúvidas? Entre em contato: (69) 99370-5343
             </p>
           </div>
         </div>

@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Analytics } from '@vercel/analytics/react';
 import MobileMenu from './components/MobileMenu';
+import WhatsAppFloatingMenu from './components/WhatsAppFloatingMenu';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -86,7 +87,7 @@ const schemaOrgData = {
       ],
       "contactPoint": {
         "@type": "ContactPoint",
-        "telephone": "+55-69-99256-1830",
+        "telephone": "+55-69-99370-5343",
         "contactType": "customer service",
         "availableLanguage": "Portuguese"
       },
@@ -198,7 +199,7 @@ const schemaOrgData = {
         "longitude": -63.9039
       },
       "url": "https://conectapro.app",
-      "telephone": "+55-69-99256-1830",
+      "telephone": "+55-69-99370-5343",
       "email": "conectaproro@gmail.com",
       "openingHoursSpecification": {
         "@type": "OpeningHoursSpecification",
@@ -395,6 +396,9 @@ export default function RootLayout({
         
         {/* Conteúdo principal */}
         <main>
+          {/* Menu flutuante do WhatsApp */}
+          <WhatsAppFloatingMenu />
+          
           {children}
         </main>
 
@@ -449,7 +453,7 @@ export default function RootLayout({
                 <h3 className="font-bold mb-4 text-white">Contato</h3>
                 <div className="space-y-2 text-gray-300 text-sm">
                   <p>📍 Porto Velho - RO</p>
-                  <p>📞 (69) 99256-1830</p>
+                  <p>📞 (69) 99370-5343</p>
                   <p>✉️ conectaproro@gmail.com</p>
                 </div>
               </div>
