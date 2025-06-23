@@ -1,4 +1,4 @@
-import { ConversationState, UserSession } from '@/types/whatsapp';
+import { ConversationState, UserSession, RegistrationData } from '@/types/whatsapp';
 import { createClient } from '@supabase/supabase-js';
 
 export class DatabaseService {
@@ -11,7 +11,7 @@ export class DatabaseService {
     this.supabase = createClient(supabaseUrl, supabaseKey);
   }
 
-  async getConversation(phoneNumber: string): Promise<ConversationState | null> {
+  async getSession(phoneNumber: string): Promise<ConversationState | null> {
     try {
       const { data, error } = await this.supabase
         .from('whatsapp_conversations')
@@ -41,12 +41,12 @@ export class DatabaseService {
       return null;
 
     } catch (error) {
-      console.error('❌ Database error in getConversation:', error);
+      console.error('❌ Database error in getSession:', error);
       return null;
     }
   }
 
-  async saveConversation(conversation: ConversationState): Promise<void> {
+  async saveSession(conversation: ConversationState): Promise<void> {
     try {
       const sessionData = {
         phone_number: conversation.phoneNumber,
@@ -98,7 +98,91 @@ export class DatabaseService {
       console.log('✅ Conversation saved successfully for:', conversation.phoneNumber);
 
     } catch (error) {
-      console.error('❌ Database error in saveConversation:', error);
+      console.error('❌ Database error in saveSession:', error);
+      throw error;
+    }
+  }
+
+  async saveRegistration(data: RegistrationData): Promise<void> {
+    try {
+      const registrationPayload = {
+        nome: data.nome,
+        whatsapp_phone: data.whatsapp,
+        profissao: data.profissao,
+        bairro: data.bairro,
+        anos_experiencia: data.anos_experiencia,
+        foto_perfil: data.foto_perfil,
+        servicos: data.servicos,
+        locomocao: data.locomocao,
+        fotos_portfolio: data.galeria_fotos,
+        origem: 'whatsapp-bot'
+      };
+
+      const { error } = await this.supabase
+        .from('profissionais_pendentes')
+        .insert([registrationPayload]);
+
+      if (error) {
+        console.error('❌ Error saving registration:', error);
+        throw error;
+      }
+
+      console.log('✅ Registration saved successfully for:', data.nome);
+
+    } catch (error) {
+       console.error('❌ Database error in saveRegistration:', error);
+       throw error;
+    }
+  }
+
+  async saveJobListing(job: { title: string; price?: string; location?: string; url: string; }): Promise<void> {
+    try {
+      const { error } = await this.supabase
+        .from('olx_jobs')
+        // Use 'upsert' with 'onConflict' to avoid duplicates based on the URL
+        .upsert(
+          {
+            title: job.title,
+            price: job.price,
+            location: job.location,
+            url: job.url,
+          },
+          {
+            onConflict: 'url',
+            ignoreDuplicates: true
+          }
+        );
+
+      if (error) {
+        // Don't throw an error on duplicate conflicts, as it's expected
+        if (error.code === '23505') { // Postgres unique violation
+          console.log(`📎 Job listing already exists: ${job.url}`);
+        } else {
+          console.error('❌ Error saving job listing:', error);
+          throw error;
+        }
+      }
+    } catch (error) {
+      console.error('❌ Database error in saveJobListing:', error);
+      throw error;
+    }
+  }
+
+  async getJobListings(): Promise<any[]> {
+    try {
+      const { data, error } = await this.supabase
+        .from('olx_jobs')
+        .select('*')
+        .order('scraped_at', { ascending: false })
+        .limit(100);
+
+      if (error) {
+        console.error('❌ Error fetching job listings:', error);
+        throw error;
+      }
+      return data || [];
+    } catch (error) {
+      console.error('❌ Database error in getJobListings:', error);
       throw error;
     }
   }

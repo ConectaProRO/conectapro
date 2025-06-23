@@ -8,37 +8,35 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "node server.js",
     "lint": "next lint",
-    "whatsapp-bot": "node whatsapp-bot/cadastro-bot.js",
-    "setup-db": "echo 'Configure Supabase primeiro! Veja CONFIGURACAO_BANCO_SEGURO.md'"
+    "bot": "node server.js"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.50.0",
+    "@supabase/supabase-js": "^2.43.4",
     "@vercel/analytics": "^1.5.0",
     "dotenv": "^16.5.0",
+    "express": "^4.19.2",
     "jspdf": "^3.0.1",
     "leaflet": "^1.9.4",
-    "next": "15.3.4",
+    "next": "^14.2.3",
     "next-pwa": "^5.6.0",
     "node-fetch": "^2.7.0",
-    "qrcode": "^1.5.4",
-    "qrcode-terminal": "^0.12.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-icons": "^5.5.0",
-    "react-leaflet": "^5.0.0",
-    "whatsapp-web.js": "^1.30.0"
+    "react": "^18",
+    "react-dom": "^18",
+    "react-icons": "^5.2.1",
+    "react-leaflet": "^4.2.1",
+    "sharp": "^0.33.4",
+    "twilio": "^5.2.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/leaflet": "^1.9.18",
     "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.3.4",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.3",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

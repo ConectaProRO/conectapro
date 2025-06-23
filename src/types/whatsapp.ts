@@ -19,30 +19,35 @@ export interface ConversationState {
 }
 
 export type ConversationStep = 
-  | 'greeting'
-  | 'name'
-  | 'phone_confirmation'
-  | 'work_type'
-  | 'experience'
-  | 'profile_photo'
-  | 'portfolio_photos'
-  | 'location_confirmation'
-  | 'final_confirmation'
+  | 'start'
+  | 'get_name'
+  | 'get_whatsapp'
+  | 'get_profession'
+  | 'get_neighborhood'
+  | 'get_experience'
+  | 'get_profile_photo'
+  | 'get_services'
+  | 'get_locomotion'
+  | 'get_gallery_photos'
+  | 'finish_registration'
   | 'completed';
 
 // Registration Data Types (matching ConnectaPro form)
 export interface RegistrationData {
   nome?: string;
-  telefone?: string;
+  whatsapp?: string;
+  profissao?: string;
+  bairro?: string;
+  anos_experiencia?: number;
+  foto_perfil?: string;
+  servicos?: string;
+  locomocao?: string;
+  galeria_fotos?: string[];
+  // Legacy fields for compatibility, can be removed later
   email?: string;
-  tipoTrabalho?: string;
-  experiencia?: string;
   cidade?: string;
   estado?: string;
-  fotoPerfil?: string;
-  fotosPortfolio?: string[];
   descricao?: string;
-  servicos?: string[];
 }
 
 // Conversation Response Types
