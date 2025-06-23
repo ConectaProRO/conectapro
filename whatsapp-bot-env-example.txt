@@ -1,0 +1,54 @@
+# WhatsApp Audio Registration Bot - Environment Variables
+# Copy this file to .env.local and fill in your actual values
+
+# Database Configuration (ConnectaPro Supabase)
+NEXT_PUBLIC_SUPABASE_URL=https://yugcnpbadwmnqmixlsdc.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl1Z2NucGJhZHdtbnFtaXhsc2RjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA2MTUxNDAsImV4cCI6MjA2NjE5MTE0MH0.UY0bEcYUzy4n0De2DJmQWcHAYigs_drTq17uIo2LxZg
+
+# WhatsApp Business Cloud API Configuration
+# Get these from Meta Business Manager > WhatsApp Business Account
+WHATSAPP_ACCESS_TOKEN=your_whatsapp_access_token_here
+WHATSAPP_PHONE_NUMBER_ID=your_phone_number_id_here
+WHATSAPP_VERIFY_TOKEN=your_webhook_verify_token_here
+
+# Audio Transcription Service (Choose one)
+# Option 1: OpenAI Whisper API (Recommended)
+OPENAI_API_KEY=sk-your_openai_api_key_here
+
+# Option 2: Google Speech-to-Text (Alternative)
+GOOGLE_CLOUD_PROJECT_ID=your_google_project_id
+GOOGLE_APPLICATION_CREDENTIALS=path_to_service_account_json
+
+# Option 3: Azure Speech Services (Alternative)
+AZURE_SPEECH_KEY=your_azure_speech_key
+AZURE_SPEECH_REGION=your_azure_region
+
+# File Storage Configuration
+# For storing audio files and images from WhatsApp
+AWS_ACCESS_KEY_ID=your_aws_access_key
+AWS_SECRET_ACCESS_KEY=your_aws_secret_key
+AWS_S3_BUCKET=conectapro-whatsapp-media
+AWS_REGION=us-east-1
+
+# Development Settings
+NODE_ENV=development
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Production Settings (for Vercel deployment)
+# NODE_ENV=production
+# NEXT_PUBLIC_APP_URL=https://your-domain.com
+
+# Admin Authentication (for admin dashboard)
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=your_secure_password_here
+
+# Webhook Security
+WEBHOOK_SECRET=your_webhook_secret_for_verification
+
+# Rate Limiting
+RATE_LIMIT_MAX_REQUESTS=100
+RATE_LIMIT_WINDOW_MS=900000
+
+# Logging
+LOG_LEVEL=info
+LOG_FILE_PATH=./logs/whatsapp-bot.log 

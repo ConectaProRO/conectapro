@@ -1,0 +1,21 @@
+{
+  "name": "conectapro-whatsapp-bot",
+  "version": "1.0.0",
+  "description": "Bot WhatsApp para cadastro de profissionais da ConectaPro",
+  "main": "bot-final.js",
+  "scripts": {
+    "start": "node bot-final.js",
+    "dev": "nodemon bot-final.js"
+  },
+  "dependencies": {
+    "whatsapp-web.js": "^1.19.4",
+    "@supabase/supabase-js": "^2.38.0",
+    "qrcode-terminal": "^0.12.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": ["whatsapp", "bot", "conectapro", "construcao"],
+  "author": "ConectaPro",
+  "license": "MIT"
+} 
