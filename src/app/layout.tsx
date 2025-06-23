@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+// import { Geist, Geist_Mono } from "next/font/google"; // Temp remove to fix linter
 import "./globals.css";
 import "leaflet/dist/leaflet.css";
 import Image from "next/image";
 import Link from "next/link";
 import { Analytics } from '@vercel/analytics/react';
 import MobileMenu from './components/MobileMenu';
-import WhatsAppFloatingMenu from './components/WhatsAppFloatingMenu';
+// import WhatsAppFloatingMenu from './components/WhatsAppFloatingMenu';
 
+/*
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -17,6 +18,7 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+*/
 
 export const metadata: Metadata = {
   title: "ConectaPro - Encontre Profissionais da Construção em Porto Velho-RO",
@@ -253,142 +255,40 @@ export default function RootLayout({
         <meta name="geo.position" content="-8.7619;-63.9039" />
         <meta name="ICBM" content="-8.7619, -63.9039" />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        style={{ fontFamily: 'Poppins, sans-serif' }}
-      >
-        {/* Header fixo global premium */}
-        <header className="w-full fixed top-0 left-0 z-50 bg-gradient-to-r from-blue-600 to-blue-700 shadow-xl">
-          <div className="max-w-7xl mx-auto px-5">
+      <body className={`font-sans bg-gray-50 text-gray-800`}>
+        <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
+          <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               {/* Logo */}
-              <Link href="/" className="flex items-center gap-3 hover:scale-105 transition-transform duration-300">
-                <Image 
-                  src="/conectapro.png" 
-                  alt="Logo ConectaPro" 
-                  width={50} 
-                  height={50} 
-                  className="drop-shadow-lg" 
-                />
-                <div className="text-white">
-                  <div className="font-bold text-xl">ConectaPro</div>
-                  <div className="text-blue-100 text-xs">Porto Velho - RO</div>
-                </div>
-              </Link>
-              
-              {/* Navegação Desktop */}
-              <nav className="hidden md:flex items-center gap-6 ml-12">
-                <Link 
-                  href="/" 
-                  className="text-white hover:text-blue-100 font-medium px-4 py-2 rounded-full transition-all duration-300 hover:bg-white hover:bg-opacity-20"
-                >
-                  🏠 Início
+              <div className="flex-shrink-0">
+                <Link href="/" className="flex items-center space-x-2">
+                  <Image
+                    src="/conectapro.png"
+                    alt="ConectaPro Logo"
+                    width={40}
+                    height={40}
+                    priority
+                  />
+                  <span className="text-xl font-bold text-blue-600">ConectaPro</span>
                 </Link>
-                <Link 
-                  href="/buscar-profissional" 
-                  className="text-white hover:text-blue-100 font-medium px-4 py-2 rounded-full transition-all duration-300 hover:bg-white hover:bg-opacity-20"
-                >
-                  🔍 Buscar
-                </Link>
-                <Link 
-                  href="/cadastro-profissional" 
-                  className="text-white hover:text-blue-100 font-medium px-4 py-2 rounded-full transition-all duration-300 hover:bg-white hover:bg-opacity-20"
-                >
-                  👷 Cadastrar
-                </Link>
-                <Link 
-                  href="/calculadoras" 
-                  className="text-white hover:text-blue-100 font-medium px-4 py-2 rounded-full transition-all duration-300 hover:bg-white hover:bg-opacity-20"
-                >
-                  🧮 Calculadoras
-                </Link>
-                <Link 
-                  href="/precos-cub" 
-                  className="text-white hover:text-blue-100 font-medium px-4 py-2 rounded-full transition-all duration-300 hover:bg-white hover:bg-opacity-20"
-                >
-                  💰 Preços CUB
-                </Link>
-                <Link href="/gerador-contrato" 
-                  className="text-white hover:text-blue-100 font-medium px-4 py-2 rounded-full transition-all duration-300 hover:bg-white hover:bg-opacity-20"
-                >
-                  📄 Contrato
-                </Link>
-                <Link 
-                  href="/sobre" 
-                  className="text-white hover:text-blue-100 font-medium px-4 py-2 rounded-full transition-all duration-300 hover:bg-white hover:bg-opacity-20"
-                >
-                  ℹ️ Sobre
-                </Link>
-                <Link 
-                  href="/blog" 
-                  className="bg-white text-blue-600 hover:bg-blue-50 font-semibold px-6 py-2 rounded-full transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5"
-                >
-                  📝 Blog
-                </Link>
-              </nav>
+              </div>
 
-              {/* Botões de ação rápida - Desktop */}
-              <div className="hidden md:flex items-center gap-3">
-                {/* Ícone de navegação completa */}
-                <div className="relative group">
-                  <button className="text-white hover:text-blue-100 p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-all duration-300">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                    </svg>
-                  </button>
-                  
-                  {/* Dropdown menu */}
-                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border border-gray-200">
-                    <div className="p-4">
-                      <h3 className="font-bold text-gray-900 mb-3">Todas as Páginas</h3>
-                      <div className="grid grid-cols-1 gap-2">
-                        <Link href="/" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
-                          <span className="text-lg">🏠</span>
-                          <span className="text-gray-700 hover:text-blue-600">Início</span>
-                        </Link>
-                        <Link href="/buscar-profissional" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
-                          <span className="text-lg">🔍</span>
-                          <span className="text-gray-700 hover:text-blue-600">Buscar Profissionais</span>
-                        </Link>
-                        <Link href="/cadastro-profissional" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
-                          <span className="text-lg">👷</span>
-                          <span className="text-gray-700 hover:text-blue-600">Cadastro Profissional</span>
-                        </Link>
-                        <Link href="/calculadoras" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
-                          <span className="text-lg">🧮</span>
-                          <span className="text-gray-700 hover:text-blue-600">Calculadoras</span>
-                        </Link>
-                        <Link href="/precos-cub" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
-                          <span className="text-lg">💰</span>
-                          <span className="text-gray-700 hover:text-blue-600">Preços CUB</span>
-                        </Link>
-                        <Link href="/gerador-contrato" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
-                          <span className="text-lg">📄</span>
-                          <span className="text-gray-700 hover:text-blue-600">Gerador de Contrato</span>
-                        </Link>
-                        
-                        <Link href="/blog" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
-                          <span className="text-lg">📝</span>
-                          <span className="text-gray-700 hover:text-blue-600">Blog</span>
-                        </Link>
-                                                 <Link href="/sobre" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
-                           <span className="text-lg">ℹ️</span>
-                           <span className="text-gray-700 hover:text-blue-600">Sobre</span>
-                         </Link>
-                         <Link href="/admin" className="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-colors">
-                           <span className="text-lg">⚙️</span>
-                           <span className="text-gray-700 hover:text-blue-600">Admin</span>
-                         </Link>
-                      </div>
-                    </div>
-                  </div>
+              {/* Desktop Menu */}
+              <div className="hidden md:block">
+                <div className="ml-10 flex items-baseline space-x-4">
+                  <Link href="/buscar-profissional" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Buscar Profissional</Link>
+                  <Link href="/cadastro-profissional" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Cadastrar-se</Link>
+                  {/* <Link href="/calculadoras" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Calculadora</Link> */}
+                  <Link href="/blog" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Blog</Link>
                 </div>
               </div>
 
-              {/* Menu Mobile */}
-              <MobileMenu />
+              {/* Mobile Menu Button */}
+              <div className="md:hidden">
+                <MobileMenu />
+              </div>
             </div>
-          </div>
+          </nav>
         </header>
 
         {/* Espaço para header fixo */}
@@ -397,14 +297,14 @@ export default function RootLayout({
         {/* Conteúdo principal */}
         <main>
           {/* Menu flutuante do WhatsApp */}
-          <WhatsAppFloatingMenu />
+          {/* <WhatsAppFloatingMenu /> */}
           
           {children}
         </main>
 
         {/* Footer */}
-        <footer className="bg-gradient-to-r from-gray-800 to-gray-900 text-white py-12 px-5 mt-16">
-          <div className="max-w-6xl mx-auto">
+        <footer className="bg-gray-800 text-white">
+          <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Logo e descrição */}
               <div className="text-center md:text-left">

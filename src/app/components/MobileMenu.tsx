@@ -49,7 +49,7 @@ export default function MobileMenu() {
     { href: "/", icon: "🏠", title: "Início", description: "Página principal" },
     { href: "/buscar-profissional", icon: "🔍", title: "Buscar Profissionais", description: "Encontre especialistas" },
     { href: "/cadastro-profissional", icon: "👷", title: "Cadastrar-se", description: "Ofereça seus serviços" },
-    { href: "/calculadoras", icon: "🧮", title: "Calculadoras", description: "Ferramentas de cálculo" },
+    // { href: "/calculadoras", icon: "🧮", title: "Calculadoras", description: "Ferramentas de cálculo" },
     { href: "/precos-cub", icon: "💰", title: "Preços CUB", description: "Custos da construção" },
     { href: "/gerador-contrato", icon: "📄", title: "Gerador de Contrato", description: "Criar contratos" },
 
