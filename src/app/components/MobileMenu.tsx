@@ -52,10 +52,9 @@ export default function MobileMenu() {
     // { href: "/calculadoras", icon: "🧮", title: "Calculadoras", description: "Ferramentas de cálculo" },
     { href: "/precos-cub", icon: "💰", title: "Preços CUB", description: "Custos da construção" },
     { href: "/gerador-contrato", icon: "📄", title: "Gerador de Contrato", description: "Criar contratos" },
-
     { href: "/blog", icon: "📝", title: "Blog", description: "Artigos e dicas" },
-    { href: "/sobre", icon: "ℹ️", title: "Sobre", description: "Conheça a ConectaPro" },
-    { href: "/admin", icon: "⚙️", title: "Admin", description: "Painel administrativo" }
+    { href: "/sobre", icon: "ℹ️", title: "Sobre", description: "Conheça a ConectaPro" }
+    // { href: "/admin", icon: "⚙️", title: "Admin", description: "Painel administrativo" }
   ];
 
   return (

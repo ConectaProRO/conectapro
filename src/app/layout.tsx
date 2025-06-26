@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Analytics } from '@vercel/analytics/react';
 import MobileMenu from './components/MobileMenu';
-// import WhatsAppFloatingMenu from './components/WhatsAppFloatingMenu';
+import WhatsAppFloatingMenu from "./components/WhatsAppFloatingMenu";
 
 /*
 const geistSans = Geist({
@@ -256,7 +256,7 @@ export default function RootLayout({
         <meta name="ICBM" content="-8.7619, -63.9039" />
       </head>
       <body className={`font-sans bg-gray-50 text-gray-800`}>
-        <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
+        <header className="fixed top-0 left-0 w-full bg-blue-700 shadow-md z-50">
           <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               {/* Logo */}
@@ -269,17 +269,20 @@ export default function RootLayout({
                     height={40}
                     priority
                   />
-                  <span className="text-xl font-bold text-blue-600">ConectaPro</span>
+                  <span className="text-xl font-bold text-white">ConectaPro</span>
                 </Link>
               </div>
 
               {/* Desktop Menu */}
               <div className="hidden md:block">
                 <div className="ml-10 flex items-baseline space-x-4">
-                  <Link href="/buscar-profissional" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Buscar Profissional</Link>
-                  <Link href="/cadastro-profissional" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Cadastrar-se</Link>
-                  {/* <Link href="/calculadoras" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Calculadora</Link> */}
-                  <Link href="/blog" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Blog</Link>
+                  <Link href="/" className="text-white hover:text-yellow-300 px-3 py-2 rounded-md text-lg font-bold flex items-center gap-2"><span>🏠</span>Início</Link>
+                  <Link href="/buscar-profissional" className="text-white hover:text-yellow-300 px-3 py-2 rounded-md text-lg font-bold flex items-center gap-2"><span>🔍</span>Buscar</Link>
+                  <Link href="/cadastro-profissional" className="text-white hover:text-yellow-300 px-3 py-2 rounded-md text-lg font-bold flex items-center gap-2"><span>👷</span>Cadastrar</Link>
+                  <Link href="/precos-cub" className="text-white hover:text-yellow-300 px-3 py-2 rounded-md text-lg font-bold flex items-center gap-2"><span>💰</span>Preços CUB</Link>
+                  <Link href="/gerador-contrato" className="text-white hover:text-yellow-300 px-3 py-2 rounded-md text-lg font-bold flex items-center gap-2"><span>📄</span>Contrato</Link>
+                  <Link href="/sobre" className="text-white hover:text-yellow-300 px-3 py-2 rounded-md text-lg font-bold flex items-center gap-2"><span>🧊</span>Sobre</Link>
+                  <Link href="/blog" className="text-white hover:text-yellow-300 px-3 py-2 rounded-md text-lg font-bold flex items-center gap-2"><span>��</span>Blog</Link>
                 </div>
               </div>
 
@@ -293,6 +296,7 @@ export default function RootLayout({
 
         {/* Espaço para header fixo */}
         <div className="h-16" />
+        <WhatsAppFloatingMenu />
         
         {/* Conteúdo principal */}
         <main>

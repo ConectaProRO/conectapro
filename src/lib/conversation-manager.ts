@@ -1,253 +1,243 @@
-import { 
-  WhatsAppMessage, 
-  ConversationState, 
-  ConversationResponse, 
-  ConversationStep,
-  RegistrationData 
-} from '@/types/whatsapp';
-import { DatabaseService } from './database-service';
-import { WhatsAppService } from './whatsapp-service';
+import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs/promises';
+import path from 'path';
 
-export class ConversationManager {
-  private databaseService: DatabaseService;
-  private whatsappService: WhatsAppService;
-  private conversations: Map<string, ConversationState> = new Map();
+// Interfaces
+interface Message {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  timestamp: Date;
+  metadata?: Record<string, any>;
+}
 
-  constructor() {
-    this.databaseService = new DatabaseService();
-    this.whatsappService = new WhatsAppService();
+interface Conversation {
+  id: string;
+  title: string;
+  messages: Message[];
+  createdAt: Date;
+  updatedAt: Date;
+  userId?: string;
+  tags?: string[];
+  status: 'active' | 'archived' | 'deleted';
+}
+
+interface ConversationSummary {
+  id: string;
+  title: string;
+  lastMessage: string;
+  messageCount: number;
+  updatedAt: Date;
+  tags?: string[];
+  status: string;
+}
+
+class ConversationManager {
+  private conversations: Map<string, Conversation> = new Map();
+  private dataPath: string;
+
+  constructor(dataPath: string = './data') {
+    this.dataPath = dataPath;
+    this.ensureDataDirectory();
+    this.loadConversations();
   }
 
-  async processMessage(message: WhatsAppMessage): Promise<ConversationResponse> {
-    const { phoneNumber, message: messageText, messageType } = message;
-
-    let conversation = await this.getConversation(phoneNumber);
-    if (!conversation) {
-      conversation = this.createNewConversation(phoneNumber);
+  private async ensureDataDirectory(): Promise<void> {
+    try {
+      await fs.access(this.dataPath);
+    } catch {
+      await fs.mkdir(this.dataPath, { recursive: true });
     }
-    
-    conversation.lastActivity = new Date();
+  }
 
-    const response = await this.processStep(conversation, messageText, messageType, message);
+  private getFilePath(conversationId: string): string {
+    return path.join(this.dataPath, `${conversationId}.json`);
+  }
+
+  private async loadConversations(): Promise<void> {
+    try {
+      const files = await fs.readdir(this.dataPath);
+      const jsonFiles = files.filter(file => file.startsWith('conversa-') && file.endsWith('.json'));
+
+      for (const file of jsonFiles) {
+        try {
+          const filePath = path.join(this.dataPath, file);
+          const data = await fs.readFile(filePath, 'utf-8');
+          const conversation: Conversation = JSON.parse(data);
+          
+          // Convert date strings back to Date objects
+          conversation.createdAt = new Date(conversation.createdAt);
+          conversation.updatedAt = new Date(conversation.updatedAt);
+          conversation.messages.forEach(msg => {
+            msg.timestamp = new Date(msg.timestamp);
+          });
+
+          this.conversations.set(conversation.id, conversation);
+        } catch (error) {
+          console.error(`Error loading conversation from ${file}:`, error);
+        }
+      }
+
+      console.log(`Loaded ${this.conversations.size} conversations`);
+    } catch (error) {
+      console.error('Error loading conversations:', error);
+    }
+  }
+
+  private async saveConversation(conversation: Conversation): Promise<void> {
+    try {
+      const filePath = this.getFilePath(conversation.id);
+      await fs.writeFile(filePath, JSON.stringify(conversation, null, 2));
+    } catch (error) {
+      console.error('Error saving conversation:', error);
+      throw error;
+    }
+  }
+
+  private async deleteConversationFile(conversationId: string): Promise<void> {
+    try {
+      const filePath = this.getFilePath(conversationId);
+      await fs.unlink(filePath);
+    } catch (error) {
+      console.error('Error deleting conversation file:', error);
+    }
+  }
+
+  // Public methods
+  async createConversation(title?: string, userId?: string): Promise<Conversation> {
+    const conversation: Conversation = {
+      id: uuidv4(),
+      title: title || 'Nova Conversa',
+      messages: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      userId,
+      tags: [],
+      status: 'active'
+    };
+
+    this.conversations.set(conversation.id, conversation);
+    await this.saveConversation(conversation);
+    
+    return conversation;
+  }
+
+  async getConversation(id: string): Promise<Conversation | null> {
+    return this.conversations.get(id) || null;
+  }
+
+  async getAllConversations(userId?: string): Promise<ConversationSummary[]> {
+    const conversations = Array.from(this.conversations.values())
+      .filter(conv => !userId || conv.userId === userId)
+      .filter(conv => conv.status !== 'deleted')
+      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+
+    return conversations.map(conv => ({
+      id: conv.id,
+      title: conv.title,
+      lastMessage: conv.messages[conv.messages.length - 1]?.content || '',
+      messageCount: conv.messages.length,
+      updatedAt: conv.updatedAt,
+      tags: conv.tags,
+      status: conv.status
+    }));
+  }
+
+  async addMessage(conversationId: string, role: Message['role'], content: string, metadata?: Record<string, any>): Promise<Message | null> {
+    const conversation = this.conversations.get(conversationId);
+    if (!conversation) return null;
+
+    const message: Message = {
+      id: uuidv4(),
+      role,
+      content,
+      timestamp: new Date(),
+      metadata
+    };
+
+    conversation.messages.push(message);
+    conversation.updatedAt = new Date();
+
+    // Auto-generate title from first user message
+    if (conversation.messages.length === 1 && role === 'user') {
+      conversation.title = content.substring(0, 50) + (content.length > 50 ? '...' : '');
+    }
 
     await this.saveConversation(conversation);
-    return response;
+    return message;
   }
 
-  private async processStep(
-    conversation: ConversationState, 
-    message: string, 
-    messageType: string,
-    fullMessage: WhatsAppMessage
-  ): Promise<ConversationResponse> {
+  async updateConversation(id: string, updates: Partial<Conversation>): Promise<Conversation | null> {
+    const conversation = this.conversations.get(id);
+    if (!conversation) return null;
+
+    Object.assign(conversation, updates, { updatedAt: new Date() });
+    await this.saveConversation(conversation);
     
-    // Allow conversation reset
-    if (message.toLowerCase() === 'reiniciar') {
-      const newConversation = this.createNewConversation(conversation.phoneNumber);
-      await this.saveConversation(newConversation);
-      return this.handleStart(newConversation);
-    }
-
-    switch (conversation.currentStep) {
-      case 'start':
-        return this.handleStart(conversation);
-      
-      case 'get_name':
-        return this.handleGetName(conversation, message);
-      
-      case 'get_whatsapp':
-        return this.handleGetWhatsapp(conversation, message);
-
-      case 'get_profession':
-        return this.handleGetProfession(conversation, message);
-
-      case 'get_neighborhood':
-        return this.handleGetNeighborhood(conversation, message);
-
-      case 'get_experience':
-        return this.handleGetExperience(conversation, message);
-
-      case 'get_profile_photo':
-        return this.handleGetProfilePhoto(conversation, message, messageType, fullMessage);
-
-      case 'get_services':
-        return this.handleGetServices(conversation, message);
-
-      case 'get_locomotion':
-        return this.handleGetLocomotion(conversation, message);
-      
-      case 'get_gallery_photos':
-        return this.handleGetGalleryPhotos(conversation, message, messageType, fullMessage);
-
-      case 'finish_registration':
-        return this.handleFinishRegistration(conversation);
-
-      default:
-        conversation.currentStep = 'start';
-        return this.handleStart(conversation);
-    }
+    return conversation;
   }
 
-  private handleStart(conversation: ConversationState): ConversationResponse {
-    conversation.currentStep = 'get_name';
+  async deleteConversation(id: string, permanent: boolean = false): Promise<boolean> {
+    const conversation = this.conversations.get(id);
+    if (!conversation) return false;
+
+    if (permanent) {
+      this.conversations.delete(id);
+      await this.deleteConversationFile(id);
+    } else {
+      conversation.status = 'deleted';
+      conversation.updatedAt = new Date();
+      await this.saveConversation(conversation);
+    }
+
+    return true;
+  }
+
+  async searchConversations(query: string, userId?: string): Promise<ConversationSummary[]> {
+    const searchTerm = query.toLowerCase();
+    const conversations = Array.from(this.conversations.values())
+      .filter(conv => !userId || conv.userId === userId)
+      .filter(conv => conv.status !== 'deleted')
+      .filter(conv => 
+        conv.title.toLowerCase().includes(searchTerm) ||
+        conv.messages.some(msg => msg.content.toLowerCase().includes(searchTerm)) ||
+        conv.tags?.some(tag => tag.toLowerCase().includes(searchTerm))
+      )
+      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+
+    return conversations.map(conv => ({
+      id: conv.id,
+      title: conv.title,
+      lastMessage: conv.messages[conv.messages.length - 1]?.content || '',
+      messageCount: conv.messages.length,
+      updatedAt: conv.updatedAt,
+      tags: conv.tags,
+      status: conv.status
+    }));
+  }
+
+  async getStats(userId?: string): Promise<Record<string, any>> {
+    const conversations = Array.from(this.conversations.values())
+      .filter(conv => !userId || conv.userId === userId)
+      .filter(conv => conv.status !== 'deleted');
+
+    const totalMessages = conversations.reduce((sum, conv) => sum + conv.messages.length, 0);
+    const avgMessagesPerConv = conversations.length > 0 ? totalMessages / conversations.length : 0;
+
     return {
-      reply: "Olá! Vou te ajudar a se cadastrar. Qual é seu nome completo?",
+      totalConversations: conversations.length,
+      totalMessages,
+      averageMessagesPerConversation: Math.round(avgMessagesPerConv * 100) / 100,
+      activeConversations: conversations.filter(conv => conv.status === 'active').length,
+      archivedConversations: conversations.filter(conv => conv.status === 'archived').length
     };
   }
 
-  private handleGetName(conversation: ConversationState, message: string): ConversationResponse {
-    if (!message || message.trim().length < 3) {
-      return { reply: "Por favor, digite um nome válido." };
-    }
-    conversation.userData.nome = message.trim();
-    conversation.currentStep = 'get_whatsapp';
-    return { reply: "Qual seu número do WhatsApp?" };
-  }
-
-  private handleGetWhatsapp(conversation: ConversationState, message: string): ConversationResponse {
-    const phoneRegex = /^\d{10,13}$/;
-    if (!message || !phoneRegex.test(message.replace(/\s/g, ''))) {
-      return { reply: "Por favor, envie um número de WhatsApp válido com DDD." };
-    }
-    conversation.userData.whatsapp = message.replace(/\s/g, '');
-    conversation.currentStep = 'get_profession';
-    return { reply: "Qual sua profissão? (pedreiro, eletricista, pintor, etc.)" };
-  }
-
-  private handleGetProfession(conversation: ConversationState, message: string): ConversationResponse {
-    if (!message || message.trim().length < 3) {
-      return { reply: "Por favor, digite uma profissão válida." };
-    }
-    conversation.userData.profissao = message.trim();
-    conversation.currentStep = 'get_neighborhood';
-    return { reply: "Em qual bairro você mora?" };
-  }
-
-  private handleGetNeighborhood(conversation: ConversationState, message: string): ConversationResponse {
-    if (!message || message.trim().length < 3) {
-      return { reply: "Por favor, digite um bairro válido." };
-    }
-    conversation.userData.bairro = message.trim();
-    conversation.currentStep = 'get_experience';
-    return { reply: "Quantos anos de experiência você tem na sua profissão?" };
-  }
-
-  private handleGetExperience(conversation: ConversationState, message: string): ConversationResponse {
-    const experience = parseInt(message, 10);
-    if (isNaN(experience) || experience < 0) {
-      return { reply: "Por favor, envie um número válido de anos de experiência." };
-    }
-    conversation.userData.anos_experiencia = experience;
-    conversation.currentStep = 'get_profile_photo';
-    return { reply: "Agora envie uma foto sua para o perfil (foto do rosto, bem clara)" };
-  }
-
-  private async handleGetProfilePhoto(conversation: ConversationState, message: string, messageType: string, fullMessage: WhatsAppMessage): Promise<ConversationResponse> {
-    if (messageType !== 'image' || !fullMessage.mediaUrl) {
-      return { reply: "Por favor, envie uma imagem." };
-    }
-    try {
-      const imageUrl = await this.whatsappService.getMediaUrl(fullMessage.mediaUrl);
-      // Here you would typically download and save the image to Cloudinary/S3
-      // For now, we'll just store the URL.
-      conversation.userData.foto_perfil = imageUrl;
-      conversation.currentStep = 'get_services';
-      return { reply: "Que serviços você executa? Liste todos que você faz" };
-    } catch (error) {
-      console.error("Error processing profile photo:", error);
-      return { reply: "Ocorreu um erro ao processar sua foto. Tente novamente." };
-    }
-  }
-
-  private handleGetServices(conversation: ConversationState, message: string): ConversationResponse {
-    if (!message || message.trim().length < 5) {
-      return { reply: "Por favor, liste os serviços que você executa." };
-    }
-    conversation.userData.servicos = message.trim();
-    conversation.currentStep = 'get_locomotion';
-    return { reply: "Como você se desloca até o serviço? (carro próprio, moto, transporte público, etc.)" };
-  }
-
-  private handleGetLocomotion(conversation: ConversationState, message: string): ConversationResponse {
-    if (!message || message.trim().length < 3) {
-      return { reply: "Por favor, informe como você se locomove." };
-    }
-    conversation.userData.locomocao = message.trim();
-    conversation.currentStep = 'get_gallery_photos';
-    return { reply: "Envie fotos dos seus trabalhos (galeria com seus melhores serviços)" };
-  }
-
-  private async handleGetGalleryPhotos(conversation: ConversationState, message: string, messageType: string, fullMessage: WhatsAppMessage): Promise<ConversationResponse> {
-     if (messageType !== 'image' || !fullMessage.mediaUrl) {
-       // Check if user wants to finish
-       if (message.toLowerCase().includes('fim') || message.toLowerCase().includes('acabei') || message.toLowerCase().includes('pronto')) {
-         return this.handleFinishRegistration(conversation);
-       }
-      return { reply: "Por favor, envie uma imagem. Quando terminar, digite 'fim'." };
-    }
-
-    try {
-      const imageUrl = await this.whatsappService.getMediaUrl(fullMessage.mediaUrl);
-      if (!conversation.userData.galeria_fotos) {
-        conversation.userData.galeria_fotos = [];
-      }
-      conversation.userData.galeria_fotos.push(imageUrl);
-      
-      // Do not advance step, allow multiple photos.
-      return { reply: `Foto recebida! Envie mais fotos ou digite "fim" para finalizar.` };
-    } catch (error) {
-      console.error("Error processing gallery photo:", error);
-      return { reply: "Ocorreu um erro ao processar sua foto. Tente novamente ou digite 'fim'." };
-    }
-  }
-
-  private async handleFinishRegistration(conversation: ConversationState): Promise<ConversationResponse> {
-    conversation.currentStep = 'completed';
-    conversation.isComplete = true;
-
-    try {
-      // Save the final data to the database
-      await this.databaseService.saveRegistration(conversation.userData);
-      console.log('✅ Cadastro finalizado e salvo:', conversation.userData);
-    } catch(error) {
-      console.error("❌ Erro ao salvar o cadastro no banco:", error);
-      return { reply: "Tivemos um problema ao salvar seu cadastro. Por favor, tente reiniciar a conversa digitando 'reiniciar'." };
-    }
-    
-    return {
-      reply: "Cadastro finalizado! Em breve entraremos em contato.",
-      isComplete: true,
-      registrationData: conversation.userData
-    };
-  }
-
-  private createNewConversation(phoneNumber: string): ConversationState {
-    return {
-      phoneNumber,
-      currentStep: 'start',
-      userData: {},
-      startedAt: new Date(),
-      lastActivity: new Date(),
-      isComplete: false,
-    };
-  }
-
-  private async getConversation(phoneNumber: string): Promise<ConversationState | null> {
-    // First, check in-memory cache
-    if (this.conversations.has(phoneNumber)) {
-      return this.conversations.get(phoneNumber) as ConversationState;
-    }
-    // Then, check database
-    const session = await this.databaseService.getSession(phoneNumber);
-    if (session) {
-      this.conversations.set(phoneNumber, session);
-      return session;
-    }
-    return null;
-  }
-
-  private async saveConversation(conversation: ConversationState): Promise<void> {
-    this.conversations.set(conversation.phoneNumber, conversation);
-    await this.databaseService.saveSession(conversation);
+  async processMessage({ phoneNumber, message, messageType, messageId }: { phoneNumber: string, message: string, messageType: string, messageId: string }) {
+    // Aqui você pode criar uma conversa nova ou buscar uma existente pelo phoneNumber
+    // Para exemplo, só retorna uma resposta fixa:
+    return { reply: "Mensagem recebida: " + message };
   }
 }
+
+export { ConversationManager };

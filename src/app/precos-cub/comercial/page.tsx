@@ -228,6 +228,18 @@ export default function CUBComercialPage() {
                   <div className="text-sm text-green-700">
                     {metragem}m² × R$ {dadosCUBComercial[tipoSelecionado as keyof typeof dadosCUBComercial].valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}/m²
                   </div>
+                  {/* Estimativas de materiais e mão de obra */}
+                  {(() => {
+                    const custo = calcularCusto(dadosCUBComercial[tipoSelecionado as keyof typeof dadosCUBComercial].valor);
+                    const materiais = custo ? custo * 0.55 : 0;
+                    const maoDeObra = custo ? custo * 0.4 : 0;
+                    return (
+                      <div className="mt-2 text-xs text-gray-700">
+                        <div>Materiais: <span className="font-semibold">R$ {materiais.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span> (55%)</div>
+                        <div>Mão de obra: <span className="font-semibold">R$ {maoDeObra.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span> (40%)</div>
+                      </div>
+                    );
+                  })()}
                 </div>
               ) : (
                 <p className="text-gray-500 italic">

@@ -191,12 +191,22 @@ export default function PreosCUBSindusconPage() {
               <div className="space-y-3">
                 {Object.entries(dadosCUB[tipoSelecionado]).map(([tipo, dados]) => {
                   const custo = calcularCusto(dados.valor);
+                  const materiais = custo ? custo * 0.55 : 0;
+                  const maoDeObra = custo ? custo * 0.4 : 0;
                   return (
-                    <div key={tipo} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                      <span className="font-medium">{tipo.toUpperCase()}:</span>
-                      <span className="font-bold text-lg text-green-600">
-                        R$ {custo?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                      </span>
+                    <div key={tipo} className="flex flex-col gap-1 p-3 bg-gray-50 rounded-lg mb-2">
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium">{tipo.toUpperCase()}:</span>
+                        <span className="font-bold text-lg text-green-600">
+                          R$ {custo?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        </span>
+                      </div>
+                      {custo && (
+                        <div className="text-xs text-gray-700 mt-1 pl-2">
+                          <div>Materiais: <span className="font-semibold">R$ {materiais.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span> (55%)</div>
+                          <div>Mão de obra: <span className="font-semibold">R$ {maoDeObra.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span> (40%)</div>
+                        </div>
+                      )}
                     </div>
                   );
                 })}

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador 3D - GLB Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        #container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #canvas {
+            display: block;
+            cursor: grab;
+        }
+
+        #canvas:active {
+            cursor: grabbing;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 1.2em;
+            text-align: center;
+            z-index: 100;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            z-index: 50;
+        }
+
+        .error {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 0, 0, 0.9);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 100;
+            max-width: 80%;
+        }
+
+        .file-input {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            z-index: 50;
+        }
+
+        .file-input:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .welcome-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            z-index: 100;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <canvas id="canvas"></canvas>
+        
+        <div class="loading" id="loading" style="display: none;">
+            <div class="spinner"></div>
+            <div>Carregando modelo 3D...</div>
+        </div>
+
+        <div class="welcome-message" id="welcomeMessage">
+            <h2>🎯 Visualizador 3D</h2>
+            <p>Arraste e solte um arquivo .glb/.gltf aqui<br>ou use o botão abaixo para carregar</p>
+            <br>
+            <button onclick="document.getElementById('fileInput').click()" 
+                    style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                📁 Selecionar Arquivo GLB
+            </button>
+        </div>
+
+        <div class="controls">
+            <strong>Controles:</strong><br>
+            🖱️ Clique e arraste: Rotacionar<br>
+            🔄 Scroll: Zoom<br>
+            ⚡ Shift + Clique: Pan
+        </div>
+
+        <button class="file-input" onclick="document.getElementById('fileInput').click()">
+            📁 Carregar GLB
+        </button>
+        <input type="file" id="fileInput" accept=".glb,.gltf" style="display:none" />
+    </div>
+
+    <script type="module">
+        import * as THREE from 'https://unpkg.com/three@0.150.1/build/three.module.js';
+        import { OrbitControls } from 'https://unpkg.com/three@0.150.1/examples/jsm/controls/OrbitControls.js';
+        import { GLTFLoader } from 'https://unpkg.com/three@0.150.1/examples/jsm/loaders/GLTFLoader.js';
+
+        let scene, camera, renderer, controls, loader, model, mixer;
+        const canvas = document.getElementById('canvas');
+        const loading = document.getElementById('loading');
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const clock = new THREE.Clock();
+
+        function showLoading(show) {
+            loading.style.display = show ? 'block' : 'none';
+        }
+
+        function hideWelcomeMessage() {
+            welcomeMessage.style.display = 'none';
+        }
+
+        function showMessage(msg, type = 'error') {
+            let div = document.createElement('div');
+            div.className = 'message';
+            div.style.cssText = `
+                position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                background: ${type === 'error' ? 'rgba(255,0,0,0.9)' : 'rgba(0,100,255,0.9)'};
+                color: white; padding: 20px; border-radius: 10px; text-align: center; z-index: 100; max-width: 80%;
+            `;
+            div.textContent = msg;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 4000);
+        }
+
+        function init() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x222222);
+
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 2, 5);
+
+            renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+            // Luzes melhoradas
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+            scene.add(ambientLight);
+            
+            const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+            dirLight.position.set(10, 10, 10);
+            dirLight.castShadow = true;
+            dirLight.shadow.mapSize.width = 2048;
+            dirLight.shadow.mapSize.height = 2048;
+            scene.add(dirLight);
+
+            // Luzes coloridas para ambiente
+            const pointLight1 = new THREE.PointLight(0x4080ff, 0.5, 50);
+            pointLight1.position.set(-10, 10, -10);
+            scene.add(pointLight1);
+
+            const pointLight2 = new THREE.PointLight(0xff4080, 0.5, 50);
+            pointLight2.position.set(10, -10, 10);
+            scene.add(pointLight2);
+
+            // OrbitControls
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+
+            loader = new GLTFLoader();
+
+            // Drag and drop
+            setupDragAndDrop();
+
+            window.addEventListener('resize', onWindowResize, false);
+
+            animate();
+        }
+
+        function setupDragAndDrop() {
+            const container = document.getElementById('container');
+            
+            container.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                container.style.background = 'linear-gradient(135deg, #88c999 0%, #99a9ff 100%)';
+            });
+
+            container.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                container.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            });
+
+            container.addEventListener('drop', (e) => {
+                e.preventDefault();
+                container.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const file = files[0];
+                    if (file.name.toLowerCase().endsWith('.glb') || file.name.toLowerCase().endsWith('.gltf')) {
+                        loadFileFromInput(file);
+                    } else {
+                        showMessage('Por favor, selecione um arquivo .glb ou .gltf', 'error');
+                    }
+                }
+            });
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const delta = clock.getDelta();
+            
+            if (mixer) {
+                mixer.update(delta);
+            }
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        function clearModel() {
+            if (model) {
+                scene.remove(model);
+                model.traverse(child => {
+                    if (child.isMesh) {
+                        child.geometry.dispose();
+                        if (child.material.map) child.material.map.dispose();
+                        if (Array.isArray(child.material)) {
+                            child.material.forEach(mat => mat.dispose());
+                        } else {
+                            child.material.dispose();
+                        }
+                    }
+                });
+                model = null;
+            }
+            if (mixer) {
+                mixer = null;
+            }
+        }
+
+        function centerAndScaleModel(object) {
+            const box = new THREE.Box3().setFromObject(object);
+            const center = box.getCenter(new THREE.Vector3());
+            const size = box.getSize(new THREE.Vector3());
+            
+            const maxDim = Math.max(size.x, size.y, size.z);
+            const scale = 3 / maxDim;
+            
+            object.scale.setScalar(scale);
+            object.position.copy(center).multiplyScalar(-scale);
+            
+            // Ajustar câmera
+            controls.target.set(0, 0, 0);
+            camera.position.set(0, maxDim * scale * 0.5, maxDim * scale * 1.5);
+            controls.update();
+        }
+
+        function loadGLB(url) {
+            showLoading(true);
+            hideWelcomeMessage();
+            
+            loader.load(
+                url,
+                gltf => {
+                    clearModel();
+                    model = gltf.scene;
+                    scene.add(model);
+                    
+                    // Centralizar e escalar
+                    centerAndScaleModel(model);
+                    
+                    // Configurar sombras
+                    model.traverse(child => {
+                        if (child.isMesh) {
+                            child.castShadow = true;
+                            child.receiveShadow = true;
+                        }
+                    });
+                    
+                    // Configurar animações
+                    if (gltf.animations && gltf.animations.length > 0) {
+                        mixer = new THREE.AnimationMixer(model);
+                        gltf.animations.forEach(clip => {
+                            mixer.clipAction(clip).play();
+                        });
+                    }
+                    
+                    showLoading(false);
+                    showMessage('Modelo carregado com sucesso!', 'info');
+                },
+                xhr => {
+                    if (xhr.lengthComputable) {
+                        const percentComplete = xhr.loaded / xhr.total * 100;
+                        console.log(`Carregando: ${Math.round(percentComplete)}%`);
+                    }
+                },
+                error => {
+                    console.error('Erro ao carregar modelo:', error);
+                    showLoading(false);
+                    showMessage('Erro ao carregar modelo GLB. Verifique o arquivo.', 'error');
+                }
+            );
+        }
+
+        function loadFileFromInput(file) {
+            showLoading(true);
+            hideWelcomeMessage();
+            
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                loader.parse(e.target.result, '', gltf => {
+                    clearModel();
+                    model = gltf.scene;
+                    scene.add(model);
+                    
+                    // Centralizar e escalar
+                    centerAndScaleModel(model);
+                    
+                    // Configurar sombras
+                    model.traverse(child => {
+                        if (child.isMesh) {
+                            child.castShadow = true;
+                            child.receiveShadow = true;
+                        }
+                    });
+                    
+                    // Configurar animações
+                    if (gltf.animations && gltf.animations.length > 0) {
+                        mixer = new THREE.AnimationMixer(model);
+                        gltf.animations.forEach(clip => {
+                            mixer.clipAction(clip).play();
+                        });
+                    }
+                    
+                    showLoading(false);
+                    showMessage('Arquivo carregado com sucesso!', 'info');
+                }, error => {
+                    console.error('Erro ao parsear arquivo:', error);
+                    showLoading(false);
+                    showMessage('Erro ao carregar arquivo GLB. Verifique se o arquivo não está corrompido.', 'error');
+                });
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // Event listener para input de arquivo
+        document.getElementById('fileInput').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            loadFileFromInput(file);
+        });
+
+        // Inicialização - SEM tentar carregar modelo padrão
+        window.addEventListener('DOMContentLoaded', () => {
+            init();
+            // Não tenta carregar nenhum modelo por padrão
+        });
+    </script>
+</body>
+</html>
