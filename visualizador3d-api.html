@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConectaPro - Plugin Visualizador 3D</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f1f5f9;
+            color: #334155;
+        }
+
+        /* Container Principal */
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-title {
+            font-size: 2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-indicator {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 14px;
+            border: 1px solid #10b981;
+        }
+
+        /* Grid Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            height: fit-content;
+        }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #1e40af;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .model-list {
+            list-style: none;
+        }
+
+        .model-item {
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .model-item:hover {
+            border-color: #3b82f6;
+            background: #f8fafc;
+        }
+
+        .model-item.active {
+            background: #dbeafe;
+            border-color: #3b82f6;
+        }
+
+        .model-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .model-info {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        /* API Controls */
+        .api-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .btn {
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn-success {
+            background: #10b981;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* Viewer Area */
+        .viewer-area {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .viewer-header {
+            background: #f8fafc;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .viewer-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .viewer-controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .viewer-container {
+            height: 600px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .viewer-placeholder {
+            text-align: center;
+            color: white;
+        }
+
+        .placeholder-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        .placeholder-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .placeholder-subtitle {
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+
+        /* API Response Area */
+        .api-response {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .response-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #1e40af;
+        }
+
+        .response-content {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+
+        /* Model Info Panel */
+        .model-info-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 12px;
+            backdrop-filter: blur(10px);
+            display: none;
+        }
+
+        /* Loading State */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-direction: column;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .viewer-controls {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1 class="app-title">
+                    🏗️ ConectaPro - Plugin Visualizador 3D
+                </h1>
+                <div class="status-indicator" id="connectionStatus">
+                    🟢 Conectado
+                </div>
+            </div>
+        </header>
+
+        <!-- Layout Principal -->
+        <div class="main-grid">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <!-- Lista de Modelos -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        📋 Modelos Disponíveis
+                    </h3>
+                    <ul class="model-list" id="modelList">
+                        <li class="model-item" onclick="selectModel('casa2quartos', this)">
+                            <div class="model-name">Casa 2 Quartos</div>
+                            <div class="model-info">GLB • 3.5MB • 156k vértices</div>
+                        </li>
+                        <li class="model-item" onclick="selectModel('edificio-comercial', this)">
+                            <div class="model-name">Edifício Comercial</div>
+                            <div class="model-info">GLTF • 15.2MB • 892k vértices</div>
+                        </li>
+                        <li class="model-item" onclick="selectModel('ponte-estaiada', this)">
+                            <div class="model-name">Ponte Estaiada</div>
+                            <div class="model-info">GLB • 8.7MB • 324k vértices</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Controles da API -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        🔧 Controles da API
+                    </h3>
+                    <div class="api-controls">
+                        <div class="control-group">
+                            <label class="control-label">Ações do Visualizador</label>
+                            <button class="btn" onclick="initializeViewer()">
+                                🚀 Inicializar Visualizador
+                            </button>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">Controles de Câmera</label>
+                            <button class="btn btn-secondary" onclick="resetCamera()">
+                                ↻ Reset Câmera
+                            </button>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">Configurações</label>
+                            <button class="btn btn-secondary" onclick="toggleWireframe()">
+                                ◊ Toggle Wireframe
+                            </button>
+                            <button class="btn btn-secondary" onclick="toggleGrid()">
+                                ⚏ Toggle Grid
+                            </button>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">Exportação</label>
+                            <button class="btn btn-success" onclick="exportScreenshot()">
+                                📸 Screenshot
+                            </button>
+                            <button class="btn btn-success" onclick="exportModel()">
+                                💾 Exportar Modelo
+                            </button>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">Sistema</label>
+                            <button class="btn btn-danger" onclick="clearViewer()">
+                                🗑️ Limpar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Área Principal -->
+            <main class="viewer-area">
+                <!-- Header do Visualizador -->
+                <div class="viewer-header">
+                    <h2 class="viewer-title">
+                        🎯 Visualizador 3D Integrado
+                    </h2>
+                    <div class="viewer-controls">
+                        <button class="btn btn-secondary" onclick="uploadModel()">
+                            📁 Upload Modelo
+                        </button>
+                        <button class="btn" onclick="fullscreenMode()">
+                            ⛶ Tela Cheia
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Container do Visualizador -->
+                <div class="viewer-container" id="viewerContainer">
+                    <div class="viewer-placeholder">
+                        <div class="placeholder-icon">🏗️</div>
+                        <h3 class="placeholder-title">Plugin ConectaPro Viewer</h3>
+                        <p class="placeholder-subtitle">Inicialize o visualizador ou selecione um modelo</p>
+                        <button class="btn" onclick="initializeViewer()">
+                            🚀 Inicializar Visualizador 3D
+                        </button>
+                    </div>
+
+                    <!-- Loading Overlay -->
+                    <div class="loading-overlay" id="loadingOverlay">
+                        <div class="spinner"></div>
+                        <div id="loadingText">Carregando...</div>
+                    </div>
+
+                    <!-- Model Info Panel -->
+                    <div class="model-info-panel" id="modelInfoPanel">
+                        <div><strong>Modelo:</strong> <span id="modelName">-</span></div>
+                        <div><strong>Vértices:</strong> <span id="modelVertices">-</span></div>
+                        <div><strong>Tamanho:</strong> <span id="modelSize">-</span></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- API Response Area -->
+        <div class="api-response">
+            <h3 class="response-title">📡 Log da API</h3>
+            <div class="response-content" id="apiLog">
+                <div>// Log de comandos da API ConectaPro Viewer</div>
+                <div>// Aguardando comandos...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulação da API ConectaPro Viewer
+        class ConectaProViewerAPI {
+            constructor() {
+                this.initialized = false;
+                this.currentModel = null;
+                this.settings = {
+                    wireframe: false,
+                    grid: true,
+                    autoRotate: false
+                };
+            }
+
+            // Métodos da API
+            async initialize() {
+                this.log('API: Inicializando visualizador...');
+                await this.delay(2000);
+                this.initialized = true;
+                this.log('API: Visualizador inicializado com sucesso');
+                return { success: true, message: 'Visualizador inicializado' };
+            }
+
+            async loadModel(modelId) {
+                if (!this.initialized) {
+                    throw new Error('Visualizador não inicializado');
+                }
+                
+                this.log(`API: Carregando modelo ${modelId}...`);
+                await this.delay(3000);
+                
+                this.currentModel = {
+                    id: modelId,
+                    name: this.getModelName(modelId),
+                    vertices: this.getModelVertices(modelId),
+                    size: this.getModelSize(modelId)
+                };
+                
+                this.log(`API: Modelo ${modelId} carregado com sucesso`);
+                return { success: true, model: this.currentModel };
+            }
+
+            async resetCamera() {
+                this.log('API: Resetando câmera...');
+                await this.delay(500);
+                this.log('API: Câmera resetada');
+                return { success: true };
+            }
+
+            async toggleWireframe() {
+                this.settings.wireframe = !this.settings.wireframe;
+                this.log(`API: Wireframe ${this.settings.wireframe ? 'ativado' : 'desativado'}`);
+                return { success: true, wireframe: this.settings.wireframe };
+            }
+
+            async toggleGrid() {
+                this.settings.grid = !this.settings.grid;
+                this.log(`API: Grid ${this.settings.grid ? 'ativado' : 'desativado'}`);
+                return { success: true, grid: this.settings.grid };
+            }
+
+            async exportScreenshot() {
+                this.log('API: Exportando screenshot...');
+                await this.delay(1000);
+                this.log('API: Screenshot exportado com sucesso');
+                return { success: true, filename: `screenshot_${Date.now()}.png` };
+            }
+
+            async exportModel() {
+                if (!this.currentModel) {
+                    throw new Error('Nenhum modelo carregado');
+                }
+                this.log('API: Exportando modelo...');
+                await this.delay(2000);
+                this.log('API: Modelo exportado com sucesso');
+                return { success: true, filename: `${this.currentModel.id}_export.glb` };
+            }
+
+            async clear() {
+                this.log('API: Limpando visualizador...');
+                this.currentModel = null;
+                await this.delay(1000);
+                this.log('API: Visualizador limpo');
+                return { success: true };
+            }
+
+            // Métodos auxiliares
+            getModelName(modelId) {
+                const names = {
+                    'casa2quartos': 'Casa 2 Quartos',
+                    'edificio-comercial': 'Edifício Comercial',
+                    'ponte-estaiada': 'Ponte Estaiada'
+                };
+                return names[modelId] || 'Modelo Desconhecido';
+            }
+
+            getModelVertices(modelId) {
+                const vertices = {
+                    'casa2quartos': '156,820',
+                    'edificio-comercial': '892,456',
+                    'ponte-estaiada': '324,198'
+                };
+                return vertices[modelId] || '0';
+            }
+
+            getModelSize(modelId) {
+                const sizes = {
+                    'casa2quartos': '3.5 MB',
+                    'edificio-comercial': '15.2 MB',
+                    'ponte-estaiada': '8.7 MB'
+                };
+                return sizes[modelId] || '0 MB';
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            log(message) {
+                const timestamp = new Date().toLocaleTimeString();
+                const logElement = document.getElementById('apiLog');
+                const logLine = document.createElement('div');
+                logLine.innerHTML = `<span style="color: #10b981;">[${timestamp}]</span> ${message}`;
+                logElement.appendChild(logLine);
+                logElement.scrollTop = logElement.scrollHeight;
+            }
+        }
+
+        // Instância global da API
+        const viewerAPI = new ConectaProViewerAPI();
+
+        // Funções de controle
+        async function initializeViewer() {
+            showLoading('Inicializando visualizador...');
+            
+            try {
+                const result = await viewerAPI.initialize();
+                
+                // Simular interface do visualizador
+                document.getElementById('viewerContainer').innerHTML = `
+                    <div style="height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                                display: flex; align-items: center; justify-content: center; color: white; text-align: center;">
+                        <div>
+                            <div style="font-size: 4rem; margin-bottom: 1rem;">✅</div>
+                            <h3>Visualizador 3D Ativo</h3>
+                            <p>Selecione um modelo para começar</p>
+                        </div>
+                    </div>
+                    
+                    <div class="loading-overlay" id="loadingOverlay">
+                        <div class="spinner"></div>
+                        <div id="loadingText">Carregando...</div>
+                    </div>
+
+                    <div class="model-info-panel" id="modelInfoPanel" style="display: none;">
+                        <div><strong>Modelo:</strong> <span id="modelName">-</span></div>
+                        <div><strong>Vértices:</strong> <span id="modelVertices">-</span></div>
+                        <div><strong>Tamanho:</strong> <span id="modelSize">-</span></div>
+                    </div>
+                `;
+                
+                hideLoading();
+                updateConnectionStatus(true);
+                showNotification('Visualizador inicializado com sucesso!');
+                
+            } catch (error) {
+                hideLoading();
+                viewerAPI.log(`ERRO: ${error.message}`);
+                showNotification('Erro ao inicializar visualizador', 'error');
+            }
+        }
+
+        async function selectModel(modelId, element) {
+            // Remover seleção anterior
+            document.querySelectorAll('.model-item').forEach(item => 
+                item.classList.remove('active'));
+            
+            // Adicionar seleção atual
+            element.classList.add('active');
+            
+            showLoading(`Carregando ${modelId}...`);
+            
+            try {
+                const result = await viewerAPI.loadModel(modelId);
+                
+                // Simular modelo carregado
+                document.getElementById('viewerContainer').innerHTML = `
+                    <div style="height: 100%; background: linear-gradient(45deg, #1a1a2e 0%, #16213e 100%); 
+                                display: flex; align-items: center; justify-content: center; color: white; text-align: center;
+                                position: relative;">
+                        <div>
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">📦</div>
+                            <h3>${result.model.name}</h3>
+                            <p>Modelo 3D carregado</p>
+                            <div style="margin-top: 1rem; font-size: 14px; opacity: 0.8;">
+                                ${result.model.vertices} vértices • ${result.model.size}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="loading-overlay" id="loadingOverlay">
+                        <div class="spinner"></div>
+                        <div id="loadingText">Carregando...</div>
+                    </div>
+
+                    <div class="model-info-panel" id="modelInfoPanel" style="display: block;">
+                        <div><strong>Modelo:</strong> <span id="modelName">${result.model.name}</span></div>
+                        <div><strong>Vértices:</strong> <span id="modelVertices">${result.model.vertices}</span></div>
+                        <div><strong>Tamanho:</strong> <span id="modelSize">${result.model.size}</span></div>
+                    </div>
+                `;
+                
+                hideLoading();
+                showNotification(`Modelo ${result.model.name} carregado!`);
+                
+            } catch (error) {
+                hideLoading();
+                viewerAPI.log(`ERRO: ${error.message}`);
+                showNotification('Erro ao carregar modelo', 'error');
+            }
+        }
+
+        async function resetCamera() {
+            try {
+                await viewerAPI.resetCamera();
+                showNotification('Câmera resetada!');
+            } catch (error) {
+                showNotification('Erro ao resetar câmera', 'error');
+            }
+        }
+
+        async function toggleWireframe() {
+            try {
+                const result = await viewerAPI.toggleWireframe();
+                showNotification(`Wireframe ${result.wireframe ? 'ativado' : 'desativado'}`);
+            } catch (error) {
+                showNotification('Erro ao alterar wireframe', 'error');
+            }
+        }
+
+        async function toggleGrid() {
+            try {
+                const result = await viewerAPI.toggleGrid();
+                showNotification(`Grid ${result.grid ? 'ativado' : 'desativado'}`);
+            } catch (error) {
+                showNotification('Erro ao alterar grid', 'error');
+            }
+        }
+
+        async function exportScreenshot() {
+            try {
+                const result = await viewerAPI.exportScreenshot();
+                showNotification(`Screenshot salvo: ${result.filename}`);
+            } catch (error) {
+                showNotification('Erro ao exportar screenshot', 'error');
+            }
+        }
+
+        async function exportModel() {
+            try {
+                const result = await viewerAPI.exportModel();
+                showNotification(`Modelo exportado: ${result.filename}`);
+            } catch (error) {
+                showNotification('Erro ao exportar modelo', 'error');
+            }
+        }
+
+        async function clearViewer() {
+            try {
+                await viewerAPI.clear();
+                
+                document.getElementById('viewerContainer').innerHTML = `
+                    <div class="viewer-placeholder">
+                        <div class="placeholder-icon">🏗️</div>
+                        <h3 class="placeholder-title">Visualizador Limpo</h3>
+                        <p class="placeholder-subtitle">Selecione um modelo para visualizar</p>
+                    </div>
+                `;
+                
+                // Remover seleções
+                document.querySelectorAll('.model-item').forEach(item => 
+                    item.classList.remove('active'));
+                
+                showNotification('Visualizador limpo!');
+            } catch (error) {
+                showNotification('Erro ao limpar visualizador', 'error');
+            }
+        }
+
+        function uploadModel() {
+            showNotification('Funcionalidade de upload em desenvolvimento');
+            viewerAPI.log('UI: Upload de modelo solicitado');
+        }
+
+        function fullscreenMode() {
+            showNotification('Modo tela cheia ativado');
+            viewerAPI.log('UI: Modo tela cheia solicitado');
+        }
+
+        // Funções auxiliares
+        function showLoading(text) {
+            const overlay = document.getElementById('loadingOverlay');
+            const loadingText = document.getElementById('loadingText');
+            if (overlay && loadingText) {
+                loadingText.textContent = text;
+                overlay.style.display = 'flex';
+            }
+        }
+
+        function hideLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+        }
+
+        function updateConnectionStatus(connected) {
+            const status = document.getElementById('connectionStatus');
+            if (connected) {
+                status.innerHTML = '🟢 Conectado';
+                status.style.background = 'rgba(16, 185, 129, 0.2)';
+                status.style.color = '#10b981';
+                status.style.borderColor = '#10b981';
+            } else {
+                status.innerHTML = '🔴 Desconectado';
+                status.style.background = 'rgba(239, 68, 68, 0.2)';
+                status.style.color = '#ef4444';
+                status.style.borderColor = '#ef4444';
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            const bgColor = type === 'error' ? '#ef4444' : '#10b981';
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${bgColor};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                z-index: 1000;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // CSS para animações
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            viewerAPI.log('Sistema ConectaPro Viewer Plugin iniciado');
+            updateConnectionStatus(false);
+        });
+    </script>
+</body>
+</html>
