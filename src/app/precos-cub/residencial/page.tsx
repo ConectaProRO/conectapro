@@ -137,7 +137,7 @@ export default function CUBResidencialPage() {
         
         <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
           <p className="text-sm text-yellow-800">
-            <strong>📅 Referência:</strong> Dezembro 2024 | 
+            <strong>📅 Referência:</strong> Maio 2025 | 
             <strong> 📍 Região:</strong> Porto Velho-RO | 
             <strong> 🏛️ Fonte:</strong> Sinduscon-RO
           </p>

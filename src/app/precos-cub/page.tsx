@@ -111,112 +111,53 @@ export default function PreosCUBSindusconPage() {
         </div>
       </PageCard>
 
-      {/* Tabela de Preços */}
+      {/* Cards de Tipos com Calculadora Direta */}
       <PageCard>
-        <h2 className="text-2xl font-bold cp-text-gradient mb-6">
+        <h2 className="text-2xl font-bold cp-text-gradient mb-6 text-center">
           Valores CUB - {tipoSelecionado === 'residencial' ? 'Residencial' : 'Comercial'}
         </h2>
-        
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="cp-bg-figma-light">
-                <th className="border border-gray-300 p-4 text-left font-semibold">Tipo</th>
-                <th className="border border-gray-300 p-4 text-left font-semibold">Descrição</th>
-                <th className="border border-gray-300 p-4 text-right font-semibold">Valor/m²</th>
-                <th className="border border-gray-300 p-4 text-center font-semibold">Ação</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(dadosCUB[tipoSelecionado]).map(([tipo, dados]) => (
-                <tr key={tipo} className="hover:bg-gray-50">
-                  <td className="border border-gray-300 p-4 font-semibold text-blue-600">
-                    {tipo.toUpperCase()}
-                  </td>
-                  <td className="border border-gray-300 p-4">
-                    {dados.descricao}
-                  </td>
-                  <td className="border border-gray-300 p-4 text-right font-bold text-lg">
-                    R$ {dados.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                  </td>
-                  <td className="border border-gray-300 p-4 text-center">
-                    <Link 
-                      href={`/precos-cub/${tipoSelecionado}?tipo=${tipo}`}
-                      className="cp-button-primary text-sm"
-                    >
-                      Ver Detalhes
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="flex flex-col gap-6">
+          {Object.entries(dadosCUB[tipoSelecionado]).map(([tipo, dados]) => {
+            const [metragemLocal, setMetragemLocal] = useState('');
+            const custo = metragemLocal && parseFloat(metragemLocal) > 0 ? dados.valor * parseFloat(metragemLocal) : null;
+            const materiais = custo ? custo * 0.55 : 0;
+            const maoDeObra = custo ? custo * 0.4 : 0;
+            return (
+              <div key={tipo} className="rounded-2xl border-2 border-gray-200 p-6 bg-white shadow-sm w-full max-w-xl mx-auto">
+                <div className="flex flex-col gap-2 mb-2">
+                  <span className="font-bold text-blue-600 text-lg">{tipo.toUpperCase()}</span>
+                  <span className="font-semibold text-gray-800">{dados.descricao}</span>
+                  <span className="text-green-700 font-bold text-xl">R$ {dados.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}/m²</span>
+                </div>
+                <div className="flex flex-col gap-2 mt-2">
+                  <label className="text-sm font-medium text-gray-700">Metragem (m²):</label>
+                  <input
+                    type="number"
+                    value={metragemLocal}
+                    onChange={e => setMetragemLocal(e.target.value)}
+                    placeholder="Ex: 120"
+                    className="w-full p-3 border-2 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  {metragemLocal && parseFloat(metragemLocal) > 0 ? (
+                    <div className="mt-2 bg-gray-50 rounded-lg p-3 text-sm">
+                      <div className="font-bold text-green-600 text-lg mb-1">Total: R$ {custo?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
+                      <div>Materiais: <span className="font-semibold">R$ {materiais.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span> (55%)</div>
+                      <div>Mão de obra: <span className="font-semibold">R$ {maoDeObra.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span> (40%)</div>
+                    </div>
+                  ) : (
+                    <div className="text-gray-400 italic text-xs">Digite a metragem para ver a estimativa</div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
-        
         <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
           <p className="text-sm text-yellow-800">
-            <strong>📅 Referência:</strong> Dezembro 2024 | 
+            <strong>📅 Referência:</strong> Maio 2025 | 
             <strong> 📍 Região:</strong> Porto Velho-RO | 
             <strong> 🏛️ Fonte:</strong> Sinduscon-RO
           </p>
-        </div>
-      </PageCard>
-
-      {/* Calculadora Rápida */}
-      <PageCard>
-        <h2 className="text-2xl font-bold cp-text-gradient mb-6 flex items-center gap-3">
-          <FaCalculator />
-          Calculadora Rápida
-        </h2>
-        
-        <div className="grid md:grid-cols-2 gap-8">
-          <div>
-            <label className="block text-lg font-semibold text-gray-700 mb-3">
-              Metragem da construção (m²):
-            </label>
-            <input
-              type="number"
-              value={metragem}
-              onChange={(e) => setMetragem(e.target.value)}
-              placeholder="Ex: 120"
-              className="w-full p-4 border-2 cp-border-figma rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          
-          <div>
-            <h3 className="text-lg font-semibold text-gray-700 mb-3">
-              Estimativa de Custo:
-            </h3>
-            {metragem && parseFloat(metragem) > 0 ? (
-              <div className="space-y-3">
-                {Object.entries(dadosCUB[tipoSelecionado]).map(([tipo, dados]) => {
-                  const custo = calcularCusto(dados.valor);
-                  const materiais = custo ? custo * 0.55 : 0;
-                  const maoDeObra = custo ? custo * 0.4 : 0;
-                  return (
-                    <div key={tipo} className="flex flex-col gap-1 p-3 bg-gray-50 rounded-lg mb-2">
-                      <div className="flex justify-between items-center">
-                        <span className="font-medium">{tipo.toUpperCase()}:</span>
-                        <span className="font-bold text-lg text-green-600">
-                          R$ {custo?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                        </span>
-                      </div>
-                      {custo && (
-                        <div className="text-xs text-gray-700 mt-1 pl-2">
-                          <div>Materiais: <span className="font-semibold">R$ {materiais.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span> (55%)</div>
-                          <div>Mão de obra: <span className="font-semibold">R$ {maoDeObra.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span> (40%)</div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <p className="text-gray-500 italic">
-                Digite a metragem para ver as estimativas
-              </p>
-            )}
-          </div>
         </div>
       </PageCard>
 
